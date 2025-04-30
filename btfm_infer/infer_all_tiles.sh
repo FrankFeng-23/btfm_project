@@ -11,10 +11,10 @@
 ###############This needs to be modified to your environment###############
 # Set default values
 # This is the main directory where all processed and raw data will be stored
-BASE_DATA_DIR="/scratch/zf281/btfm_project/my_data"
+BASE_DATA_DIR="absolute/path/to/your/data_dir"
 
 # Python environment that has the required packages installed
-export PYTHON_ENV="/maps/zf281/btfm-training-frank/venv/bin/python"
+export PYTHON_ENV="absolute/path/to/your/python_env/bin/python"
 
 # CPU:GPU split ratio
 # The script supports simultaneous inference using both CPU and GPU. This ratio specifies the proportion of retiled_patches each device will handle. 

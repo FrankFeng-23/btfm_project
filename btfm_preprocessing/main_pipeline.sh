@@ -19,14 +19,14 @@
 
 # Base directory for all data storage
 # This is the main directory where all processed and raw data will be stored
-BASE_DATA_DIR="/scratch/zf281/btfm_project/my_data"
+BASE_DATA_DIR="absolute/path/to/your/data_dir"
 
 # Sentinel-1 (SAR) download credentials
 # Required for downloading Sentinel-1 data from ASF
 # If you don't have an account, create one at https://urs.earthdata.nasa.gov/
 # Please make sure that you have enbaled the "Alaska Satellite Facility Data Access" in your account
-S1_DOWNLOAD_USERNAME="frankfeng123"
-S1_DOWNLOAD_PASSWORD="Fzp123456789"
+S1_DOWNLOAD_USERNAME="xxxxxx"
+S1_DOWNLOAD_PASSWORD="xxxxxx"
 
 # Maximum cloud coverage percentage allowed for Sentinel-2 imagery (0-100)
 # Higher values allow more cloudy images

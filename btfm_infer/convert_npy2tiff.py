@@ -75,8 +75,8 @@ def convert_npy_to_tiff(npy_path, ref_tiff_path, out_dir, downsample_rate=1):
     print(f"Resolution: Original 10m, after downsampling {10 * downsample_rate}m")
 
 if __name__ == "__main__":
-    npy_path = "/scratch/zf281/clement_agb/22MCU/representations_fsdp_20250417_101636.npy"  # Change to the actual npy file path
-    ref_tiff_path = "/scratch/zf281/global_s2_tiff/22MCU/red/S2B_22MCU_20180124_1_L2A.tiff"  # Change to the actual reference tiff file path
-    out_dir = "/scratch/zf281/clement_agb/22MCU"  # Change to the actual output directory
+    npy_path = "/maps/usr/btfm_project/my_data/stitched_representation.npy"  # Change to the actual npy file path
+    ref_tiff_path = "/maps/usr/btfm_project/my_data/roi.tiff"  # Change to the actual reference tiff file path
+    out_dir = "/maps/usr/btfm_project/my_data/"  # Change to the actual output directory
     downsample_rate = 1  # Default is no downsampling, modify as needed
     convert_npy_to_tiff(npy_path, ref_tiff_path, out_dir, downsample_rate)

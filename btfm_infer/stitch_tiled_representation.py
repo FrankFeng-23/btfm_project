@@ -287,10 +287,4 @@ python stitch_tiled_representation.py \
 --representation_retiled_path /maps/usr/btfm_project/my_data/representation_retiled \
 --downstream_tiff /maps/usr/btfm_project/my_data/downstream.tiff \
 --out_dir /maps/usr/btfm_project/my_data
-
-python /scratch/zf281/btfm_project/btfm_infer/stitch_tiled_representation.py \
---d_pixel_retiled_path /scratch/zf281/jovana/retiled_d_pixel \
---representation_retiled_path /scratch/zf281/jovana/representation_retiled \
---downstream_tiff /scratch/zf281/jovana/SEKI_ROI/seki_convex_hull.tiff \
---out_dir /scratch/zf281/jovana
 """
