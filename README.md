@@ -195,7 +195,7 @@ The meaning of each parameter is as follows:
 
 For example, if you want to get the composite for a specific ROI in 2022, you can run:
 ```bash
-bash btfm_preprocessing/main_pipeline.sh /maps/usr/btfm_project/my_data/roi.tiff 2022-01-01 2022-12-31 2022-01-01 2022-12-31 1
+bash btfm_preprocessing/main_pipeline.sh /maps/usr/btfm_project/my_data/roi.tiff 2022-01-01 2023-01-01 2022-01-01 2023-01-01 1
 ```
 
 ### Known Issues
@@ -301,19 +301,31 @@ CPU_GPU_SPLIT="1:1"  # Format: CPU:GPU ratio
 ```
 The script supports simultaneous inference using both CPU and GPU. This ratio specifies the proportion of `retiled_patches` each device will handle. Default is 1:1 (even split). For GPU-only inference, set to 0:1.
 
-d. Maximum concurrent CPU processes:
+d. CPU Related Settings
+
 ```bash
 MAX_CONCURRENT_PROCESSES_CPU=20
 ```
 Maximum number of CPU processes for tile inference. For example, if set to 20, it will process 20 tiles simultaneously.
 
-e. Maximum concurrent GPU processes:
+```bash
+AVAILABLE_CORES=$((TOTAL_CPU_CORES / 2)) # Use 50% of the cores
+```
+Number of CPU cores to use. Please modify this value if necessary to avoid consuming too many CPU resources!
+
+e. GPU Related Settings:
 ```bash
 MAX_CONCURRENT_PROCESSES_GPU=1
 ```
 Maximum number of GPU processes for inference. If the system has only 1 GPU, set this to 1.
 
-You don't need to modify other configurations.
+```bash
+GPU_BATCH_SIZE=1024  # Larger for GPU, if this takes too much memory, reduce it
+```
+Number of samples to process at once during PyTorch inference. If this value consumes too much GPU memory or causes an OOM error on the GPU, please reduce it accordingly.
+
+f. Other Settings
+There are other parameters available for configuration. Please adjust them as needed.
 
 ### Start Inference
 
@@ -401,9 +413,9 @@ python stitch_tiled_representation.py \
 Finally, you'll get a stitched representation map in the `my_data` directory with the shape (H,W,128), where H and W match your initial `roi.tiff`. The representation map is a NumPy array. If you want to convert it to TIFF for viewing in software like QGIS, you can use the `btfm_infer/convert_npy2tiff.py` script. Just modify the main function with:
 
 ```python
-npy_path = "/scratch/zf281/clement_agb/22MCU/representations_fsdp_20250417_101636.npy"  # Change to the actual npy file path
-ref_tiff_path = "/scratch/zf281/global_s2_tiff/22MCU/red/S2B_22MCU_20180124_1_L2A.tiff"  # Change to the actual reference tiff file path
-out_dir = "/scratch/zf281/clement_agb/22MCU"  # Change to the actual output directory
+npy_path = "/maps/usr/btfm_project/my_data/stitched_representation.npy"  # Change to the actual npy file path
+ref_tiff_path = "/maps/usr/btfm_project/my_data/roi.tiff"  # Change to the actual reference tiff file path
+out_dir = "/maps/usr/btfm_project/my_data/"  # Change to the actual output directory
 ```
 
 ## Additional Notes

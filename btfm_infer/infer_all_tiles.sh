@@ -24,8 +24,21 @@ CPU_GPU_SPLIT="1:1"  # Format: CPU:GPU ratio
 # Maximum number of concurrent processes
 MAX_CONCURRENT_PROCESSES_CPU=20
 
+# CPU cores to use
+# Calculate available CPU cores
+TOTAL_CPU_CORES=$(nproc)  # Get total number of CPU cores
+AVAILABLE_CORES=$((TOTAL_CPU_CORES / 2)) # Use 50% of the cores
+
+# Define CPU batch size and workers
+CPU_BATCH_SIZE=256  # Smaller for CPU
+CPU_NUM_WORKERS=0   # Let main thread do the loading
+
 # Maximum number of concurrent GPU processes; this value usually equals the number of GPUs on the device.
 MAX_CONCURRENT_PROCESSES_GPU=1  # Number of GPUs to use
+
+# Define GPU batch size and workers
+GPU_BATCH_SIZE=1024  # Larger for GPU, if this takes too much memory, reduce it
+GPU_NUM_WORKERS=4    # More workers for GPU
 
 # Other settings
 VERBOSE_GPU=true    # Enable detailed GPU logging
@@ -188,9 +201,6 @@ stop_gpu_monitoring() {
     fi
 }
 
-# Calculate available CPU cores
-TOTAL_CPU_CORES=$(nproc)  # Get total number of CPU cores
-AVAILABLE_CORES=$((TOTAL_CPU_CORES * 3 / 4)) # Use 75% of the cores
 log_info "Total CPU cores: $TOTAL_CPU_CORES, Using: $AVAILABLE_CORES"
 
 # Parse CPU:GPU split ratio
@@ -382,9 +392,6 @@ if [ $CPU_TILES_COUNT -gt 0 ]; then
     
     log_info "Using $NUM_CPU_PROCESSES CPU processes with $THREADS_PER_CPU_PROCESS threads each"
     
-    # Define CPU batch size and workers
-    CPU_BATCH_SIZE=256  # Smaller for CPU
-    CPU_NUM_WORKERS=0   # Let main thread do the loading
 else
     log_info "No tiles assigned to CPU processing"
     NUM_CPU_PROCESSES=0
@@ -492,9 +499,6 @@ if [ $GPU_TILES_COUNT -gt 0 ]; then
                 NUM_GPU_PROCESSES=0
             fi
 
-            # Define GPU batch size and workers
-            GPU_BATCH_SIZE=1024  # Larger for GPU
-            GPU_NUM_WORKERS=8    # More workers for GPU
         fi
     else
         log_warning "nvidia-smi not found, moving all GPU tiles to CPU"
