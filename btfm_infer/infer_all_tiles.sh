@@ -16,17 +16,15 @@ BASE_DATA_DIR="/scratch/zf281/jovana"
 # Python environment that has the required packages installed
 export PYTHON_ENV="/maps/zf281/btfm-training-frank/venv/bin/python"
 
-# Path to the checkpoint file for the model
-CHECKPOINT_PATH="checkpoints/best_model_fsdp_20250408_101211.pt"
-
 # CPU:GPU split ratio
-# 脚本支持cpu和gpu进行同时推理，这里的比例指的是各自负责多少比例的retiled_patch。默认平分，即1：1。如果只想要进行gpu推理，则可以设置为0:1
+# The script supports simultaneous inference using both CPU and GPU. This ratio specifies the proportion of retiled_patches each device will handle. 
+# Default is 1:1 (even split). For GPU-only inference, set to 0:1.
 CPU_GPU_SPLIT="1:1"  # Format: CPU:GPU ratio
 
 # Maximum number of concurrent processes
 MAX_CONCURRENT_PROCESSES_CPU=20
 
-# Maximum number of concurrent GPU processes，这个值一般等于设备上的gpu数量
+# Maximum number of concurrent GPU processes; this value usually equals the number of GPUs on the device.
 MAX_CONCURRENT_PROCESSES_GPU=1  # Number of GPUs to use
 
 # Other settings
@@ -38,6 +36,9 @@ TILES_DIR="${BASE_DATA_DIR}/retiled_d_pixel"
 OUTPUT_DIR="${BASE_DATA_DIR}/representation_retiled"
 CONFIG_FILE="configs/multi_tile_infer_config.py"
 PYTHON_SCRIPT="src/multi_tile_infer.py"
+
+# Path to the checkpoint file for the model
+CHECKPOINT_PATH="checkpoints/best_model_fsdp_20250408_101211.pt"
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
