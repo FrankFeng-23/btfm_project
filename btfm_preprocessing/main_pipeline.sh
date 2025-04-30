@@ -19,7 +19,7 @@
 
 # Base directory for all data storage
 # This is the main directory where all processed and raw data will be stored
-BASE_DATA_DIR="/scratch/zf281/jovana"
+BASE_DATA_DIR="/scratch/zf281/btfm_project/my_data"
 
 # Sentinel-1 (SAR) download credentials
 # Required for downloading Sentinel-1 data from ASF

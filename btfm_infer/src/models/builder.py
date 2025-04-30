@@ -11,10 +11,10 @@ def build_ssl_model(config, device):
         # num_encoder_layers=32,
         # dim_feedforward=512,
         nhead=8,
-        num_encoder_layers=2,
+        num_encoder_layers=8,
         dim_feedforward=4096,
         dropout=0.1,
-        max_seq_len=20
+        max_seq_len=40
     )
     ###############Sentinel-1##################
     s1_backbone_ssl = TransformerEncoder(
@@ -24,10 +24,10 @@ def build_ssl_model(config, device):
         # num_encoder_layers=32,
         # dim_feedforward=512,
         nhead=8,
-        num_encoder_layers=2,
+        num_encoder_layers=8,
         dim_feedforward=4096,
         dropout=0.1,
-        max_seq_len=20
+        max_seq_len=40
     )
     if config["fusion_method"] == "concat":
         input_dim_for_projector = config['latent_dim']

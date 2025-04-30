@@ -11,7 +11,7 @@
 ###############This needs to be modified to your environment###############
 # Set default values
 # This is the main directory where all processed and raw data will be stored
-BASE_DATA_DIR="/scratch/zf281/jovana"
+BASE_DATA_DIR="/scratch/zf281/btfm_project/my_data"
 
 # Python environment that has the required packages installed
 export PYTHON_ENV="/maps/zf281/btfm-training-frank/venv/bin/python"
@@ -30,11 +30,11 @@ TOTAL_CPU_CORES=$(nproc)  # Get total number of CPU cores
 AVAILABLE_CORES=$((TOTAL_CPU_CORES / 2)) # Use 50% of the cores
 
 # Define CPU batch size and workers
-CPU_BATCH_SIZE=256  # Smaller for CPU
+CPU_BATCH_SIZE=256  # Small batch size for CPU
 CPU_NUM_WORKERS=0   # Let main thread do the loading
 
 # Maximum number of concurrent GPU processes; this value usually equals the number of GPUs on the device.
-MAX_CONCURRENT_PROCESSES_GPU=1  # Number of GPUs to use
+MAX_CONCURRENT_PROCESSES_GPU=1  # Number of GPUs to use. NOTE:multiple GPUs are not fully tested yet.
 
 # Define GPU batch size and workers
 GPU_BATCH_SIZE=1024  # Larger for GPU, if this takes too much memory, reduce it
@@ -51,7 +51,7 @@ CONFIG_FILE="configs/multi_tile_infer_config.py"
 PYTHON_SCRIPT="src/multi_tile_infer.py"
 
 # Path to the checkpoint file for the model
-CHECKPOINT_PATH="checkpoints/best_model_fsdp_20250408_101211.pt"
+CHECKPOINT_PATH="checkpoints/best_model_fsdp_20250427_084307.pt"
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do

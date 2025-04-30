@@ -123,29 +123,19 @@ class ProjectionHead(nn.Module):
             nn.Linear(input_dim, hidden_dim),
             nn.BatchNorm1d(hidden_dim),
             nn.ReLU(inplace=False),
-
-            nn.Linear(hidden_dim, hidden_dim//2),
-            nn.BatchNorm1d(hidden_dim//2),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
             nn.ReLU(inplace=False),
-            nn.Linear(hidden_dim//2, hidden_dim//4),
-            nn.BatchNorm1d(hidden_dim//4),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
             nn.ReLU(inplace=False),
-            nn.Linear(hidden_dim//4, hidden_dim//8),
-            nn.BatchNorm1d(hidden_dim//8),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
             nn.ReLU(inplace=False),
-            nn.Linear(hidden_dim//8, hidden_dim//4),
-            nn.BatchNorm1d(hidden_dim//4),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
             nn.ReLU(inplace=False),
-            nn.Linear(hidden_dim//4, hidden_dim//2),
-            nn.BatchNorm1d(hidden_dim//2),
-            nn.ReLU(inplace=False),
-            nn.Linear(hidden_dim//2, hidden_dim),
-
-
-            # nn.Linear(hidden_dim, hidden_dim),
-            # nn.BatchNorm1d(hidden_dim),
-            # nn.ReLU(inplace=False),
-            # nn.Linear(hidden_dim, output_dim),
+            nn.Linear(hidden_dim, output_dim),
         )
     def forward(self, x):
         return self.net(x)

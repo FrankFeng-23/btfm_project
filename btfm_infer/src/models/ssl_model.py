@@ -4,45 +4,6 @@ import torch
 import torch.nn as nn
 from .modules import *
 
-class BarlowTwinsLoss(nn.Module):
-    def __init__(self, lambda_coeff=5e-3):
-        super().__init__()
-        self.lambda_coeff = lambda_coeff
-
-    def off_diagonal(self, x):
-        n, m = x.shape
-        assert n == m
-        return x.flatten()[:-1].view(n-1, n+1)[:, 1:].flatten()
-
-    def forward(self, z1, z2):
-        B = z1.size(0)
-        eps = 1e-9
-        z1_mean = z1.mean(dim=0)
-        z2_mean = z2.mean(dim=0)
-        z1_std = z1.std(dim=0).clamp_min(eps)
-        z2_std = z2.std(dim=0).clamp_min(eps)
-        z1_whiten = (z1 - z1_mean) / z1_std
-        z2_whiten = (z2 - z2_mean) / z2_std
-        c = torch.matmul(z1_whiten.T, z2_whiten) / B
-        on_diag = torch.diagonal(c) - 1
-        on_diag_loss = (on_diag ** 2).sum()
-        off_diag = self.off_diagonal(c)
-        off_diag_loss = (off_diag ** 2).sum()
-        loss = on_diag_loss + self.lambda_coeff * off_diag_loss
-        return loss, on_diag_loss, off_diag_loss
-
-def compute_cross_correlation(z1, z2):
-    B = z1.size(0)
-    eps = 1e-9
-    z1_mean = z1.mean(dim=0)
-    z2_mean = z2.mean(dim=0)
-    z1_std = z1.std(dim=0).clamp_min(eps)
-    z2_std = z2.std(dim=0).clamp_min(eps)
-    z1_w = (z1 - z1_mean) / z1_std
-    z2_w = (z2 - z2_mean) / z2_std
-    c = torch.matmul(z1_w.T, z2_w) / B
-    return c
-
 class MultimodalBTModel(nn.Module):
     def __init__(self, s2_backbone, s1_backbone, projector, fusion_method='concat', return_repr=False, latent_dim=128):
         """

@@ -77,7 +77,7 @@ When processing raw Sentinel-1 data, we use ESA SNAP with multi-threading to acc
 
 ### 3. CPU and GPU
 
-The pipeline has no strict requirements for CPU and GPU, but more CPU cores and more powerful GPUs can significantly speed up inference. When processing a 100km×100km area from 2022, our tests using a 128-core CPU and a single NVIDIA A30 GPU for inference (CPU and GPU each handling 50% of the inference) took approximately 36 hours to complete.
+The pipeline has no strict requirements for CPU and GPU, but more CPU cores and more powerful GPUs can significantly speed up inference. When processing a 110km×110km area from 2022, our tests using a 128-core CPU and a single NVIDIA A30 GPU for inference (CPU and GPU each handling 50% of the inference) took approximately 10 hours to complete.
 
 ### 4. Operating System
 
@@ -176,13 +176,20 @@ Replace the placeholder with the absolute path to your previously created `my_da
 ### Running the Pipeline
 
 Now that everything is ready, you can give execution permission to the bash script in the `btfm_preprocessing` directory:
+
+First enter the `btfm_preprocessing` directory:
 ```bash
-chmod +x btfm_preprocessing/main_pipeline.sh
+cd ./btfm_preprocessing
+```
+
+Then do:
+```bash
+chmod +x main_pipeline.sh
 ```
 
 Then run it with:
 ```bash
-bash btfm_preprocessing/main_pipeline.sh {tiff} {s2_start_time} {s2_end_time} {s1_start_time} {s1_end_time} {downsample_rate}
+bash main_pipeline.sh {tiff} {s2_start_time} {s2_end_time} {s1_start_time} {s1_end_time} {downsample_rate}
 ```
 
 The meaning of each parameter is as follows:
@@ -195,16 +202,52 @@ The meaning of each parameter is as follows:
 
 For example, if you want to get the composite for a specific ROI in 2022, you can run:
 ```bash
-bash btfm_preprocessing/main_pipeline.sh /maps/usr/btfm_project/my_data/roi.tiff 2022-01-01 2023-01-01 2022-01-01 2023-01-01 1
+bash main_pipeline.sh /maps/usr/btfm_project/my_data/roi.tiff 2022-01-01 2023-01-01 2022-01-01 2023-01-01 1
 ```
 
 ### Known Issues
 
 The current pipeline is still in alpha testing. We've found that many warnings and errors appear during execution, especially when using SNAP and GDAL. Fortunately, our testing has shown that these errors do not affect the results and do not prevent the program from continuing. The currently known errors are mainly as follows, concentrated during Sentinel-1 processing (because SNAP's Python plugin itself may have many issues):
 
-a. Fatal error
-b. Not found
-c. GDAL error
+```
+ERROR 1: libpq.so.5: cannot open shared object file: No such file or directory
+```
+
+```
+A descriptor is already registered against the name "org.geotools.ColorInversion" under registry mode "rendered"
+Error while parsing JAI registry file "file:/opt/snap/snap/modules/ext/org.esa.snap.snap-core/org-jaitools/jt-zonalstats.jar!/META-INF/registryFile.jai" :
+Error in registry file at line number #4
+```
+
+```
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007594690013fe, pid=1, tid=1
+#
+# JRE version: OpenJDK Runtime Environment (11.0.19+7) (build 11.0.19+7-LTS)
+# Java VM: OpenJDK 64-Bit Server VM (11.0.19+7-LTS, mixed mode, tiered, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libc.so.6+0xa53fe]  free+0x1e
+#
+# Core dump will be written. Default location: /data/core
+#
+# An error report file with more information is saved as:
+# /data/hs_err_pid1.log
+malloc_consolidate(): unaligned fastbin chunk detected
+```
+
+```
+Command failed with status 127: docker run --rm -v xxxxxx
+```
+
+```
+Warning 1: TIFFReadDirectory:Sum of Photometric type-related color channels and ExtraSamples doesn't match SamplesPerPixel. Defining non-color channels as ExtraSamples.
+```
+
+```
+ERROR 1: PROJ: internal_proj_identify: /usr/share/proj/proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 3 is expected. It comes from another PROJ installation.
+```
 
 As long as the bash script doesn't automatically exit but continues to run, it proves that these errors are not fatal.
 
@@ -272,11 +315,11 @@ Then visit https://pytorch.org/ and select the appropriate version to install ba
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 ```
 
-Next, download the model weights from XXXX and place them in the `btfm_infer/checkpoints` directory:
+Next, download the model weights from [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) (only Cambridge members have access) and place the `.pt` file in the `btfm_infer/checkpoints` directory:
 
 ```
 checkpoints
- ┗ best_model_fsdp_20250408_101211.pt
+ ┗ best_model_fsdp_20250427_084307.pt
 ```
 
 ### Configure Bash Script

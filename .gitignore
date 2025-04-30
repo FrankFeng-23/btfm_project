@@ -11,3 +11,5 @@ btfm_infer/src/tile_lists
 __pycache__
 rgb_visualization.png
 my_data
+*.log
+*.json
