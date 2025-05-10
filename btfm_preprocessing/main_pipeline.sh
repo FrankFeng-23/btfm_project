@@ -10,8 +10,6 @@
 #
 # Example usage:
 #   bash main_pipeline.sh /path/to/downstream.tiff 2021-01-01 2021-12-31 2021-01-01 2021-12-31 1
-#   bash main_pipeline.sh /scratch/zf281/jovana/SEKI_ROI/seki_convex_hull.tiff 2019-01-01 2019-01-15 2019-01-01 2019-01-15 1
-#   bash main_pipeline.sh /scratch/zf281/jovana/SEKI_ROI/seki_convex_hull.tiff 2019-01-01 2019-12-31 2019-01-01 2019-12-31 1
 
 ########################################
 # CUSTOMIZABLE SETTINGS
@@ -147,7 +145,7 @@ export PYTHON="docker run --rm \
   -e TMPDIR \
   -e _JAVA_OPTIONS \
   -e HOME_DEM_DIR \
-  snap-gdal-python:v3"
+  frankfeng1223/snap-gdal-python:v3"
 
 # We keep pipefail but not -e so it won't exit on first error
 #set -e
