@@ -3,7 +3,7 @@
 ![Version](https://img.shields.io/badge/version-alpha-red)
 ![Status](https://img.shields.io/badge/status-internal%20use%20only-yellow)
 
-**Alpha testing, for Cambridge internal users only**
+**Alpha testing, primarily for Cambridge internal users. External users can contact zf281@cam.ac.uk for access.**
 
 **We strongly recommend that you quickly review the entire tutorial before running the pipeline.**
 
@@ -34,6 +34,7 @@
     - [Start Inference](#start-inference)
     - [Stitch Final Representation Map](#stitch-final-representation-map)
 - [Additional Notes](#additional-notes)
+- [Acknowledgments](#acknowledgments)
 
 ## Introduction
 
@@ -470,3 +471,6 @@ bash main_pipeline.sh /path/to/downstream.tiff 2021-01-01 2021-02-01 2021-01-01 
 ```
 
 Since Sentinel-2 data has only been available since 2017, the current pipeline only supports collecting data from 2017-2024.
+
+## Acknowledgments
+We would like to express our gratitude to [DAWN](https://www.hpc.cam.ac.uk/d-w-n), the fastest artificial intelligence supercomputer at Cambridge, and AMD for their generous support in this project. This work would not have been possible without their computational resources and technical assistance.
