@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# --- REQUIRED ---
+# Absolute path to the cloned btfm_project directory
+BTFM_PROJECT_DIR="/path/to/your/btfm_project"
+
+# Absolute path to your Python environment for inference (with PyTorch and etc.)
+# e.g., /home/user/anaconda3/envs/btfm_env/bin/python
+INFERENCE_PYTHON_ENV="/path/to/your/btfm_infer_env/bin/python"
+
+# Credentials for Sentinel-1 download
+ASF_USERNAME="your_asf_username"
+ASF_PASSWORD="your_asf_password"
+
+# --- OPTIONAL (defaults are likely fine) ---
+# S1/S2 data processing year (e.g., 2022 for Jan 1, 2022 - Jan 1, 2023)
+PROCESSING_YEAR="2022"
+
+# Optional: Specify a custom sub-annual time window.
+# If USE_CUSTOM_TIME_WINDOW is "true", the following month/day settings will be used.
+# Otherwise, the full PROCESSING_YEAR is used.
+USE_CUSTOM_TIME_WINDOW="false" # Set to "true" to use custom start/end dates
+
+# Custom Start Date (ignored if USE_CUSTOM_TIME_WINDOW is "false")
+# Uses PROCESSING_YEAR as the year.
+CUSTOM_START_MONTH="01" # MM format
+CUSTOM_START_DAY="01"   # DD format
+
+# Custom End Date (ignored if USE_CUSTOM_TIME_WINDOW is "false")
+# Uses PROCESSING_YEAR as the year for start, but if end month is earlier
+# than start month, it assumes the end date is in PROCESSING_YEAR + 1.
+# For a single year range, ensure end month/day is after start month/day.
+# For a range spanning across year-end (e.g. Dec to Feb), set CUSTOM_END_YEAR_OFFSET="1"
+CUSTOM_END_MONTH="01" # MM format
+CUSTOM_END_DAY="15"   # DD format
+CUSTOM_END_YEAR_OFFSET="0" # Set to "1" if end date is in the next year, "0" if same year.
+
+
+# CPU:GPU split for inference (default "1:1")
+# See btfm_infer/infer_all_tiles.sh for details. For GPU-only: "0:1"
+INFERENCE_CPU_GPU_SPLIT="0:1"
+
+# Max concurrent CPU processes for inference (default 20)
+INFERENCE_MAX_CPU_PROCESSES=20
+
+# Max concurrent GPU processes for inference (default 1, if you have 1 GPU)
+INFERENCE_MAX_GPU_PROCESSES=1
+
+# GPU batch size for inference (default 1024)
+INFERENCE_GPU_BATCH_SIZE=1024
+
+# Location of the downloaded model checkpoint .pt file
+# Default is BTFM_PROJECT_DIR/btfm_infer/checkpoints/best_model_fsdp_20250427_084307.pt
+# CHECKPOINT_FILE_NAME="best_model_fsdp_20250427_084307.pt" # Change if you renamed it or have a new one
