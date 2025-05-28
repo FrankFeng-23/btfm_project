@@ -1,0 +1,1109 @@
+▶  处理季节: 2017-01-01 → 2017-03-31
+2025-05-17 21:04:10,535 [INFO] ⚡ S2 Fast Processor 启动
+2025-05-17 21:04:10,537 [INFO] CPU 96 | RAM 1081.7 GB (free 1050.8 GB)
+2025-05-17 21:04:10,566 [INFO] ROI (CRS=EPSG:32631): 782×868
+2025-05-17 21:04:10,566 [INFO] ROI bbox proj: 299749.42624,5782558.87449 ⇢ 307569.42624,5791238.87449
+2025-05-17 21:04:10,567 [INFO] ROI bbox lon/lat: 0.06734,52.15715 ⇢ 0.18664,52.23788
+/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/pystac_client/item_search.py:836: FutureWarning: get_items() is deprecated, use items() instead
+  warnings.warn(
+2025-05-17 21:04:11,168 [INFO] STAC 命中 30 item (云 < 90.0%)
+2025-05-17 21:04:11,169 [INFO] All item union lon/lat: -1.56388,51.27893 ⇢ 1.70458,53.24196
+2025-05-17 21:04:11,169 [INFO] ⇒ 9 观测日
+2025-05-17 21:04:16,112 [INFO] Dask dashboard → http://127.0.0.1:8787/status
+2025-05-17 21:04:16,117 [INFO] → 2017-01-02 (item=5)
+2025-05-17 21:04:22,330 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:04:22,470 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:04:22,598 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:04:22,803 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:04:22,939 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:04:23,079 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:04:23,212 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:04:23,354 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:04:23,490 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:04:23,653 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:04:23,795 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:23,795 [INFO] ← 2017-01-02 用时 7.7s
+2025-05-17 21:04:23,796 [INFO] → 2017-01-29 (item=6)
+2025-05-17 21:04:24,985 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:04:25,182 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:04:25,357 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:04:25,550 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:04:25,728 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:04:25,891 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:04:26,088 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:04:26,273 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:04:26,444 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:04:26,641 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:04:26,801 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:26,801 [INFO] ← 2017-01-29 用时 3.0s
+2025-05-17 21:04:26,804 [INFO] → 2017-02-01 (item=1)
+2025-05-17 21:04:27,587 [INFO]     ✓ blue       0.01 MB
+2025-05-17 21:04:27,692 [INFO]     ✓ green      0.01 MB
+2025-05-17 21:04:27,810 [INFO]     ✓ red        0.01 MB
+2025-05-17 21:04:27,920 [INFO]     ✓ rededge1   0.01 MB
+2025-05-17 21:04:28,033 [INFO]     ✓ rededge2   0.01 MB
+2025-05-17 21:04:28,168 [INFO]     ✓ rededge3   0.01 MB
+2025-05-17 21:04:28,267 [INFO]     ✓ nir        0.01 MB
+2025-05-17 21:04:28,383 [INFO]     ✓ nir08      0.01 MB
+2025-05-17 21:04:28,509 [INFO]     ✓ swir16     0.01 MB
+2025-05-17 21:04:28,641 [INFO]     ✓ swir22     0.01 MB
+2025-05-17 21:04:28,752 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:28,753 [INFO] ← 2017-02-01 用时 1.9s
+2025-05-17 21:04:28,754 [INFO] → 2017-02-18 (item=1)
+2025-05-17 21:04:29,522 [INFO]     ✓ blue       0.11 MB
+2025-05-17 21:04:29,628 [INFO]     ✓ green      0.11 MB
+2025-05-17 21:04:29,746 [INFO]     ✓ red        0.11 MB
+2025-05-17 21:04:29,875 [INFO]     ✓ rededge1   0.10 MB
+2025-05-17 21:04:30,017 [INFO]     ✓ rededge2   0.10 MB
+2025-05-17 21:04:30,155 [INFO]     ✓ rededge3   0.10 MB
+2025-05-17 21:04:30,259 [INFO]     ✓ nir        0.11 MB
+2025-05-17 21:04:30,367 [INFO]     ✓ nir08      0.10 MB
+2025-05-17 21:04:30,485 [INFO]     ✓ swir16     0.10 MB
+2025-05-17 21:04:30,600 [INFO]     ✓ swir22     0.10 MB
+2025-05-17 21:04:30,712 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:30,713 [INFO] ← 2017-02-18 用时 2.0s
+2025-05-17 21:04:30,713 [INFO] → 2017-02-28 (item=5)
+2025-05-17 21:04:32,107 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:04:32,263 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:04:32,413 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:04:32,589 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:04:32,755 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:04:32,924 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:04:33,122 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:04:33,281 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:04:33,428 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:04:33,586 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:04:33,859 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:33,860 [INFO] ← 2017-02-28 用时 3.1s
+2025-05-17 21:04:33,861 [INFO] → 2017-03-10 (item=2)
+2025-05-17 21:04:34,676 [INFO]     ✓ blue       0.04 MB
+2025-05-17 21:04:34,788 [INFO]     ✓ green      0.04 MB
+2025-05-17 21:04:34,924 [INFO]     ✓ red        0.04 MB
+2025-05-17 21:04:35,085 [INFO]     ✓ rededge1   0.04 MB
+2025-05-17 21:04:35,219 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:04:35,359 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:04:35,478 [INFO]     ✓ nir        0.04 MB
+2025-05-17 21:04:35,602 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:04:35,707 [INFO]     ✓ swir16     0.04 MB
+2025-05-17 21:04:35,822 [INFO]     ✓ swir22     0.04 MB
+2025-05-17 21:04:35,934 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:35,934 [INFO] ← 2017-03-10 用时 2.1s
+2025-05-17 21:04:35,936 [INFO] → 2017-03-13 (item=4)
+2025-05-17 21:04:36,806 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:04:36,953 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:04:37,105 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:04:37,237 [INFO]     ✓ rededge1   0.04 MB
+2025-05-17 21:04:37,369 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:04:37,519 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:04:37,693 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:04:37,851 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:04:38,017 [INFO]     ✓ swir16     0.04 MB
+2025-05-17 21:04:38,165 [INFO]     ✓ swir22     0.04 MB
+2025-05-17 21:04:38,307 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:38,308 [INFO] ← 2017-03-13 用时 2.4s
+2025-05-17 21:04:38,311 [INFO] → 2017-03-20 (item=2)
+2025-05-17 21:04:39,044 [INFO]     ✓ blue       0.01 MB
+2025-05-17 21:04:39,158 [INFO]     ✓ green      0.01 MB
+2025-05-17 21:04:39,271 [INFO]     ✓ red        0.01 MB
+2025-05-17 21:04:39,410 [INFO]     ✓ rededge1   0.01 MB
+2025-05-17 21:04:39,530 [INFO]     ✓ rededge2   0.01 MB
+2025-05-17 21:04:39,648 [INFO]     ✓ rededge3   0.01 MB
+2025-05-17 21:04:39,783 [INFO]     ✓ nir        0.01 MB
+2025-05-17 21:04:39,918 [INFO]     ✓ nir08      0.01 MB
+2025-05-17 21:04:40,063 [INFO]     ✓ swir16     0.01 MB
+2025-05-17 21:04:40,183 [INFO]     ✓ swir22     0.01 MB
+2025-05-17 21:04:40,287 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:40,287 [INFO] ← 2017-03-20 用时 2.0s
+2025-05-17 21:04:40,288 [INFO] → 2017-03-23 (item=4)
+2025-05-17 21:04:41,086 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:04:41,243 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:04:41,380 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:04:41,537 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:04:41,716 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:04:41,850 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:04:42,032 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:04:42,198 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:04:42,330 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:04:42,467 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:04:42,620 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:42,621 [INFO] ← 2017-03-23 用时 2.3s
+2025-05-17 21:04:43,861 [INFO] ✅ 成功 9/9 天
+2025-05-17 21:04:43,888 - distributed.worker - ERROR - Failed to communicate with scheduler during heartbeat.
+Traceback (most recent call last):
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 225, in read
+    frames_nosplit_nbytes_bin = await stream.read_bytes(fmt_size)
+tornado.iostream.StreamClosedError: Stream is closed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/worker.py", line 1250, in heartbeat
+    response = await retry_operation(
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/utils_comm.py", line 459, in retry_operation
+    return await retry(
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/utils_comm.py", line 438, in retry
+    return await coro()
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/core.py", line 1254, in send_recv_from_rpc
+    return await send_recv(comm=comm, op=key, **kwargs)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/core.py", line 1013, in send_recv
+    response = await comm.read(deserializers=deserializers)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 236, in read
+    convert_stream_closed_error(self, e)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 142, in convert_stream_closed_error
+    raise CommClosedError(f"in {obj}: {exc}") from exc
+distributed.comm.core.CommClosedError: in <TCP (closed) ConnectionPool.heartbeat_worker local=tcp://127.0.0.1:49850 remote=tcp://127.0.0.1:46093>: Stream is closed
+2025-05-17 21:04:43,886 - distributed.worker - ERROR - Failed to communicate with scheduler during heartbeat.
+Traceback (most recent call last):
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 225, in read
+    frames_nosplit_nbytes_bin = await stream.read_bytes(fmt_size)
+tornado.iostream.StreamClosedError: Stream is closed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/worker.py", line 1250, in heartbeat
+    response = await retry_operation(
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/utils_comm.py", line 459, in retry_operation
+    return await retry(
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/utils_comm.py", line 438, in retry
+    return await coro()
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/core.py", line 1254, in send_recv_from_rpc
+    return await send_recv(comm=comm, op=key, **kwargs)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/core.py", line 1013, in send_recv
+    response = await comm.read(deserializers=deserializers)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 236, in read
+    convert_stream_closed_error(self, e)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 142, in convert_stream_closed_error
+    raise CommClosedError(f"in {obj}: {exc}") from exc
+distributed.comm.core.CommClosedError: in <TCP (closed) ConnectionPool.heartbeat_worker local=tcp://127.0.0.1:49856 remote=tcp://127.0.0.1:46093>: Stream is closed
+▶  处理季节: 2017-04-01 → 2017-06-30
+2025-05-17 21:04:46,825 [INFO] ⚡ S2 Fast Processor 启动
+2025-05-17 21:04:46,825 [INFO] CPU 96 | RAM 1081.7 GB (free 1050.7 GB)
+2025-05-17 21:04:46,855 [INFO] ROI (CRS=EPSG:32631): 782×868
+2025-05-17 21:04:46,855 [INFO] ROI bbox proj: 299749.42624,5782558.87449 ⇢ 307569.42624,5791238.87449
+2025-05-17 21:04:46,855 [INFO] ROI bbox lon/lat: 0.06734,52.15715 ⇢ 0.18664,52.23788
+/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/pystac_client/item_search.py:836: FutureWarning: get_items() is deprecated, use items() instead
+  warnings.warn(
+2025-05-17 21:04:47,501 [INFO] STAC 命中 64 item (云 < 90.0%)
+2025-05-17 21:04:47,502 [INFO] All item union lon/lat: -1.56388,51.27893 ⇢ 1.70458,53.24196
+2025-05-17 21:04:47,502 [INFO] ⇒ 14 观测日
+2025-05-17 21:04:52,607 [INFO] Dask dashboard → http://127.0.0.1:8787/status
+2025-05-17 21:04:52,612 [INFO] → 2017-04-02 (item=6)
+2025-05-17 21:04:53,893 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:04:54,017 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:04:54,145 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:04:54,256 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:04:54,390 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:04:54,500 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:04:54,621 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:04:54,725 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:04:54,846 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:04:54,957 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:04:55,060 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:55,060 [INFO] ← 2017-04-02 用时 2.4s
+2025-05-17 21:04:55,063 [INFO] → 2017-04-09 (item=6)
+2025-05-17 21:04:56,113 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:04:56,221 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:04:56,348 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:04:56,476 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:04:56,599 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:04:56,712 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:04:56,839 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:04:56,967 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:04:57,128 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:04:57,255 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:04:57,378 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:57,378 [INFO] ← 2017-04-09 用时 2.3s
+2025-05-17 21:04:57,379 [INFO] → 2017-04-12 (item=1)
+2025-05-17 21:04:58,001 [INFO]     ✓ blue       0.01 MB
+2025-05-17 21:04:58,074 [INFO]     ✓ green      0.01 MB
+2025-05-17 21:04:58,144 [INFO]     ✓ red        0.01 MB
+2025-05-17 21:04:58,216 [INFO]     ✓ rededge1   0.01 MB
+2025-05-17 21:04:58,286 [INFO]     ✓ rededge2   0.01 MB
+2025-05-17 21:04:58,358 [INFO]     ✓ rededge3   0.01 MB
+2025-05-17 21:04:58,434 [INFO]     ✓ nir        0.01 MB
+2025-05-17 21:04:58,516 [INFO]     ✓ nir08      0.01 MB
+2025-05-17 21:04:58,588 [INFO]     ✓ swir16     0.01 MB
+2025-05-17 21:04:58,678 [INFO]     ✓ swir22     0.01 MB
+2025-05-17 21:04:58,767 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:04:58,767 [INFO] ← 2017-04-12 用时 1.4s
+2025-05-17 21:04:58,767 [INFO] → 2017-04-19 (item=6)
+2025-05-17 21:04:59,801 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:04:59,949 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:05:00,096 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:05:00,227 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:00,385 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:00,588 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:00,752 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:05:00,916 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:01,108 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:05:01,275 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:05:01,443 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:01,444 [INFO] ← 2017-04-19 用时 2.7s
+2025-05-17 21:05:01,446 [INFO] → 2017-04-22 (item=6)
+2025-05-17 21:05:02,698 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:05:02,896 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:05:03,095 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:05:03,276 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:03,475 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:03,655 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:03,836 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:05:04,035 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:04,201 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:05:04,387 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:05:04,557 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:04,557 [INFO] ← 2017-04-22 用时 3.1s
+2025-05-17 21:05:04,559 [INFO] → 2017-04-29 (item=5)
+2025-05-17 21:05:05,763 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:05:05,951 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:05:06,137 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:05:06,289 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:06,463 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:06,643 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:06,816 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:05:06,976 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:07,136 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:05:07,300 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:05:07,466 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:07,466 [INFO] ← 2017-04-29 用时 2.9s
+2025-05-17 21:05:07,468 [INFO] → 2017-05-02 (item=4)
+2025-05-17 21:05:08,647 [INFO]     ✓ blue       0.60 MB
+2025-05-17 21:05:08,814 [INFO]     ✓ green      0.60 MB
+2025-05-17 21:05:08,996 [INFO]     ✓ red        0.59 MB
+2025-05-17 21:05:09,161 [INFO]     ✓ rededge1   0.65 MB
+2025-05-17 21:05:09,316 [INFO]     ✓ rededge2   0.65 MB
+2025-05-17 21:05:09,487 [INFO]     ✓ rededge3   0.65 MB
+2025-05-17 21:05:09,675 [INFO]     ✓ nir        0.57 MB
+2025-05-17 21:05:09,824 [INFO]     ✓ nir08      0.65 MB
+2025-05-17 21:05:10,007 [INFO]     ✓ swir16     0.63 MB
+2025-05-17 21:05:10,193 [INFO]     ✓ swir22     0.63 MB
+2025-05-17 21:05:10,368 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:10,369 [INFO] ← 2017-05-02 用时 2.9s
+2025-05-17 21:05:10,371 [INFO] → 2017-05-09 (item=1)
+2025-05-17 21:05:11,170 [INFO]     ✓ blue       0.53 MB
+2025-05-17 21:05:11,294 [INFO]     ✓ green      0.52 MB
+2025-05-17 21:05:11,440 [INFO]     ✓ red        0.53 MB
+2025-05-17 21:05:11,593 [INFO]     ✓ rededge1   0.63 MB
+2025-05-17 21:05:11,717 [INFO]     ✓ rededge2   0.62 MB
+2025-05-17 21:05:11,829 [INFO]     ✓ rededge3   0.62 MB
+2025-05-17 21:05:11,961 [INFO]     ✓ nir        0.51 MB
+2025-05-17 21:05:12,264 [INFO]     ✓ nir08      0.62 MB
+2025-05-17 21:05:12,395 [INFO]     ✓ swir16     0.59 MB
+2025-05-17 21:05:12,551 [INFO]     ✓ swir22     0.59 MB
+2025-05-17 21:05:12,653 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:12,654 [INFO] ← 2017-05-09 用时 2.3s
+2025-05-17 21:05:12,654 [INFO] → 2017-05-22 (item=6)
+2025-05-17 21:05:13,862 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:05:14,068 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:05:14,258 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:05:14,422 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:14,623 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:14,786 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:14,951 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:05:15,124 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:15,282 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:05:15,451 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:05:15,614 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:15,615 [INFO] ← 2017-05-22 用时 3.0s
+2025-05-17 21:05:15,616 [INFO] → 2017-05-29 (item=2)
+2025-05-17 21:05:16,652 [INFO]     ✓ blue       0.47 MB
+2025-05-17 21:05:16,788 [INFO]     ✓ green      0.49 MB
+2025-05-17 21:05:16,954 [INFO]     ✓ red        0.48 MB
+2025-05-17 21:05:17,115 [INFO]     ✓ rededge1   0.64 MB
+2025-05-17 21:05:17,268 [INFO]     ✓ rededge2   0.64 MB
+2025-05-17 21:05:17,429 [INFO]     ✓ rededge3   0.64 MB
+2025-05-17 21:05:17,598 [INFO]     ✓ nir        0.51 MB
+2025-05-17 21:05:17,731 [INFO]     ✓ nir08      0.64 MB
+2025-05-17 21:05:17,865 [INFO]     ✓ swir16     0.62 MB
+2025-05-17 21:05:17,989 [INFO]     ✓ swir22     0.61 MB
+2025-05-17 21:05:18,129 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:18,129 [INFO] ← 2017-05-29 用时 2.5s
+2025-05-17 21:05:18,130 [INFO] → 2017-06-01 (item=4)
+2025-05-17 21:05:19,056 [INFO]     ✓ blue       0.12 MB
+2025-05-17 21:05:19,225 [INFO]     ✓ green      0.12 MB
+2025-05-17 21:05:19,372 [INFO]     ✓ red        0.12 MB
+2025-05-17 21:05:19,523 [INFO]     ✓ rededge1   0.10 MB
+2025-05-17 21:05:19,692 [INFO]     ✓ rededge2   0.10 MB
+2025-05-17 21:05:19,850 [INFO]     ✓ rededge3   0.10 MB
+2025-05-17 21:05:19,984 [INFO]     ✓ nir        0.12 MB
+2025-05-17 21:05:20,136 [INFO]     ✓ nir08      0.10 MB
+2025-05-17 21:05:20,277 [INFO]     ✓ swir16     0.10 MB
+2025-05-17 21:05:20,427 [INFO]     ✓ swir22     0.10 MB
+2025-05-17 21:05:20,567 [INFO]     ✓ scl        0.02 MB
+2025-05-17 21:05:20,567 [INFO] ← 2017-06-01 用时 2.4s
+2025-05-17 21:05:20,568 [INFO] → 2017-06-11 (item=5)
+2025-05-17 21:05:21,735 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:05:21,889 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:05:22,075 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:05:22,232 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:22,596 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:22,751 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:22,904 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:05:23,062 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:23,221 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:05:23,372 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:05:23,538 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:23,539 [INFO] ← 2017-06-11 用时 3.0s
+2025-05-17 21:05:23,539 [INFO] → 2017-06-18 (item=6)
+2025-05-17 21:05:24,574 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:05:24,754 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:05:24,924 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:05:25,109 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:25,285 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:25,466 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:25,644 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:05:25,807 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:25,989 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:05:26,192 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:05:26,376 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:26,377 [INFO] ← 2017-06-18 用时 2.8s
+2025-05-17 21:05:26,379 [INFO] → 2017-06-21 (item=6)
+2025-05-17 21:05:27,505 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:05:27,680 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:05:27,861 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:05:28,033 [INFO]     ✓ rededge1   0.04 MB
+2025-05-17 21:05:28,203 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:28,374 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:28,582 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:05:28,751 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:28,928 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:05:29,096 [INFO]     ✓ swir22     0.04 MB
+2025-05-17 21:05:29,244 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:29,244 [INFO] ← 2017-06-21 用时 2.9s
+2025-05-17 21:05:30,498 [INFO] ✅ 成功 14/14 天
+2025-05-17 21:05:30,532 - distributed.worker - ERROR - Failed to communicate with scheduler during heartbeat.
+Traceback (most recent call last):
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 225, in read
+    frames_nosplit_nbytes_bin = await stream.read_bytes(fmt_size)
+tornado.iostream.StreamClosedError: Stream is closed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/worker.py", line 1250, in heartbeat
+    response = await retry_operation(
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/utils_comm.py", line 459, in retry_operation
+    return await retry(
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/utils_comm.py", line 438, in retry
+    return await coro()
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/core.py", line 1254, in send_recv_from_rpc
+    return await send_recv(comm=comm, op=key, **kwargs)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/core.py", line 1013, in send_recv
+    response = await comm.read(deserializers=deserializers)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 236, in read
+    convert_stream_closed_error(self, e)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 142, in convert_stream_closed_error
+    raise CommClosedError(f"in {obj}: {exc}") from exc
+distributed.comm.core.CommClosedError: in <TCP (closed) ConnectionPool.heartbeat_worker local=tcp://127.0.0.1:42982 remote=tcp://127.0.0.1:46395>: Stream is closed
+2025-05-17 21:05:30,533 - distributed.worker - ERROR - Failed to communicate with scheduler during heartbeat.
+Traceback (most recent call last):
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 225, in read
+    frames_nosplit_nbytes_bin = await stream.read_bytes(fmt_size)
+tornado.iostream.StreamClosedError: Stream is closed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/worker.py", line 1250, in heartbeat
+    response = await retry_operation(
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/utils_comm.py", line 459, in retry_operation
+    return await retry(
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/utils_comm.py", line 438, in retry
+    return await coro()
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/core.py", line 1254, in send_recv_from_rpc
+    return await send_recv(comm=comm, op=key, **kwargs)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/core.py", line 1013, in send_recv
+    response = await comm.read(deserializers=deserializers)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 236, in read
+    convert_stream_closed_error(self, e)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 142, in convert_stream_closed_error
+    raise CommClosedError(f"in {obj}: {exc}") from exc
+distributed.comm.core.CommClosedError: in <TCP (closed) ConnectionPool.heartbeat_worker local=tcp://127.0.0.1:42990 remote=tcp://127.0.0.1:46395>: Stream is closed
+▶  处理季节: 2017-07-01 → 2017-09-30
+2025-05-17 21:05:33,508 [INFO] ⚡ S2 Fast Processor 启动
+2025-05-17 21:05:33,508 [INFO] CPU 96 | RAM 1081.7 GB (free 1050.7 GB)
+2025-05-17 21:05:33,538 [INFO] ROI (CRS=EPSG:32631): 782×868
+2025-05-17 21:05:33,538 [INFO] ROI bbox proj: 299749.42624,5782558.87449 ⇢ 307569.42624,5791238.87449
+2025-05-17 21:05:33,538 [INFO] ROI bbox lon/lat: 0.06734,52.15715 ⇢ 0.18664,52.23788
+/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/pystac_client/item_search.py:836: FutureWarning: get_items() is deprecated, use items() instead
+  warnings.warn(
+2025-05-17 21:05:34,524 [INFO] STAC 命中 135 item (云 < 90.0%)
+2025-05-17 21:05:34,524 [INFO] All item union lon/lat: -1.56388,51.27893 ⇢ 1.70458,53.24196
+2025-05-17 21:05:34,524 [INFO] ⇒ 27 观测日
+2025-05-17 21:05:40,001 [INFO] Dask dashboard → http://127.0.0.1:8787/status
+2025-05-17 21:05:40,005 [INFO] → 2017-07-01 (item=4)
+2025-05-17 21:05:41,294 [INFO]     ✓ blue       0.04 MB
+2025-05-17 21:05:41,432 [INFO]     ✓ green      0.04 MB
+2025-05-17 21:05:41,545 [INFO]     ✓ red        0.04 MB
+2025-05-17 21:05:41,647 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:41,772 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:41,887 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:42,020 [INFO]     ✓ nir        0.04 MB
+2025-05-17 21:05:42,127 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:42,257 [INFO]     ✓ swir16     0.04 MB
+2025-05-17 21:05:42,372 [INFO]     ✓ swir22     0.04 MB
+2025-05-17 21:05:42,475 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:42,475 [INFO] ← 2017-07-01 用时 2.5s
+2025-05-17 21:05:42,478 [INFO] → 2017-07-03 (item=3)
+2025-05-17 21:05:43,197 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:05:43,314 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:05:43,433 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:05:43,546 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:43,641 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:43,747 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:43,847 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:05:43,983 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:44,106 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:05:44,209 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:05:44,320 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:44,321 [INFO] ← 2017-07-03 用时 1.8s
+2025-05-17 21:05:44,322 [INFO] → 2017-07-06 (item=6)
+2025-05-17 21:05:45,581 [INFO]     ✓ blue       0.03 MB
+2025-05-17 21:05:45,746 [INFO]     ✓ green      0.03 MB
+2025-05-17 21:05:45,947 [INFO]     ✓ red        0.03 MB
+2025-05-17 21:05:46,132 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:46,290 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:46,484 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:46,644 [INFO]     ✓ nir        0.03 MB
+2025-05-17 21:05:46,817 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:47,019 [INFO]     ✓ swir16     0.04 MB
+2025-05-17 21:05:47,208 [INFO]     ✓ swir22     0.04 MB
+2025-05-17 21:05:47,407 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:47,408 [INFO] ← 2017-07-06 用时 3.1s
+2025-05-17 21:05:47,410 [INFO] → 2017-07-13 (item=4)
+2025-05-17 21:05:48,560 [INFO]     ✓ blue       0.04 MB
+2025-05-17 21:05:48,741 [INFO]     ✓ green      0.04 MB
+2025-05-17 21:05:49,097 [INFO]     ✓ red        0.04 MB
+2025-05-17 21:05:49,269 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:49,419 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:49,580 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:49,741 [INFO]     ✓ nir        0.04 MB
+2025-05-17 21:05:49,901 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:50,057 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:05:50,218 [INFO]     ✓ swir22     0.04 MB
+2025-05-17 21:05:50,374 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:50,374 [INFO] ← 2017-07-13 用时 3.0s
+2025-05-17 21:05:50,375 [INFO] → 2017-07-18 (item=4)
+2025-05-17 21:05:51,539 [INFO]     ✓ blue       0.59 MB
+2025-05-17 21:05:51,735 [INFO]     ✓ green      0.59 MB
+2025-05-17 21:05:51,925 [INFO]     ✓ red        0.61 MB
+2025-05-17 21:05:52,109 [INFO]     ✓ rededge1   0.56 MB
+2025-05-17 21:05:52,271 [INFO]     ✓ rededge2   0.61 MB
+2025-05-17 21:05:52,473 [INFO]     ✓ rededge3   0.62 MB
+2025-05-17 21:05:52,645 [INFO]     ✓ nir        0.63 MB
+2025-05-17 21:05:52,804 [INFO]     ✓ nir08      0.63 MB
+2025-05-17 21:05:53,012 [INFO]     ✓ swir16     0.58 MB
+2025-05-17 21:05:53,192 [INFO]     ✓ swir22     0.55 MB
+2025-05-17 21:05:53,341 [INFO]     ✓ scl        0.02 MB
+2025-05-17 21:05:53,341 [INFO] ← 2017-07-18 用时 3.0s
+2025-05-17 21:05:53,342 [INFO] → 2017-07-21 (item=6)
+2025-05-17 21:05:54,592 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:05:54,778 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:05:54,991 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:05:55,181 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:05:55,349 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:05:55,559 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:05:55,717 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:05:55,896 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:05:56,064 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:05:56,215 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:05:56,412 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:05:56,412 [INFO] ← 2017-07-21 用时 3.1s
+2025-05-17 21:05:56,414 [INFO] → 2017-07-23 (item=4)
+2025-05-17 21:05:57,508 [INFO]     ✓ blue       0.60 MB
+2025-05-17 21:05:57,668 [INFO]     ✓ green      0.60 MB
+2025-05-17 21:05:57,842 [INFO]     ✓ red        0.60 MB
+2025-05-17 21:05:58,046 [INFO]     ✓ rededge1   0.67 MB
+2025-05-17 21:05:58,213 [INFO]     ✓ rededge2   0.66 MB
+2025-05-17 21:05:58,384 [INFO]     ✓ rededge3   0.66 MB
+2025-05-17 21:05:58,557 [INFO]     ✓ nir        0.59 MB
+2025-05-17 21:05:58,721 [INFO]     ✓ nir08      0.66 MB
+2025-05-17 21:05:58,874 [INFO]     ✓ swir16     0.66 MB
+2025-05-17 21:05:59,047 [INFO]     ✓ swir22     0.67 MB
+2025-05-17 21:05:59,199 [INFO]     ✓ scl        0.02 MB
+2025-05-17 21:05:59,201 [INFO] ← 2017-07-23 用时 2.8s
+2025-05-17 21:05:59,203 [INFO] → 2017-07-26 (item=5)
+2025-05-17 21:06:00,663 [INFO]     ✓ blue       0.04 MB
+2025-05-17 21:06:00,835 [INFO]     ✓ green      0.04 MB
+2025-05-17 21:06:01,023 [INFO]     ✓ red        0.04 MB
+2025-05-17 21:06:01,193 [INFO]     ✓ rededge1   0.04 MB
+2025-05-17 21:06:01,356 [INFO]     ✓ rededge2   0.04 MB
+2025-05-17 21:06:01,539 [INFO]     ✓ rededge3   0.04 MB
+2025-05-17 21:06:01,707 [INFO]     ✓ nir        0.04 MB
+2025-05-17 21:06:01,868 [INFO]     ✓ nir08      0.04 MB
+2025-05-17 21:06:02,063 [INFO]     ✓ swir16     0.04 MB
+2025-05-17 21:06:02,205 [INFO]     ✓ swir22     0.04 MB
+2025-05-17 21:06:02,349 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:02,349 [INFO] ← 2017-07-26 用时 3.1s
+2025-05-17 21:06:02,350 [INFO] → 2017-07-28 (item=4)
+2025-05-17 21:06:03,484 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:06:03,634 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:06:03,775 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:06:03,935 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:04,100 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:04,235 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:04,408 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:06:04,573 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:04,718 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:04,864 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:05,020 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:05,020 [INFO] ← 2017-07-28 用时 2.7s
+2025-05-17 21:06:05,021 [INFO] → 2017-07-31 (item=6)
+2025-05-17 21:06:06,370 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:06:06,574 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:06:06,752 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:06,943 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:07,116 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:07,284 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:07,470 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:06:07,641 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:07,814 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:07,995 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:08,145 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:08,145 [INFO] ← 2017-07-31 用时 3.1s
+2025-05-17 21:06:08,147 [INFO] → 2017-08-05 (item=6)
+2025-05-17 21:06:09,187 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:06:09,564 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:06:09,718 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:09,899 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:10,081 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:10,238 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:10,404 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:06:10,586 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:10,746 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:10,964 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:11,143 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:11,143 [INFO] ← 2017-08-05 用时 3.0s
+2025-05-17 21:06:11,145 [INFO] → 2017-08-10 (item=1)
+2025-05-17 21:06:11,709 [INFO]     ✓ blue       0.01 MB
+2025-05-17 21:06:11,828 [INFO]     ✓ green      0.01 MB
+2025-05-17 21:06:11,946 [INFO]     ✓ red        0.01 MB
+2025-05-17 21:06:12,065 [INFO]     ✓ rededge1   0.01 MB
+2025-05-17 21:06:12,185 [INFO]     ✓ rededge2   0.01 MB
+2025-05-17 21:06:12,279 [INFO]     ✓ rededge3   0.01 MB
+2025-05-17 21:06:12,389 [INFO]     ✓ nir        0.01 MB
+2025-05-17 21:06:12,490 [INFO]     ✓ nir08      0.01 MB
+2025-05-17 21:06:12,584 [INFO]     ✓ swir16     0.01 MB
+2025-05-17 21:06:12,691 [INFO]     ✓ swir22     0.01 MB
+2025-05-17 21:06:12,781 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:12,781 [INFO] ← 2017-08-10 用时 1.6s
+2025-05-17 21:06:12,781 [INFO] → 2017-08-12 (item=3)
+2025-05-17 21:06:13,803 [INFO]     ✓ blue       0.69 MB
+2025-05-17 21:06:13,999 [INFO]     ✓ green      0.69 MB
+2025-05-17 21:06:14,152 [INFO]     ✓ red        0.72 MB
+2025-05-17 21:06:14,311 [INFO]     ✓ rededge1   0.70 MB
+2025-05-17 21:06:14,493 [INFO]     ✓ rededge2   0.70 MB
+2025-05-17 21:06:14,633 [INFO]     ✓ rededge3   0.70 MB
+2025-05-17 21:06:14,807 [INFO]     ✓ nir        0.70 MB
+2025-05-17 21:06:15,004 [INFO]     ✓ nir08      0.70 MB
+2025-05-17 21:06:15,147 [INFO]     ✓ swir16     0.69 MB
+2025-05-17 21:06:15,301 [INFO]     ✓ swir22     0.67 MB
+2025-05-17 21:06:15,454 [INFO]     ✓ scl        0.02 MB
+2025-05-17 21:06:15,454 [INFO] ← 2017-08-12 用时 2.7s
+2025-05-17 21:06:15,456 [INFO] → 2017-08-15 (item=6)
+2025-05-17 21:06:16,486 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:06:16,668 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:06:16,843 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:17,060 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:17,228 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:17,417 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:17,592 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:06:17,749 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:17,950 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:18,138 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:18,292 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:18,292 [INFO] ← 2017-08-15 用时 2.8s
+2025-05-17 21:06:18,294 [INFO] → 2017-08-17 (item=6)
+2025-05-17 21:06:20,028 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:06:20,201 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:06:20,399 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:20,602 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:20,771 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:20,973 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:21,139 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:06:21,325 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:21,512 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:21,674 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:22,039 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:22,040 [INFO] ← 2017-08-17 用时 3.7s
+2025-05-17 21:06:22,041 [INFO] → 2017-08-20 (item=6)
+2025-05-17 21:06:23,081 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:06:23,261 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:06:23,453 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:23,622 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:23,793 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:23,982 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:24,139 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:06:24,315 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:24,512 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:24,690 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:24,850 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:24,851 [INFO] ← 2017-08-20 用时 2.8s
+2025-05-17 21:06:24,853 [INFO] → 2017-08-25 (item=6)
+2025-05-17 21:06:26,121 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:06:26,285 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:06:26,474 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:26,651 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:26,822 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:27,039 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:27,195 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:06:27,372 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:27,568 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:27,744 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:27,958 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:27,959 [INFO] ← 2017-08-25 用时 3.1s
+2025-05-17 21:06:27,961 [INFO] → 2017-08-27 (item=6)
+2025-05-17 21:06:29,015 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:06:29,195 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:06:29,382 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:29,584 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:29,739 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:29,939 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:30,134 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:06:30,303 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:30,479 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:30,657 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:30,802 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:30,802 [INFO] ← 2017-08-27 用时 2.8s
+2025-05-17 21:06:30,804 [INFO] → 2017-09-06 (item=4)
+2025-05-17 21:06:31,699 [INFO]     ✓ blue       0.04 MB
+2025-05-17 21:06:31,859 [INFO]     ✓ green      0.04 MB
+2025-05-17 21:06:32,046 [INFO]     ✓ red        0.04 MB
+2025-05-17 21:06:32,416 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:32,557 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:32,692 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:32,831 [INFO]     ✓ nir        0.04 MB
+2025-05-17 21:06:33,007 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:33,149 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:33,282 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:33,426 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:33,428 [INFO] ← 2017-09-06 用时 2.6s
+2025-05-17 21:06:33,429 [INFO] → 2017-09-09 (item=6)
+2025-05-17 21:06:34,642 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:06:34,800 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:06:34,984 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:06:35,180 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:35,335 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:35,522 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:35,723 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:06:35,996 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:36,201 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:36,419 [INFO]     ✓ swir22     0.04 MB
+2025-05-17 21:06:36,595 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:36,596 [INFO] ← 2017-09-09 用时 3.2s
+2025-05-17 21:06:36,602 [INFO] → 2017-09-11 (item=6)
+2025-05-17 21:06:37,691 [INFO]     ✓ blue       0.04 MB
+2025-05-17 21:06:37,885 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:06:38,101 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:06:38,270 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:38,457 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:38,626 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:38,807 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:06:39,019 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:39,187 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:39,373 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:39,577 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:39,577 [INFO] ← 2017-09-11 用时 3.0s
+2025-05-17 21:06:39,583 [INFO] → 2017-09-14 (item=5)
+2025-05-17 21:06:40,709 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:06:40,918 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:06:41,081 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:41,257 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:41,449 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:41,625 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:41,800 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:06:42,001 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:42,157 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:42,309 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:42,498 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:42,500 [INFO] ← 2017-09-14 用时 2.9s
+2025-05-17 21:06:42,502 [INFO] → 2017-09-16 (item=6)
+2025-05-17 21:06:43,771 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:06:43,998 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:06:44,171 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:44,343 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:44,520 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:44,700 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:44,883 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:06:45,367 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:45,562 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:45,739 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:45,970 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:45,970 [INFO] ← 2017-09-16 用时 3.5s
+2025-05-17 21:06:45,975 [INFO] → 2017-09-19 (item=6)
+2025-05-17 21:06:47,219 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:06:47,402 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:06:47,580 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:47,745 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:47,937 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:48,108 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:48,288 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:06:48,488 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:48,658 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:48,863 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:49,074 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:49,075 [INFO] ← 2017-09-19 用时 3.1s
+2025-05-17 21:06:49,080 [INFO] → 2017-09-21 (item=4)
+2025-05-17 21:06:49,999 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:06:50,164 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:06:50,297 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:06:50,477 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:50,613 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:50,751 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:50,911 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:06:51,051 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:51,211 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:51,368 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:51,523 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:51,524 [INFO] ← 2017-09-21 用时 2.4s
+2025-05-17 21:06:51,525 [INFO] → 2017-09-24 (item=6)
+2025-05-17 21:06:52,612 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:06:52,779 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:06:52,953 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:53,137 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:53,293 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:53,499 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:53,680 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:06:53,839 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:54,033 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:54,212 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:54,381 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:54,382 [INFO] ← 2017-09-24 用时 2.9s
+2025-05-17 21:06:54,384 [INFO] → 2017-09-26 (item=6)
+2025-05-17 21:06:55,435 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:06:55,603 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:06:55,762 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:06:55,965 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:06:56,128 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:06:56,305 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:06:56,485 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:06:56,677 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:06:56,835 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:06:57,039 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:06:57,216 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:06:57,218 [INFO] ← 2017-09-26 用时 2.8s
+2025-05-17 21:06:58,901 [INFO] ✅ 成功 27/27 天
+2025-05-17 21:06:58,925 - distributed.worker - ERROR - Failed to communicate with scheduler during heartbeat.
+Traceback (most recent call last):
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 225, in read
+    frames_nosplit_nbytes_bin = await stream.read_bytes(fmt_size)
+tornado.iostream.StreamClosedError: Stream is closed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/worker.py", line 1250, in heartbeat
+    response = await retry_operation(
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/utils_comm.py", line 459, in retry_operation
+    return await retry(
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/utils_comm.py", line 438, in retry
+    return await coro()
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/core.py", line 1254, in send_recv_from_rpc
+    return await send_recv(comm=comm, op=key, **kwargs)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/core.py", line 1013, in send_recv
+    response = await comm.read(deserializers=deserializers)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 236, in read
+    convert_stream_closed_error(self, e)
+  File "/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/distributed/comm/tcp.py", line 142, in convert_stream_closed_error
+    raise CommClosedError(f"in {obj}: {exc}") from exc
+distributed.comm.core.CommClosedError: in <TCP (closed) ConnectionPool.heartbeat_worker local=tcp://127.0.0.1:49858 remote=tcp://127.0.0.1:34945>: Stream is closed
+▶  处理季节: 2017-10-01 → 2017-12-31
+2025-05-17 21:07:01,974 [INFO] ⚡ S2 Fast Processor 启动
+2025-05-17 21:07:01,975 [INFO] CPU 96 | RAM 1081.7 GB (free 1050.7 GB)
+2025-05-17 21:07:02,004 [INFO] ROI (CRS=EPSG:32631): 782×868
+2025-05-17 21:07:02,004 [INFO] ROI bbox proj: 299749.42624,5782558.87449 ⇢ 307569.42624,5791238.87449
+2025-05-17 21:07:02,004 [INFO] ROI bbox lon/lat: 0.06734,52.15715 ⇢ 0.18664,52.23788
+/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/lib/python3.9/site-packages/pystac_client/item_search.py:836: FutureWarning: get_items() is deprecated, use items() instead
+  warnings.warn(
+2025-05-17 21:07:02,813 [INFO] STAC 命中 104 item (云 < 90.0%)
+2025-05-17 21:07:02,813 [INFO] All item union lon/lat: -1.56388,51.27893 ⇢ 1.70458,53.24196
+2025-05-17 21:07:02,813 [INFO] ⇒ 22 观测日
+2025-05-17 21:07:09,276 [INFO] Dask dashboard → http://127.0.0.1:8787/status
+2025-05-17 21:07:09,280 [INFO] → 2017-10-06 (item=6)
+2025-05-17 21:07:15,714 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:07:15,920 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:07:16,104 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:07:16,294 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:16,477 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:16,647 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:16,835 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:07:17,009 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:17,204 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:17,376 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:17,556 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:17,556 [INFO] ← 2017-10-06 用时 8.3s
+2025-05-17 21:07:17,558 [INFO] → 2017-10-09 (item=2)
+2025-05-17 21:07:18,865 [INFO]     ✓ blue       0.65 MB
+2025-05-17 21:07:19,016 [INFO]     ✓ green      0.64 MB
+2025-05-17 21:07:19,161 [INFO]     ✓ red        0.65 MB
+2025-05-17 21:07:19,303 [INFO]     ✓ rededge1   0.68 MB
+2025-05-17 21:07:19,447 [INFO]     ✓ rededge2   0.67 MB
+2025-05-17 21:07:19,577 [INFO]     ✓ rededge3   0.67 MB
+2025-05-17 21:07:19,746 [INFO]     ✓ nir        0.63 MB
+2025-05-17 21:07:19,898 [INFO]     ✓ nir08      0.67 MB
+2025-05-17 21:07:20,044 [INFO]     ✓ swir16     0.65 MB
+2025-05-17 21:07:20,186 [INFO]     ✓ swir22     0.63 MB
+2025-05-17 21:07:20,327 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:20,327 [INFO] ← 2017-10-09 用时 2.8s
+2025-05-17 21:07:20,328 [INFO] → 2017-10-14 (item=6)
+2025-05-17 21:07:21,568 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:07:21,760 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:07:21,965 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:07:22,138 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:22,339 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:22,514 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:22,688 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:07:22,897 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:23,065 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:23,254 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:23,443 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:23,443 [INFO] ← 2017-10-14 用时 3.1s
+2025-05-17 21:07:23,445 [INFO] → 2017-10-21 (item=6)
+2025-05-17 21:07:24,666 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:24,864 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:07:25,030 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:07:25,219 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:25,430 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:25,624 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:25,802 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:07:25,973 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:26,187 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:26,371 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:26,531 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:26,531 [INFO] ← 2017-10-21 用时 3.1s
+2025-05-17 21:07:26,533 [INFO] → 2017-10-29 (item=5)
+2025-05-17 21:07:27,711 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:27,890 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:07:28,035 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:07:28,187 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:28,369 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:28,546 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:28,701 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:07:28,895 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:29,054 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:29,241 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:29,411 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:29,411 [INFO] ← 2017-10-29 用时 2.9s
+2025-05-17 21:07:29,412 [INFO] → 2017-11-03 (item=6)
+2025-05-17 21:07:30,651 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:30,825 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:07:30,988 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:07:31,157 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:31,333 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:31,506 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:31,668 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:07:31,852 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:32,040 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:32,209 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:32,371 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:32,372 [INFO] ← 2017-11-03 用时 3.0s
+2025-05-17 21:07:32,373 [INFO] → 2017-11-08 (item=2)
+2025-05-17 21:07:33,039 [INFO]     ✓ blue       0.01 MB
+2025-05-17 21:07:33,179 [INFO]     ✓ green      0.01 MB
+2025-05-17 21:07:33,317 [INFO]     ✓ red        0.01 MB
+2025-05-17 21:07:33,428 [INFO]     ✓ rededge1   0.01 MB
+2025-05-17 21:07:33,539 [INFO]     ✓ rededge2   0.01 MB
+2025-05-17 21:07:33,673 [INFO]     ✓ rededge3   0.01 MB
+2025-05-17 21:07:33,798 [INFO]     ✓ nir        0.01 MB
+2025-05-17 21:07:33,915 [INFO]     ✓ nir08      0.01 MB
+2025-05-17 21:07:34,042 [INFO]     ✓ swir16     0.01 MB
+2025-05-17 21:07:34,181 [INFO]     ✓ swir22     0.01 MB
+2025-05-17 21:07:34,298 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:34,299 [INFO] ← 2017-11-08 用时 1.9s
+2025-05-17 21:07:34,300 [INFO] → 2017-11-10 (item=5)
+2025-05-17 21:07:35,782 [INFO]     ✓ blue       0.73 MB
+2025-05-17 21:07:36,016 [INFO]     ✓ green      0.75 MB
+2025-05-17 21:07:36,195 [INFO]     ✓ red        0.75 MB
+2025-05-17 21:07:36,379 [INFO]     ✓ rededge1   0.63 MB
+2025-05-17 21:07:36,566 [INFO]     ✓ rededge2   0.67 MB
+2025-05-17 21:07:36,762 [INFO]     ✓ rededge3   0.68 MB
+2025-05-17 21:07:36,953 [INFO]     ✓ nir        0.83 MB
+2025-05-17 21:07:37,168 [INFO]     ✓ nir08      0.69 MB
+2025-05-17 21:07:37,352 [INFO]     ✓ swir16     0.65 MB
+2025-05-17 21:07:37,545 [INFO]     ✓ swir22     0.63 MB
+2025-05-17 21:07:37,744 [INFO]     ✓ scl        0.06 MB
+2025-05-17 21:07:37,745 [INFO] ← 2017-11-10 用时 3.4s
+2025-05-17 21:07:37,747 [INFO] → 2017-11-13 (item=5)
+2025-05-17 21:07:38,854 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:39,021 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:07:39,177 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:07:39,347 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:39,507 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:39,671 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:39,843 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:07:40,013 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:40,177 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:40,373 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:40,534 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:40,538 [INFO] ← 2017-11-13 用时 2.8s
+2025-05-17 21:07:40,539 [INFO] → 2017-11-18 (item=5)
+2025-05-17 21:07:41,475 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:41,639 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:07:41,806 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:07:41,984 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:42,169 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:42,345 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:42,530 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:07:42,693 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:42,877 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:43,053 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:43,233 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:43,234 [INFO] ← 2017-11-18 用时 2.7s
+2025-05-17 21:07:43,235 [INFO] → 2017-11-23 (item=5)
+2025-05-17 21:07:44,444 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:44,790 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:07:44,949 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:07:45,113 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:45,275 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:45,453 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:45,616 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:07:45,773 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:45,939 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:46,099 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:46,271 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:46,271 [INFO] ← 2017-11-23 用时 3.0s
+2025-05-17 21:07:46,272 [INFO] → 2017-11-25 (item=6)
+2025-05-17 21:07:47,328 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:47,541 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:07:47,720 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:07:47,926 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:48,119 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:48,331 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:48,503 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:07:48,705 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:48,910 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:49,077 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:49,282 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:49,282 [INFO] ← 2017-11-25 用时 3.0s
+2025-05-17 21:07:49,285 [INFO] → 2017-11-28 (item=6)
+2025-05-17 21:07:50,490 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:50,671 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:07:50,876 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:07:51,073 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:51,254 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:51,448 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:51,614 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:07:51,804 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:51,990 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:52,193 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:52,357 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:52,358 [INFO] ← 2017-11-28 用时 3.1s
+2025-05-17 21:07:52,360 [INFO] → 2017-11-30 (item=6)
+2025-05-17 21:07:53,481 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:53,654 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:07:53,838 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:07:54,002 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:54,173 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:54,364 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:54,539 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:07:54,696 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:54,878 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:55,036 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:55,198 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:55,198 [INFO] ← 2017-11-30 用时 2.8s
+2025-05-17 21:07:55,200 [INFO] → 2017-12-08 (item=6)
+2025-05-17 21:07:56,475 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:56,681 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:07:56,863 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:07:57,023 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:57,183 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:57,364 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:57,541 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:07:57,722 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:07:57,898 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:07:58,068 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:07:58,228 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:07:58,229 [INFO] ← 2017-12-08 用时 3.0s
+2025-05-17 21:07:58,231 [INFO] → 2017-12-13 (item=2)
+2025-05-17 21:07:59,063 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:07:59,189 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:07:59,325 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:07:59,444 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:07:59,574 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:07:59,719 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:07:59,850 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:07:59,991 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:08:00,132 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:08:00,256 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:08:00,381 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:08:00,382 [INFO] ← 2017-12-13 用时 2.2s
+2025-05-17 21:08:00,382 [INFO] → 2017-12-15 (item=6)
+2025-05-17 21:08:01,449 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:08:01,616 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:08:01,785 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:08:01,966 [INFO]     ✓ rededge1   0.04 MB
+2025-05-17 21:08:02,164 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:08:02,361 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:08:02,530 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:08:02,696 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:08:02,867 [INFO]     ✓ swir16     0.04 MB
+2025-05-17 21:08:03,043 [INFO]     ✓ swir22     0.04 MB
+2025-05-17 21:08:03,236 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:08:03,237 [INFO] ← 2017-12-15 用时 2.9s
+2025-05-17 21:08:03,239 [INFO] → 2017-12-18 (item=6)
+2025-05-17 21:08:04,371 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:08:04,549 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:08:04,723 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:08:04,898 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:08:05,069 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:08:05,253 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:08:05,451 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:08:05,645 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:08:05,818 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:08:05,985 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:08:06,172 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:08:06,173 [INFO] ← 2017-12-18 用时 2.9s
+2025-05-17 21:08:06,174 [INFO] → 2017-12-23 (item=1)
+2025-05-17 21:08:06,731 [INFO]     ✓ blue       0.01 MB
+2025-05-17 21:08:06,862 [INFO]     ✓ green      0.01 MB
+2025-05-17 21:08:06,963 [INFO]     ✓ red        0.01 MB
+2025-05-17 21:08:07,090 [INFO]     ✓ rededge1   0.01 MB
+2025-05-17 21:08:07,223 [INFO]     ✓ rededge2   0.01 MB
+2025-05-17 21:08:07,339 [INFO]     ✓ rededge3   0.01 MB
+2025-05-17 21:08:07,456 [INFO]     ✓ nir        0.01 MB
+2025-05-17 21:08:07,551 [INFO]     ✓ nir08      0.01 MB
+2025-05-17 21:08:07,664 [INFO]     ✓ swir16     0.01 MB
+2025-05-17 21:08:07,776 [INFO]     ✓ swir22     0.01 MB
+2025-05-17 21:08:07,881 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:08:07,882 [INFO] ← 2017-12-23 用时 1.7s
+2025-05-17 21:08:07,882 [INFO] → 2017-12-25 (item=2)
+2025-05-17 21:08:08,903 [INFO]     ✓ blue       0.05 MB
+2025-05-17 21:08:09,034 [INFO]     ✓ green      0.05 MB
+2025-05-17 21:08:09,177 [INFO]     ✓ red        0.05 MB
+2025-05-17 21:08:09,294 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:08:09,413 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:08:09,532 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:08:09,654 [INFO]     ✓ nir        0.05 MB
+2025-05-17 21:08:09,765 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:08:09,918 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:08:10,041 [INFO]     ✓ swir22     0.05 MB
+2025-05-17 21:08:10,154 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:08:10,155 [INFO] ← 2017-12-25 用时 2.3s
+2025-05-17 21:08:10,156 [INFO] → 2017-12-28 (item=6)
+2025-05-17 21:08:11,300 [INFO]     ✓ blue       0.06 MB
+2025-05-17 21:08:11,473 [INFO]     ✓ green      0.06 MB
+2025-05-17 21:08:11,689 [INFO]     ✓ red        0.06 MB
+2025-05-17 21:08:11,869 [INFO]     ✓ rededge1   0.05 MB
+2025-05-17 21:08:12,029 [INFO]     ✓ rededge2   0.05 MB
+2025-05-17 21:08:12,229 [INFO]     ✓ rededge3   0.05 MB
+2025-05-17 21:08:12,419 [INFO]     ✓ nir        0.06 MB
+2025-05-17 21:08:12,594 [INFO]     ✓ nir08      0.05 MB
+2025-05-17 21:08:12,780 [INFO]     ✓ swir16     0.05 MB
+2025-05-17 21:08:12,988 [INFO]     ✓ swir22     0.04 MB
+2025-05-17 21:08:13,177 [INFO]     ✓ scl        0.01 MB
+2025-05-17 21:08:13,178 [INFO] ← 2017-12-28 用时 3.0s
+2025-05-17 21:08:13,180 [INFO] → 2017-12-30 (item=4)
+2025-05-17 21:08:14,082 [INFO]     ✓ blue       0.68 MB
+2025-05-17 21:08:14,270 [INFO]     ✓ green      0.70 MB
+2025-05-17 21:08:14,469 [INFO]     ✓ red        0.71 MB
+2025-05-17 21:08:14,627 [INFO]     ✓ rededge1   0.59 MB
+2025-05-17 21:08:14,791 [INFO]     ✓ rededge2   0.65 MB
+2025-05-17 21:08:14,957 [INFO]     ✓ rededge3   0.66 MB
+2025-05-17 21:08:15,128 [INFO]     ✓ nir        0.78 MB
+2025-05-17 21:08:15,299 [INFO]     ✓ nir08      0.66 MB
+2025-05-17 21:08:15,487 [INFO]     ✓ swir16     0.62 MB
+2025-05-17 21:08:15,664 [INFO]     ✓ swir22     0.59 MB
+2025-05-17 21:08:15,817 [INFO]     ✓ scl        0.06 MB
+2025-05-17 21:08:15,817 [INFO] ← 2017-12-30 用时 2.6s
+2025-05-17 21:08:17,170 [INFO] ✅ 成功 22/22 天
+✅ 全部季节处理完成

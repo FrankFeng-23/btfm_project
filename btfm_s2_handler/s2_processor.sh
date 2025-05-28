@@ -1,0 +1,240 @@
+#!/bin/bash
+
+# s2_processor.sh - Seasonal Sentinel-2 L2A data processor
+# Usage: bash s2_processor.sh --input_tiff path/to/tiff --start_time YYYY-MM-DD --end_time YYYY-MM-DD [additional options]
+
+# Function to display usage
+usage() {
+    echo "Usage: $0 --input_tiff <path> --start_time <YYYY-MM-DD> --end_time <YYYY-MM-DD> [options]"
+    echo "Required:"
+    echo "  --input_tiff    Path to input TIFF file for geography extraction"
+    echo "  --start_time    Start date in YYYY-MM-DD format"
+    echo "  --end_time      End date in YYYY-MM-DD format"
+    echo "Options:"
+    echo "  --output        Output directory (default: sentinel2_output)"
+    echo "  --workers       Number of parallel download workers (default: 8)"
+    echo "  --chunksize     Chunk size for processing (default: 4096)"
+    echo "  --dask_workers  Number of Dask workers (default: 32)"
+    echo "  --worker_memory Memory per Dask worker in GB (default: 32)"
+    echo "  --temp_dir      Temporary directory for intermediate files"
+    echo "  --max_cloud_cover Maximum cloud cover percentage (default: 90)"
+    echo "  --overwrite     Overwrite existing files instead of skipping them"
+    echo "  --resume        Resume from checkpoint if available"
+    echo "  --max_retries   Maximum number of retries for operations (default: 3)"
+    echo "  --timeout       Timeout in seconds for individual operations (default: 600)"
+    echo "  --debug         Enable debug logging"
+    echo "  --use_stackstac Use stackstac for more efficient data processing"
+    echo "  --no_parallel_bands  Disable parallel band processing (parallel by default)"
+    echo "  --no_parallel_items  Disable parallel item processing (parallel by default)"
+    echo "  --threads_per_worker Threads per worker (default: 1)"
+    exit 1
+}
+
+# Parse command line arguments
+INPUT_TIFF=""
+START_TIME=""
+END_TIME=""
+OUTPUT="sentinel2_output"
+WORKERS=8
+CHUNKSIZE=4096
+DASK_WORKERS=32
+WORKER_MEMORY=32
+TEMP_DIR=""
+MAX_CLOUD_COVER=90
+OVERWRITE=""
+RESUME=""
+MAX_RETRIES=3
+TIMEOUT=600
+DEBUG=""
+USE_STACKSTAC=""
+PARALLEL_BANDS=true
+PARALLEL_ITEMS=true
+THREADS_PER_WORKER=1
+
+while [ "$1" != "" ]; do
+    case $1 in
+        --input_tiff)  shift; INPUT_TIFF=$1 ;;
+        --start_time)  shift; START_TIME=$1 ;;
+        --end_time)    shift; END_TIME=$1 ;;
+        --output)      shift; OUTPUT=$1 ;;
+        --workers)     shift; WORKERS=$1 ;;
+        --chunksize)   shift; CHUNKSIZE=$1 ;;
+        --dask_workers) shift; DASK_WORKERS=$1 ;;
+        --worker_memory) shift; WORKER_MEMORY=$1 ;;
+        --temp_dir)    shift; TEMP_DIR=$1 ;;
+        --max_cloud_cover) shift; MAX_CLOUD_COVER=$1 ;;
+        --overwrite)   OVERWRITE="--overwrite" ;;
+        --resume)      RESUME="--resume" ;;
+        --max_retries) shift; MAX_RETRIES=$1 ;;
+        --timeout)     shift; TIMEOUT=$1 ;;
+        --debug)       DEBUG="--debug" ;;
+        --use_stackstac) USE_STACKSTAC="--use_stackstac" ;;
+        --no_parallel_bands) PARALLEL_BANDS=false ;;
+        --no_parallel_items) PARALLEL_ITEMS=false ;;
+        --threads_per_worker) shift; THREADS_PER_WORKER=$1 ;;
+        -h|--help)     usage ;;
+        *)             echo "Unknown option: $1"; usage ;;
+    esac
+    shift
+done
+
+# Check required parameters
+if [ -z "$INPUT_TIFF" ] || [ -z "$START_TIME" ] || [ -z "$END_TIME" ]; then
+    echo "Error: Missing required parameters"
+    usage
+fi
+
+# Validate date format
+validate_date() {
+    if ! date -d "$1" >/dev/null 2>&1; then
+        echo "Error: Invalid date format: $1. Use YYYY-MM-DD."
+        exit 1
+    fi
+}
+
+validate_date "$START_TIME"
+validate_date "$END_TIME"
+
+# Check if start date is before end date
+if [ "$(date -d "$START_TIME" +%s)" -gt "$(date -d "$END_TIME" +%s)" ]; then
+    echo "Error: Start date must be before end date"
+    exit 1
+fi
+
+# Create output directory
+mkdir -p "$OUTPUT"
+
+# Create log directory
+LOG_DIR="${OUTPUT}/logs"
+mkdir -p "$LOG_DIR"
+
+echo "==== Sentinel-2 Seasonal Processor ===="
+echo "Input TIFF: $INPUT_TIFF"
+echo "Date range: $START_TIME to $END_TIME"
+echo "Output directory: $OUTPUT"
+echo "Max cloud cover: $MAX_CLOUD_COVER%"
+echo "Chunk size: $CHUNKSIZE"
+echo "Using stackstac: $([ -n "$USE_STACKSTAC" ] && echo "yes" || echo "no")"
+echo "Parallel bands: $PARALLEL_BANDS"
+echo "Parallel items: $PARALLEL_ITEMS"
+echo "Threads per worker: $THREADS_PER_WORKER"
+echo "======================================="
+
+# Function to determine seasons based on date
+get_seasons() {
+    local start_year=$(date -d "$START_TIME" +%Y)
+    local end_year=$(date -d "$END_TIME" +%Y)
+
+    for ((year=start_year; year<=end_year; year++)); do
+        # Define seasons
+        echo "${year}-01-01,${year}-03-31" # Winter
+        echo "${year}-04-01,${year}-06-30" # Spring
+        echo "${year}-07-01,${year}-09-30" # Summer
+        echo "${year}-10-01,${year}-12-31" # Fall
+    done
+}
+
+# Generate all seasons between start and end dates
+SEASONS=()
+
+for season in $(get_seasons); do
+    season_start=$(echo "$season" | cut -d',' -f1)
+    season_end=$(echo "$season" | cut -d',' -f2)
+    
+    # Skip seasons before start date or after end date
+    if [ "$(date -d "$season_end" +%s)" -lt "$(date -d "$START_TIME" +%s)" ] || 
+       [ "$(date -d "$season_start" +%s)" -gt "$(date -d "$END_TIME" +%s)" ]; then
+        continue
+    fi
+    
+    # Adjust season start if it's before the overall start date
+    if [ "$(date -d "$season_start" +%s)" -lt "$(date -d "$START_TIME" +%s)" ]; then
+        season_start="$START_TIME"
+    fi
+    
+    # Adjust season end if it's after the overall end date
+    if [ "$(date -d "$season_end" +%s)" -gt "$(date -d "$END_TIME" +%s)" ]; then
+        season_end="$END_TIME"
+    fi
+    
+    # Add to seasons array
+    SEASONS+=("$season_start,$season_end")
+done
+
+# Process each season
+echo "Identified ${#SEASONS[@]} seasons to process"
+for ((i=0; i<${#SEASONS[@]}; i++)); do
+    season_range="${SEASONS[$i]}"
+    season_start=$(echo "$season_range" | cut -d',' -f1)
+    season_end=$(echo "$season_range" | cut -d',' -f2)
+    
+    season_name=$(date -d "$season_start" +"%Y-%m")
+    
+    echo "Processing season $((i+1))/${#SEASONS[@]}: $season_start to $season_end"
+    
+    # Build Python command with all parameters
+    PYTHON_CMD="python3 s2_seasonal_processor.py"
+    PYTHON_CMD+=" --input_tiff $INPUT_TIFF"
+    PYTHON_CMD+=" --start_date $season_start"
+    PYTHON_CMD+=" --end_date $season_end"
+    PYTHON_CMD+=" --output $OUTPUT"
+    PYTHON_CMD+=" --workers $WORKERS"
+    PYTHON_CMD+=" --chunksize $CHUNKSIZE"
+    PYTHON_CMD+=" --dask_workers $DASK_WORKERS"
+    PYTHON_CMD+=" --worker_memory $WORKER_MEMORY"
+    PYTHON_CMD+=" --max_cloud_cover $MAX_CLOUD_COVER"
+    PYTHON_CMD+=" --max_retries $MAX_RETRIES"
+    PYTHON_CMD+=" --timeout $TIMEOUT"
+    PYTHON_CMD+=" --threads_per_worker $THREADS_PER_WORKER"
+    
+    # Add optional flags
+    if [ ! -z "$TEMP_DIR" ]; then
+        PYTHON_CMD+=" --temp_dir $TEMP_DIR"
+    fi
+    
+    if [ ! -z "$OVERWRITE" ]; then
+        PYTHON_CMD+=" $OVERWRITE"
+    fi
+    
+    if [ ! -z "$RESUME" ]; then
+        PYTHON_CMD+=" $RESUME"
+    fi
+    
+    if [ ! -z "$DEBUG" ]; then
+        PYTHON_CMD+=" $DEBUG"
+    fi
+    
+    if [ ! -z "$USE_STACKSTAC" ]; then
+        PYTHON_CMD+=" $USE_STACKSTAC"
+    fi
+    
+    # Handle parallel processing flags (they're on by default in the Python script)
+    if [ "$PARALLEL_BANDS" = false ]; then
+        PYTHON_CMD+=" --parallel_bands false"
+    fi
+    
+    if [ "$PARALLEL_ITEMS" = false ]; then
+        PYTHON_CMD+=" --parallel_items false"
+    fi
+    
+    # Log file for this season
+    LOG_FILE="${LOG_DIR}/sentinel2_${season_name}.log"
+    
+    echo "Starting Python process. Log: $LOG_FILE"
+    echo "$PYTHON_CMD"
+    
+    # Execute Python command and log output
+    $PYTHON_CMD 2>&1 | tee "$LOG_FILE"
+    
+    # Check if Python process exited successfully
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        echo "Error: Python process failed for season $season_start to $season_end"
+        echo "Check log file: $LOG_FILE"
+        # Continue with next season despite error
+    fi
+    
+    echo "Completed season $((i+1))/${#SEASONS[@]}"
+    echo "-------------------------------------------"
+done
+
+echo "All seasons processing complete!"

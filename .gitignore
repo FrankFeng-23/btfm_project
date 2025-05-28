@@ -1,0 +1,12 @@
+*.png
+*.log
+*.err
+*.out
+*.pt
+*.json
+__pycache__
+singularity
+sentinel1_tmp
+sentinel2_tmp
+sentinel1_output
+rust_for_dpixel_retiler
