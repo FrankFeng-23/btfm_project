@@ -34,10 +34,10 @@ Optional arguments:
   --min_coverage    Minimum valid pixel coverage (default 10.0)
 
 bash s2_fast_runner.sh \
---input_tiff /home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/cambridge_large/shp/cambridge_simplified.tiff \
---start_time 2017-01-01 \
---end_time 2017-12-31 \
---output /home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/cambridge_large/2017/data_raw
+--input_tiff /home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/austrian_crop/roi.tif \
+--start_time 2022-01-01 \
+--end_time 2022-12-31 \
+--output /home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/austrian_crop/data_raw
 
 EOF
   exit 1
@@ -57,6 +57,8 @@ RESOLUTION=10
 OVERWRITE=""
 DEBUG=""
 MIN_COVERAGE=10.0
+
+PYTHON_ENV="/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/bin/python"
 
 #######################################
 # Parse command line arguments
@@ -313,7 +315,7 @@ for i in "${!partitions[@]}"; do
   log_files+=("$log_file")
   
   # Run processing in the background
-  python3 s2_fast_processor.py \
+  $PYTHON_ENV s2_fast_processor.py \
     --input_tiff "$INPUT_TIFF" \
     --start_date "$p_start" \
     --end_date "$p_end" \

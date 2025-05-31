@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-file_path = "/home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/clement_agb_complete/22MHB/retiled_d_pixel/8000_500_8500_1000/sar_descending.npy"
+file_path = "/home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/austrian_crop/retiled_d-pixel/500_4500_1000_4587/sar_descending.npy"
 # file_path = "/scratch/zf281/ethiopia/data_processed/37PEK/sar_ascending.npy"
 data = np.load(file_path, mmap_mode='r')
 # print(f"Number of non-zero elements: {np.count_nonzero(data)}")
@@ -31,13 +31,13 @@ plt.close()
 
 
 
-band_file_path = "/home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/clement_agb_complete/22MHB/retiled_d_pixel/8000_500_8500_1000/bands.npy"
+band_file_path = "/home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/austrian_crop/retiled_d-pixel/500_4500_1000_4587/bands.npy"
 # band_file_path = "/scratch/zf281/robin/fungal/data_processed/13TCL/bands.npy"
 band_data = np.load(band_file_path, mmap_mode='r')
 print(band_data.shape)  # 输出数组的形状
 print(f"datatype of band_data: {band_data.dtype}")
 
-mask_file_path = "/home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/clement_agb_complete/22MHB/retiled_d_pixel/8000_500_8500_1000/masks.npy"
+mask_file_path = "/home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/austrian_crop/retiled_d-pixel/500_4500_1000_4587/masks.npy"
 # mask_file_path = "/scratch/zf281/robin/fungal/data_processed/13TCL/masks.npy"
 mask_data = np.load(mask_file_path) # (T,H,W)
 # 找出含有最多1的时间步

@@ -350,10 +350,10 @@ def main():
     
     """Example usage:
     python new_dpixel_retiler.py \
-        --tiff_path /home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/austrian_crop/roi.tif \
-        --d_pixel_dir /home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/austrian_crop/data_processed \
+        --tiff_path /your_data_path/roi.tif \
+        --d_pixel_dir /your_data_path/data_processed \
         --patch_size 500 \
-        --out_dir /home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/austrian_crop/retiled_d-pixel \
+        --out_dir /your_data_path/retiled_d-pixel \
         --num_workers 16 \
         --overwrite \
         --block_size 2000
