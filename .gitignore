@@ -1,0 +1,15 @@
+btfm_infer/checkpoints/*
+btfm_infer/logs/*
+btfm_preprocessing/__pycache__
+btfm_preprocessing/core
+btfm_preprocessing/s1_commands_tile.txt
+btfm_preprocessing/s1_zips_list.txt
+btfm_preprocessing/tile_list.txt
+btfm_preprocessing/sanity_check.py
+btfm_preprocessing/temp.py
+btfm_infer/src/tile_lists
+__pycache__
+rgb_visualization.png
+my_data
+*.log
+*.json
