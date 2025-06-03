@@ -1,0 +1,36 @@
+# Core geospatial & data processing
+affine
+dask
+dask[distributed]
+fiona
+numpy
+pyproj
+rasterio
+rioxarray
+shapely
+stackstac
+xarray
+bokeh
+
+# STAC & cloud processing
+pystac-client
+planetary-computer
+
+# Utilities & parallel processing
+joblib
+psutil
+tqdm
+urllib3
+requests
+
+# PyTorch installation (requires manual configuration)
+###################################################### 
+# Official installation instructions: https://pytorch.org/get-started/locally/
+# Example for CUDA 12.1:
+# pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+#
+# For CPU-only version:
+# pip install torch torchvision torchaudio
+#
+# Verify version compatibility with your hardware before installation
+######################################################
