@@ -455,7 +455,7 @@ def write_tiff(np_arr, out_path: Path, tpl, dtype, metadata=None):
     profile = dict(driver="GTiff", dtype=dtype, count=1,
                    width=tpl["width"], height=tpl["height"],
                    crs=tpl["crs"], transform=tpl["transform"],
-                   compress="lzw", tiled=True,
+                   tiled=True,
                    blockxsize=256, blockysize=256,
                    nodata=0)
     with rasterio.open(out_path, "w", **profile) as dst:
