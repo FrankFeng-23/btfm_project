@@ -12,7 +12,9 @@ set -u
 #######################################
 
 # === Basic Configuration ===
-BASE_DIR="/absolute/path/to/your/data_dir"
+YEAR=2024 # Range [2017-2024]
+
+BASE_DIR="/home/azureuser/data/uk_d_pixel/${YEAR}/grid_-0.05_50.75"
 OUT_DIR="${BASE_DIR}/data_processed"
 DOWNSAMPLE_RATE=1
 
@@ -40,7 +42,7 @@ OPTIONS:
 ./s1_stack \
   --input-dir "${BASE_DIR}/data_sar_raw" \
   --output-dir $OUT_DIR \
-  --parallel 16 \
+  --parallel 8 \
   --rate $DOWNSAMPLE_RATE
 
 # S2 stacking
@@ -69,7 +71,7 @@ OPTIONS:
   --output $OUT_DIR \
   --batch-size 16 \
   --cache-level 1 \
-  --num-threads 16 \
+  --num-threads 8 \
   --sample-rate $DOWNSAMPLE_RATE
 
 echo "Processing complete. Processed data is available in: $OUT_DIR"

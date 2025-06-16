@@ -78,11 +78,11 @@ MIN_VALID_COVERAGE = 5.0  # percentage
 TEMP_DIR = os.getenv("TEMP_DIR", tempfile.gettempdir())
 
 # Timeout settings (seconds)
-PROCESS_TIMEOUT = 25 * 60  # Overall processing timeout
-DAY_TIMEOUT = 15 * 60       # Single day processing timeout
-ITEM_TIMEOUT = 10 * 60      # Single item processing timeout
-BAND_TIMEOUT = 8 * 60      # Single band processing timeout
-SCL_BAND_TIMEOUT = 2 * 60   # SCL band processing timeout
+PROCESS_TIMEOUT = 4 * 60  # Overall processing timeout
+DAY_TIMEOUT = 2 * 60       # Single day processing timeout
+ITEM_TIMEOUT = 2 * 60      # Single item processing timeout
+BAND_TIMEOUT = 1 * 60      # Single band processing timeout
+SCL_BAND_TIMEOUT = 10   # SCL band processing timeout
 SCL_MAX_ATTEMPTS = 2        # SCL processing maximum attempts
 
 # Network request retry configuration
@@ -90,7 +90,7 @@ MAX_RETRIES = 5
 RETRY_BACKOFF_FACTOR = 1.5  # Exponential backoff factor
 
 # Parallel processing configuration
-DEFAULT_MAX_WORKERS = 2     # Default number of threads for processing items, avoid too many concurrent requests
+DEFAULT_MAX_WORKERS = 1     # Default number of threads for processing items, avoid too many concurrent requests
 
 # ─── Timeout Control ──────────────────────────────────────────────────────────────────
 class TimeoutException(Exception):
@@ -182,45 +182,64 @@ def fmt_bbox(b):
     return f"{b[0]:.5f},{b[1]:.5f} ⇢ {b[2]:.5f},{b[3]:.5f}"
 
 # ─── Dask ─────────────────────────────────────────────────────────────────────
-def make_client(req_workers:int, req_mem:int, partition_id: str):
-    """Create Dask client with partition-specific dashboard port"""
+def make_client(req_workers:int, req_mem:int, partition_id: str, lightweight=False):
+    """Create Dask client with partition-specific dashboard port and lightweight option"""
     total_mem = psutil.virtual_memory().total / 1e9
-    workers = min(req_workers, os.cpu_count(),
-                  max(1, int(total_mem // (req_mem*1.2))))
+    
+    if lightweight:
+        # For small ROIs, use minimal configuration
+        workers = min(2, req_workers)  # Max 2 workers for lightweight mode
+        threads = 2  # Fewer threads
+        req_mem = min(4, req_mem)  # Limit memory to 4GB per worker
+    else:
+        workers = min(req_workers, os.cpu_count(),
+                      max(1, int(total_mem // (req_mem*1.2))))
+        threads = 4
+        
     if workers < req_workers:
         logging.warning(f"⚠️  worker count {req_workers}→{workers} (resource limitation)")
     
     # Automatically assign dashboard port for different partitions
-    # Use hash of partition ID to determine port, ensuring same ID always uses same port
-    # Limit ports to 8780-8899 range
     port_base = 8780
     port_range = 120
     dashboard_port = port_base + (hash(partition_id) % port_range)
     
     # Configure Dask performance optimization options
     dask_config = {
-        "distributed.worker.memory.target": 0.75,  # Lower to reduce memory pressure
-        "distributed.worker.memory.spill": 0.85,   # Lower to reduce memory pressure
-        "distributed.worker.memory.pause": 0.95,
-        "array.slicing.split_large_chunks": True,  # Optimize large array slicing
-        "optimization.fuse.active": True,         # Activate fusion optimization
-        "optimization.fuse.ave-width": 4          # Accelerate dask graph optimization
+        "distributed.worker.memory.target": 0.70 if lightweight else 0.75,
+        "distributed.worker.memory.spill": 0.80 if lightweight else 0.85,
+        "distributed.worker.memory.pause": 0.90 if lightweight else 0.95,
+        "distributed.worker.memory.terminate": 0.98,  # Add terminate threshold
+        "array.slicing.split_large_chunks": True,
+        "optimization.fuse.active": True,
+        "optimization.fuse.ave-width": 4,
+        "distributed.scheduler.work-stealing": False if lightweight else True,  # Disable work stealing for lightweight
+        "distributed.worker.connections.incoming": 20,  # Limit connections
+        "distributed.worker.connections.outgoing": 20,
+        "distributed.comm.retry.count": 3,  # Add retry for communication
+        "distributed.comm.retry.delay.min": "1s",
+        "distributed.comm.retry.delay.max": "5s"
     }
     
     dask.config.set(dask_config)
     
-    cluster = LocalCluster(
-        n_workers         = workers,
-        threads_per_worker= 4,
-        processes         = True,
-        memory_limit      = f"{req_mem}GB",
-        dashboard_address = f":{dashboard_port}",
-        silence_logs      = "ERROR",
-    )
-    
-    cli = Client(cluster, asynchronous=False)
-    logging.info(f"[{partition_id}] Dask dashboard → {cli.dashboard_link}")
-    return cli
+    try:
+        cluster = LocalCluster(
+            n_workers         = workers,
+            threads_per_worker= threads,
+            processes         = True,
+            memory_limit      = f"{req_mem}GB",
+            dashboard_address = f":{dashboard_port}",
+            silence_logs      = "ERROR",
+            death_timeout     = "60s",  # Give workers more time before declaring them dead
+        )
+        
+        cli = Client(cluster, asynchronous=False, timeout="30s")
+        logging.info(f"[{partition_id}] Dask dashboard → {cli.dashboard_link} (lightweight={lightweight})")
+        return cli
+    except Exception as e:
+        logging.error(f"[{partition_id}] Failed to create Dask client: {e}")
+        return None
 
 # ─── ROI & Mask ────────────────────────────────────────────────────────────────
 def load_roi(tiff: Path, partition_id: str):

@@ -12,41 +12,42 @@ set -u
 #######################################
 
 # === Basic Configuration ===
-INPUT_TIFF="/absolute/path/to/your/data_dir/roi.tiff"
-OUT_DIR="/absolute/path/to/your/data_dir"
+YEAR=2024 # Range [2017-2024]
 
-export TEMP_DIR="/absolute/path/to/your/temp_dir"     # Temporary file directory
+INPUT_TIFF="/home/azureuser/data/uk_tiff/grid_-0.05_50.75.tiff"
+OUT_DIR="/home/azureuser/data/uk_d_pixel/${YEAR}/grid_-0.05_50.75"
+
+export TEMP_DIR="/home/azureuser/temp_file"     # Temporary file directory
 
 mkdir -p "$OUT_DIR"
 
 # Python environment path
-PYTHON_ENV="/absolute/path/to/your/python_env/bin/python"
+PYTHON_ENV="/home/azureuser/miniconda3/envs/d-pixel-generation/bin/python"
 
 # === Sentinel-1 & Sentinel-2 Processing Configuration ===
-YEAR=2022 # Range [2017-2024]
 RESOLUTION=10.0  # Resolution of the input TIFF, also the output resolution (meters)
 
 # === Sentinel-1 Configuration ===
-S1_ENABLED=true                    # Enable S1 processing
-S1_PARTITIONS=12                   # Number of S1 parallel partitions
-S1_TOTAL_WORKERS=12                # Total number of S1 Dask workers
-S1_WORKER_MEMORY=4                 # Memory per S1 worker (GB)
+S1_ENABLED=false                    # Enable S1 processing
+S1_PARTITIONS=8                   # Number of S1 parallel partitions
+S1_TOTAL_WORKERS=8                # Total number of S1 Dask workers
+S1_WORKER_MEMORY=6                 # Memory per S1 worker (GB)
 S1_CHUNKSIZE=1024                  # S1 stackstac chunk size
 S1_ORBIT_STATE="both"              # Orbit state: ascending/descending/both
 S1_MIN_COVERAGE=10.0               # Minimum valid pixel coverage for S1 (%)
 S1_RESOLUTION=$RESOLUTION          # S1 output resolution (meters)
-S1_OVERWRITE=true                  # Overwrite existing S1 files
+S1_OVERWRITE=false                  # Overwrite existing S1 files
 
 # === Sentinel-2 Configuration ===
 S2_ENABLED=true                    # Enable S2 processing
-S2_PARTITIONS=24                   # Number of S2 parallel partitions
-S2_TOTAL_WORKERS=24                # Total number of S2 Dask workers
+S2_PARTITIONS=16                   # Number of S2 parallel partitions
+S2_TOTAL_WORKERS=16                # Total number of S2 Dask workers
 S2_WORKER_MEMORY=4                 # Memory per S2 worker (GB)
 S2_CHUNKSIZE=1024                  # S2 stackstac chunk size
 S2_MAX_CLOUD=90                    # Maximum cloud coverage for S2 (%)
 S2_RESOLUTION=$RESOLUTION          # S2 output resolution (meters)
 S2_MIN_COVERAGE=10.0               # Minimum valid pixel coverage for S2 (%)
-S2_OVERWRITE=true                  # Overwrite existing S2 files
+S2_OVERWRITE=false                  # Overwrite existing S2 files
 
 # === System Configuration ===
 DEBUG=false                        # Enable debug mode
@@ -318,7 +319,7 @@ process_sentinel1() {
         s1_pids+=($!)
         s1_start_times+=("$(date +%s)")
         
-        sleep 2
+        # sleep 2
     done
     
     log INFO "S1: Launched ${#s1_pids[@]} partition processes"
@@ -401,7 +402,7 @@ process_sentinel2() {
         s2_pids+=($!)
         s2_start_times+=("$(date +%s)")
         
-        sleep 2
+        # sleep 2
     done
     
     log INFO "S2: Launched ${#s2_pids[@]} partition processes"
