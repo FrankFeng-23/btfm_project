@@ -11,6 +11,8 @@ btfm_infer/src/tile_lists
 __pycache__
 rgb_visualization.png
 my_data
+logs
+slurm_logs
 *.log
 *.json
 tessera_data_preprocessing/d_pixel_processing_logs
