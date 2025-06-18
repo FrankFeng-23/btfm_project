@@ -29,8 +29,8 @@ REMOTE_D_PIXEL_BASE_PATH = "/tank/zf281/global_0.1_degree_tiff_d_pixel"
 REMOTE_TASK_QUEUE_BASE = "/tank/zf281/task_queue/d_pixel_generation"
 
 # Years to process (in priority order - most recent first)
-# YEARS_TO_PROCESS = list(range(2024, 2016, -1))  # [2024, 2023, ..., 2017]
-YEARS_TO_PROCESS = [2024]
+YEARS_TO_PROCESS = list(range(2024, 2016, -1))  # [2024, 2023, ..., 2017]
+# YEARS_TO_PROCESS = [2024]
 
 # Performance settings
 MAX_WORKERS = 20  # Number of parallel threads

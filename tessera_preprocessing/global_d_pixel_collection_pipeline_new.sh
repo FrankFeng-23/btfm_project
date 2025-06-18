@@ -38,7 +38,7 @@ OTRERA_D_PIXEL_PATH="/tank/zf281/global_0.1_degree_tiff_d_pixel"
 # Worker configuration
 PROCESSES_PER_NODE=1  # Multiple workers per node for CPU tasks
 UPLOAD_WORKERS=2  # Number of concurrent upload workers
-NODE_TASK_BATCH_SIZE=4  # Number of tasks to claim at once
+NODE_TASK_BATCH_SIZE=16  # Number of tasks to claim at once
 MAX_RETRIES=3
 RETRY_DELAY=5
 
@@ -99,8 +99,18 @@ setup_ssh_control_master() {
     # Close any existing connection
     ssh -O exit -o ControlPath="$control_path" "$host" 2>/dev/null || true
     
-    # Setup new control master
-    ssh -fN -M -o ControlMaster=yes -o ControlPath="$control_path" -o ControlPersist=600 "$host"
+    # Setup new control master with error checking
+    if ! ssh -fN -M -o ControlMaster=yes -o ControlPath="$control_path" -o ControlPersist=600 "$host"; then
+        log_error "Failed to establish SSH control master to $host"
+        exit 1
+    fi
+    
+    # Verify the connection works
+    if ! ssh -o ControlPath="$control_path" "$host" "echo 'SSH connection test successful'" >/dev/null 2>&1; then
+        log_error "SSH control master established but connection test failed"
+        exit 1
+    fi
+    
     echo "$control_path"
 }
 
@@ -165,7 +175,7 @@ claim_tasks_atomically() {
         cd ${DPIXEL_PENDING_DIR} 2>/dev/null || exit 1
         claimed=0
         # Sort by year (newer first) for priority
-        for task in \$(ls -1 *.task 2>/dev/null | sort -t_ -k4 -nr); do
+        for task in \$(find . -maxdepth 1 -name '*.task' -type f -printf '%f\n' 2>/dev/null | sort -t_ -k4 -nr); do
             [ -f \"\$task\" ] || continue
             if mv \"\$task\" ${batch_dir}/ 2>/dev/null; then
                 claimed=\$((claimed + 1))
@@ -237,7 +247,7 @@ finalize_batch() {
     fi
     
     # Clean up empty batch directory
-    remaining_tasks=$(run_ssh_command "$OTRERA_HOST" "$SSH_CONTROL_PATH" "ls -1 ${batch_dir}/*.task 2>/dev/null | wc -l" || echo "0")
+    remaining_tasks=$(run_ssh_command "$OTRERA_HOST" "$SSH_CONTROL_PATH" "ls ${batch_dir}/*.task 2>/dev/null | wc -l" || echo "0")
     if [ "$remaining_tasks" -eq 0 ]; then
         run_ssh_command "$OTRERA_HOST" "$SSH_CONTROL_PATH" "rmdir ${batch_dir} 2>/dev/null"
         log_info "Removed empty batch directory ${batch_dir}"
@@ -278,6 +288,13 @@ log_success "All required files present"
 log_info "Setting up SSH connection to Otrera..."
 SSH_CONTROL_PATH=$(setup_ssh_control_master "$OTRERA_HOST")
 log_success "SSH control master established"
+
+# Debug: Check if we can access the remote directory
+log_info "Checking remote pending directory contents..."
+PENDING_CHECK=$(run_ssh_command "$OTRERA_HOST" "$SSH_CONTROL_PATH" "ls -la ${DPIXEL_PENDING_DIR}/ 2>&1 | head -10")
+log_info "Remote pending directory sample: $PENDING_CHECK"
+PENDING_COUNT_DEBUG=$(run_ssh_command "$OTRERA_HOST" "$SSH_CONTROL_PATH" "find ${DPIXEL_PENDING_DIR} -name '*.task' -type f | wc -l 2>&1")
+log_info "Debug pending count: $PENDING_COUNT_DEBUG"
 
 # Ensure remote directories exist
 log_info "Ensuring remote task queue directories exist..."
@@ -375,7 +392,7 @@ def process_upload(upload_file, metadata):
         run_command(rsync_cmd)
         
         # Verify transfer
-        remote_count = run_ssh_command(f"ls -1 {remote_dir}/*.npy 2>/dev/null | wc -l").stdout.strip()
+        remote_count = run_ssh_command(f"ls {remote_dir}/*.npy 2>/dev/null | wc -l").stdout.strip()
         if int(remote_count) != 9:
             raise Exception(f"Transfer verification failed: {remote_count} files on remote")
         
@@ -663,12 +680,20 @@ LAST_FINALIZE_TIME=$(date +%s)
 FINALIZE_INTERVAL=900  # 15 minutes
 
 while true; do
-    # Check pending tasks
-    REMOTE_PENDING_COUNT=$(run_ssh_command "$OTRERA_HOST" "$SSH_CONTROL_PATH" "ls -1q ${DPIXEL_PENDING_DIR}/*.task 2>/dev/null | wc -l" || echo "0")
+    # Check pending tasks with better error handling
+    REMOTE_PENDING_COUNT=$(run_ssh_command "$OTRERA_HOST" "$SSH_CONTROL_PATH" "find ${DPIXEL_PENDING_DIR} -name '*.task' -type f 2>/dev/null | wc -l" 2>&1)
+    if [[ ! "$REMOTE_PENDING_COUNT" =~ ^[0-9]+$ ]]; then
+        log_warning "Failed to get remote pending count. Error: $REMOTE_PENDING_COUNT"
+        REMOTE_PENDING_COUNT=0
+        # Try alternative method
+        REMOTE_PENDING_COUNT=$(run_ssh_command "$OTRERA_HOST" "$SSH_CONTROL_PATH" "ls ${DPIXEL_PENDING_DIR}/*.task 2>/dev/null | wc -l" 2>&1 || echo "0")
+        log_info "Alternative count result: $REMOTE_PENDING_COUNT"
+    fi
+    
     LOCAL_PENDING_COUNT=$(find "${LOCAL_PENDING_DIR}" -name "*.task" -type f 2>/dev/null | wc -l)
     
     # Fetch new batch if needed
-    if [ "$LOCAL_PENDING_COUNT" -lt 2 ] && [ "$REMOTE_PENDING_COUNT" -gt 0 ]; then
+    if [ "$LOCAL_PENDING_COUNT" -lt 4 ] && [ "$REMOTE_PENDING_COUNT" -gt 0 ]; then
         BATCH_NUMBER=$((BATCH_NUMBER + 1))
         BATCH_ID="${UNIQUE_JOB_ID}_batch${BATCH_NUMBER}"
         REMOTE_BATCH_DIR="${DPIXEL_PROCESSING_DIR}/${BATCH_ID}"

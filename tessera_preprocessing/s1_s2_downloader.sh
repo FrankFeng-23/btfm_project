@@ -12,7 +12,7 @@ set -u
 #######################################
 
 # === Basic Configuration ===
-YEAR=2024 # Range [2017-2024]
+YEAR=2023 # Range [2017-2024]
 
 INPUT_TIFF="/home/azureuser/data/uk_tiff/grid_-0.05_50.75.tiff"
 OUT_DIR="/home/azureuser/data/uk_d_pixel/${YEAR}/grid_-0.05_50.75"
