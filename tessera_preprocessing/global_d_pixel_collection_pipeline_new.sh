@@ -159,6 +159,53 @@ cleanup() {
 
 trap cleanup SIGINT SIGTERM
 
+# Function to scan for existing processed data and create upload jobs
+initialize_upload_queue() {
+    log_info "Scanning for existing processed d-pixels that need uploading..."
+    
+    # Look for any existing processed data in the d_pixels directory
+    if [ -d "$LOCAL_D_PIXEL_DIR" ]; then
+        local upload_count=0
+        
+        # Find all data_processed directories
+        find "$LOCAL_D_PIXEL_DIR" -name "data_processed" -type d | while read -r data_dir; do
+            # Extract year and grid_id from path
+            # Path structure: LOCAL_D_PIXEL_DIR/year/grid_id/data_processed
+            local parent_dir=$(dirname "$data_dir")
+            local grid_id=$(basename "$parent_dir")
+            local year=$(basename "$(dirname "$parent_dir")")
+            
+            # Check if this directory has the expected 9 NPY files
+            local npy_count=$(find "$data_dir" -name "*.npy" -type f | wc -l)
+            if [ "$npy_count" -eq 9 ]; then
+                # Create upload job
+                local upload_metadata="{
+                    \"grid_id\": \"$grid_id\",
+                    \"year\": \"$year\",
+                    \"local_data_dir\": \"$data_dir\",
+                    \"task_name\": \"${grid_id}_${year}.task\",
+                    \"timestamp\": $(date +%s),
+                    \"recovered\": true
+                }"
+                
+                local upload_job_file="${LOCAL_UPLOAD_QUEUE_DIR}/${grid_id}_${year}_recovered_$(date +%s%N).upload"
+                echo "$upload_metadata" > "$upload_job_file"
+                ((upload_count++))
+                
+                log_info "Created upload job for recovered data: ${grid_id}/${year}"
+            else
+                log_warning "Skipping incomplete data directory: $data_dir (found $npy_count NPY files, expected 9)"
+            fi
+        done
+        
+        if [ $upload_count -gt 0 ]; then
+            log_success "Created $upload_count upload jobs for existing processed data"
+        else
+            log_info "No existing processed data found that needs uploading"
+        fi
+    fi
+}
+
 # Atomic task claiming function
 claim_tasks_atomically() {
     local batch_size=$1
@@ -301,6 +348,9 @@ log_info "Ensuring remote task queue directories exist..."
 run_ssh_command "$OTRERA_HOST" "$SSH_CONTROL_PATH" "mkdir -p ${DPIXEL_PENDING_DIR} ${DPIXEL_PROCESSING_DIR} ${DPIXEL_DONE_DIR} ${DPIXEL_FAILED_DIR}"
 log_success "Remote directories ready"
 
+# Initialize upload queue with any existing processed data
+initialize_upload_queue
+
 # Upload worker process function
 start_upload_worker() {
     local worker_id=$1
@@ -414,23 +464,18 @@ def process_upload(upload_file, metadata):
         return False
 
 def main():
-    logging.info("Upload worker started. Waiting for upload jobs...")
-    idle_count = 0
+    logging.info("Upload worker started. Will run indefinitely until stopped.")
     
     while should_continue():
         job = get_upload_job()
         if job:
-            idle_count = 0
             upload_file, metadata = job
             try:
                 process_upload(upload_file, metadata)
             except Exception:
                 logging.error(f"Failed to process upload\\n{traceback.format_exc()}")
         else:
-            idle_count += 1
-            if idle_count > 1800:  # 30 minutes
-                logging.info("No upload jobs for 30 minutes. Exiting.")
-                break
+            # No timeout - just wait and try again
             time.sleep(1)
     
     logging.info("Upload worker shutting down.")
