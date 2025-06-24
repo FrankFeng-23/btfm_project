@@ -29,8 +29,9 @@ tessera_infer/visualize_rep_map.py
 prithvi_patch_generator.py
 s1_mpc_script.py
 dpixel_retiler
-tessera_infer
+# tessera_infer
 tessera_infer/checkpoints
 tessera_infer/logs
+tessera_infer/slurm_logs
 tessera_infer/src/tile_lists
 tessera_infer/infer_all_tiles.slurm

@@ -12,7 +12,7 @@ set -u
 #######################################
 
 # === Basic Configuration ===
-BASE_DIR="/rds/project/rds-w8D3JcRiKZQ/global_200m_d_pixel/26CMR/2024"
+BASE_DIR="/absolute_path_to_your_data_dir"
 OUT_DIR="${BASE_DIR}/data_processed"
 DOWNSAMPLE_RATE=1
 
@@ -37,11 +37,11 @@ OPTIONS:
     -r, --rate <rate>                Downsampling rate (e.g., 10 means take every 10th pixel) [default: 10]
 '
 
-# ./s1_stack \
-#   --input-dir "${BASE_DIR}/data_sar_raw" \
-#   --output-dir $OUT_DIR \
-#   --parallel 64 \
-#   --rate $DOWNSAMPLE_RATE
+./s1_stack \
+  --input-dir "${BASE_DIR}/data_sar_raw" \
+  --output-dir $OUT_DIR \
+  --parallel 16 \
+  --rate $DOWNSAMPLE_RATE
 
 # S2 stacking
 : '
@@ -67,9 +67,9 @@ OPTIONS:
 ./s2_stack \
   --input "${BASE_DIR}/data_raw" \
   --output $OUT_DIR \
-  --batch-size 32 \
+  --batch-size 16 \
   --cache-level 1 \
-  --num-threads 64 \
+  --num-threads 16 \
   --sample-rate $DOWNSAMPLE_RATE
 
 echo "Processing complete. Processed data is available in: $OUT_DIR"

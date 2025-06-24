@@ -12,14 +12,19 @@ set -u
 #######################################
 
 # === Basic Configuration ===
-INPUT_TIFF="/rds/project/rds-w8D3JcRiKZQ/global_grid_data/grid_103.5_30.5/grid_103.5_30.5_downsample_200m.tiff"
-YEAR=2022
-OUT_DIR="/rds/project/rds-w8D3JcRiKZQ/global_grid_data/grid_103.5_30.5/${YEAR}"
+INPUT_TIFF="/absolute_path_to_your_data_dir/roi.tiff"
+OUT_DIR="/absolute_path_to_your_data_dir"
+
+export TEMP_DIR="/absolute_path_to_your_temp_dir"     # Temporary file directory
+
 mkdir -p "$OUT_DIR"
-RESOLUTION=200.0  # Resolution of the input TIFF, also the output resolution (meters)
 
 # Python environment path
-PYTHON_ENV="/home/zf281/rds/hpc-work/Softwares/anaconda3/envs/btfm-data-processing/bin/python"
+PYTHON_ENV="YourPythonEnvironment/bin/python3"
+
+# === Sentinel-1 & Sentinel-2 Processing Configuration ===
+YEAR=2022
+RESOLUTION=10.0  # Resolution of the input TIFF, also the output resolution (meters)
 
 # === Sentinel-1 Configuration ===
 S1_ENABLED=true                    # Enable S1 processing
@@ -44,7 +49,6 @@ S2_MIN_COVERAGE=10.0               # Minimum valid pixel coverage for S2 (%)
 S2_OVERWRITE=true                  # Overwrite existing S2 files
 
 # === System Configuration ===
-export TEMP_DIR="/local/zf281"     # Temporary file directory
 DEBUG=false                        # Enable debug mode
 LOG_INTERVAL=10                    # Progress update interval (seconds)
 
@@ -314,7 +318,7 @@ process_sentinel1() {
         s1_pids+=($!)
         s1_start_times+=("$(date +%s)")
         
-        sleep 2
+        sleep $((RANDOM % 11 + 3))
     done
     
     log INFO "S1: Launched ${#s1_pids[@]} partition processes"
@@ -397,7 +401,7 @@ process_sentinel2() {
         s2_pids+=($!)
         s2_start_times+=("$(date +%s)")
         
-        sleep 2
+        sleep $((RANDOM % 11 + 3))
     done
     
     log INFO "S2: Launched ${#s2_pids[@]} partition processes"

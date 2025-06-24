@@ -349,11 +349,11 @@ def main():
     parser.add_argument('--block_size', type=int, default=2000, help='Size of super blocks for processing')
     
     """Example usage:
-    python new_dpixel_retiler.py \
-        --tiff_path /your_data_path/roi.tif \
-        --d_pixel_dir /your_data_path/data_processed \
+    python dpixel_retiler.py \
+        --tiff_path /home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/clement_para/GEDIL2A_ValidPoints_22MCT_2022_all/GEDIL2A_ValidPoints_22MCT_2022_all.tiff \
+        --d_pixel_dir /home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/clement_para/GEDIL2A_ValidPoints_22MCT_2022_all/data_processed \
         --patch_size 500 \
-        --out_dir /your_data_path/retiled_d-pixel \
+        --out_dir /home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/clement_para/GEDIL2A_ValidPoints_22MCT_2022_all/retiled_d-pixel \
         --num_workers 16 \
         --overwrite \
         --block_size 2000
