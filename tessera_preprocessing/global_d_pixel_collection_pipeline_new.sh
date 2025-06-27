@@ -31,7 +31,7 @@ LOCAL_UPLOAD_QUEUE_DIR="${LOCAL_SCRATCH_DIR}/upload_queue"
 SCRIPT_SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Remote hosts and paths
-OTRERA_HOST="zf281@otrera.caelum.ci.dev"
+OTRERA_HOST="zf281@otrera.cl.cam.ac.uk"
 OTRERA_TIFF_PATH="/tank/zf281/global_0.1_degree_tiff"
 OTRERA_D_PIXEL_PATH="/tank/zf281/global_0.1_degree_tiff_d_pixel"
 
@@ -221,14 +221,26 @@ claim_tasks_atomically() {
     claimed_count=$(run_ssh_command "$OTRERA_HOST" "$SSH_CONTROL_PATH" "
         cd ${DPIXEL_PENDING_DIR} 2>/dev/null || exit 1
         claimed=0
-        # Sort by year (newer first) for priority
-        for task in \$(find . -maxdepth 1 -name '*.task' -type f -printf '%f\n' 2>/dev/null | sort -t_ -k4 -nr); do
-            [ -f \"\$task\" ] || continue
-            if mv \"\$task\" ${batch_dir}/ 2>/dev/null; then
-                claimed=\$((claimed + 1))
-                [ \$claimed -ge ${batch_size} ] && break
-            fi
+        
+        # Get all years and sort them in descending order
+        years=\$(ls *.task 2>/dev/null | awk -F'_' '{print \$NF}' | sed 's/.task//' | sort -nur | uniq)
+        
+        # Process each year until we have enough tasks
+        for year in \$years; do
+            # Get tasks for this year and randomly sample
+            # Using awk with random sampling for better performance
+            year_tasks=\$(ls *_\${year}.task 2>/dev/null | awk 'BEGIN{srand()} {print rand() \"\t\" \$0}' | sort -n | cut -f2-)
+            
+            # Try to claim tasks from this randomized list
+            for task in \$year_tasks; do
+                [ -f \"\$task\" ] || continue
+                if mv \"\$task\" ${batch_dir}/ 2>/dev/null; then
+                    claimed=\$((claimed + 1))
+                    [ \$claimed -ge ${batch_size} ] && break 2
+                fi
+            done
         done
+        
         echo \$claimed
     " 2>/dev/null || echo "0")
     
@@ -364,7 +376,7 @@ start_upload_worker() {
     echo "running" > "$control_file"
     
     $PYTHON_ENV -u - > "$log_file" 2>&1 <<EOF &
-import os, sys, time, json, subprocess, shutil, traceback, logging
+import os, sys, time, json, subprocess, shutil, traceback, logging, re
 from pathlib import Path
 
 # Configuration
@@ -391,16 +403,73 @@ def should_continue():
             return f.read().strip() == "running"
     except: return False
 
-def run_command(cmd, check=True):
+def run_command(cmd, check=True, capture_output=True):
     logging.debug(f"Executing: {cmd}")
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if capture_output:
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    else:
+        result = subprocess.run(cmd, shell=True)
+    
     if check and result.returncode != 0:
-        raise Exception(f"Command failed: {cmd}\\nSTDERR: {result.stderr}")
+        if capture_output:
+            raise Exception(f"Command failed: {cmd}\\nSTDERR: {result.stderr}")
+        else:
+            raise Exception(f"Command failed with code {result.returncode}: {cmd}")
     return result
 
 def run_ssh_command(cmd, check=True):
     full_cmd = f"ssh -o ControlPath={SSH_CONTROL_PATH} {OTRERA_HOST} '{cmd}'"
     return run_command(full_cmd, check)
+
+def parse_rsync_progress(line):
+    """Parse rsync progress output to extract speed information"""
+    # Look for patterns like: "1,234,567 100%   12.34MB/s    0:00:00"
+    speed_match = re.search(r'\\s+(\\d+\\.\\d+[KMG]B/s)\\s+', line)
+    if speed_match:
+        return speed_match.group(1)
+    return None
+
+def run_rsync_with_progress(cmd, grid_id, year):
+    """Run rsync and capture/log transfer speed"""
+    logging.info(f"Starting rsync transfer for {grid_id}/{year}")
+    
+    # Use Popen to capture output in real-time
+    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
+    
+    last_speed = None
+    speeds = []
+    
+    try:
+        # Read stdout line by line
+        for line in process.stdout:
+            line = line.strip()
+            if line:
+                # Parse speed from rsync output
+                speed = parse_rsync_progress(line)
+                if speed:
+                    last_speed = speed
+                    speeds.append(speed)
+                    # Log speed updates periodically
+                    if len(speeds) % 5 == 0:  # Log every 5 speed updates
+                        logging.info(f"Transfer speed for {grid_id}/{year}: {speed}")
+        
+        # Wait for process to complete
+        process.wait()
+        
+        if process.returncode == 0:
+            if last_speed:
+                logging.info(f"Transfer completed for {grid_id}/{year} - Final speed: {last_speed}")
+            else:
+                logging.info(f"Transfer completed for {grid_id}/{year}")
+        else:
+            stderr_output = process.stderr.read()
+            raise Exception(f"Rsync failed with code {process.returncode}: {stderr_output}")
+            
+    except Exception as e:
+        process.kill()
+        raise e
+    
+    return process.returncode == 0
 
 def get_upload_job():
     try:
@@ -433,28 +502,44 @@ def process_upload(upload_file, metadata):
     logging.info(f"Starting upload for {grid_id}/{year}")
     
     try:
+        # Calculate total size to transfer
+        total_size = 0
+        for npy_file in local_data_dir.glob("*.npy"):
+            total_size += npy_file.stat().st_size
+        
+        size_mb = total_size / (1024 * 1024)
+        logging.info(f"Total data size for {grid_id}/{year}: {size_mb:.2f} MB")
+        
         # Create remote directory
         remote_dir = f"{OTRERA_D_PIXEL_PATH}/{year}/{grid_id}"
         run_ssh_command(f"mkdir -p {remote_dir}")
         
-        # Transfer files
-        rsync_cmd = f"rsync -azP {local_data_dir}/*.npy {OTRERA_HOST}:{remote_dir}/"
-        run_command(rsync_cmd)
+        # Transfer files with progress monitoring
+        start_time = time.time()
+        rsync_cmd = f"rsync -azP --stats {local_data_dir}/*.npy {OTRERA_HOST}:{remote_dir}/"
         
-        # Verify transfer
-        remote_count = run_ssh_command(f"ls {remote_dir}/*.npy 2>/dev/null | wc -l").stdout.strip()
-        if int(remote_count) != 9:
-            raise Exception(f"Transfer verification failed: {remote_count} files on remote")
-        
-        # Clean up local data
-        shutil.rmtree(local_data_dir.parent)  # Remove the year/grid_id directory
-        
-        # Mark task as done
-        (LOCAL_DONE_DIR / task_name).touch()
-        upload_file.unlink()
-        
-        logging.info(f"Successfully uploaded {grid_id}/{year}")
-        return True
+        if run_rsync_with_progress(rsync_cmd, grid_id, year):
+            # Calculate overall transfer stats
+            elapsed_time = time.time() - start_time
+            avg_speed_mbps = size_mb / elapsed_time if elapsed_time > 0 else 0
+            
+            logging.info(f"Upload completed for {grid_id}/{year}: {size_mb:.2f} MB in {elapsed_time:.1f}s (avg {avg_speed_mbps:.2f} MB/s)")
+            
+            # Verify transfer
+            remote_count = run_ssh_command(f"ls {remote_dir}/*.npy 2>/dev/null | wc -l").stdout.strip()
+            if int(remote_count) != 9:
+                raise Exception(f"Transfer verification failed: {remote_count} files on remote")
+            
+            # Clean up local data
+            shutil.rmtree(local_data_dir.parent)  # Remove the year/grid_id directory
+            
+            # Mark task as done
+            (LOCAL_DONE_DIR / task_name).touch()
+            upload_file.unlink()
+            
+            return True
+        else:
+            raise Exception("Rsync transfer failed")
         
     except Exception as e:
         logging.error(f"Upload failed for {grid_id}/{year}: {str(e)}")
@@ -597,6 +682,7 @@ cd "\$SCRIPT_SOURCE_DIR"
 
 # Step 1: Download Sentinel-1
 cp s1_s2_downloader.sh "\$LOCAL_DIR/downloader_temp_s1.sh"
+sed -i "s|^YEAR=.*|YEAR=\\"\$YEAR\\"|" "\$LOCAL_DIR/downloader_temp_s1.sh" # FIX: Set the correct year
 sed -i "s|INPUT_TIFF=.*|INPUT_TIFF=\\"\$TIFF_FILE\\"|" "\$LOCAL_DIR/downloader_temp_s1.sh"
 sed -i "s|OUT_DIR=.*|OUT_DIR=\\"\$LOCAL_DIR\\"|" "\$LOCAL_DIR/downloader_temp_s1.sh"
 sed -i "s|S1_ENABLED=false|S1_ENABLED=true|" "\$LOCAL_DIR/downloader_temp_s1.sh"
@@ -606,6 +692,7 @@ bash "\$LOCAL_DIR/downloader_temp_s1.sh"
 
 # Step 2: Download Sentinel-2
 cp s1_s2_downloader.sh "\$LOCAL_DIR/downloader_temp_s2.sh"
+sed -i "s|^YEAR=.*|YEAR=\\"\$YEAR\\"|" "\$LOCAL_DIR/downloader_temp_s1.sh" # FIX: Set the correct year
 sed -i "s|INPUT_TIFF=.*|INPUT_TIFF=\\"\$TIFF_FILE\\"|" "\$LOCAL_DIR/downloader_temp_s2.sh"
 sed -i "s|OUT_DIR=.*|OUT_DIR=\\"\$LOCAL_DIR\\"|" "\$LOCAL_DIR/downloader_temp_s2.sh"
 sed -i "s|S1_ENABLED=true|S1_ENABLED=false|" "\$LOCAL_DIR/downloader_temp_s2.sh"

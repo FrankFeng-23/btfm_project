@@ -82,11 +82,11 @@ PROCESS_TIMEOUT = 4 * 60  # Overall processing timeout
 DAY_TIMEOUT = 2 * 60       # Single day processing timeout
 ITEM_TIMEOUT = 2 * 60      # Single item processing timeout
 BAND_TIMEOUT = 1 * 60      # Single band processing timeout
-SCL_BAND_TIMEOUT = 10   # SCL band processing timeout
+SCL_BAND_TIMEOUT = 20   # SCL band processing timeout
 SCL_MAX_ATTEMPTS = 2        # SCL processing maximum attempts
 
 # Network request retry configuration
-MAX_RETRIES = 5
+MAX_RETRIES = 10
 RETRY_BACKOFF_FACTOR = 1.5  # Exponential backoff factor
 
 # Parallel processing configuration
