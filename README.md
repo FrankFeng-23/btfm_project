@@ -5,9 +5,8 @@
         <img src="images/banner.png"> 
     </a>
     <p align="center">
-        <!-- 关键的布局部分 -->
         <div style="display: flex; justify-content: space-evenly; align-items: center; width: 100%;">
-            <a href="https://www.youtube.com/watch?v=eERBj4FUD3s" style="flex-grow: 1; text-align: center; padding: 0 10px;">View Our Talk 🌐</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<!--             <a href="https://www.youtube.com/watch?v=eERBj4FUD3s" style="flex-grow: 1; text-align: center; padding: 0 10px;">View Our Talk 🌐</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
             <a href="http://arxiv.org/abs/2506.20380" style="flex-grow: 1; text-align: center; padding: 0 10px;">View Our Paper :bookmark_tabs:</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Report Bug :hammer_and_wrench:</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Request Feature 🙋</a>
@@ -28,10 +27,8 @@
 - [Temporal Embeddings of Surface Spectra for Earth Representation and Analysis (TESSERA)](#temporal-embeddings-of-surface-spectra-for-earth-representation-and-analysis-tessera)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
-  - [Initial Results](#initial-results)
-    - [Land Classification](#land-classification)
-    - [Canopy Height Prediction](#canopy-height-prediction)
-    - [Representation Visualization](#representation-visualization)
+  - [Global Embeddings Access](#global-embeddings-access)
+  - [Representation Visualization](#representation-visualization)
   - [Hardware Requirements](#hardware-requirements)
     - [1. Storage Requirements](#1-storage-requirements)
     - [2. Memory Requirements](#2-memory-requirements)
@@ -54,6 +51,14 @@
 ## Introduction
 
 TESSERA (formerly known as BTFM) is a foundation model for Earth observation that processes Sentinel-1 and Sentinel-2 satellite data to generate representation (embedding) maps. It compresses a full year of Sentinel-1 and Sentinel-2 data and learns useful temporal-spectral features.
+
+## Global Embeddings Access
+
+We are currently generating global 10m resolution embeddings for users who prefer not to run the entire pipeline themselves. These pre-computed embeddings can be directly downloaded and used for downstream applications, saving significant computational time and resources.
+
+**Access Global Embeddings:** https://github.com/ucam-eo/geotessera
+
+We began collecting embeddings from 2024 and are progressively extending coverage backwards year by year until 2017.
 
 ## Representation Visualization
 
@@ -88,6 +93,8 @@ For the model inference part, we have only tested it on Linux and Windows WSL, a
 In this step, we stack a full year of Sentinel-1 and Sentinel-2 data along the time dimension to generate a composite. For Sentinel-2, the composite shape is (T,H,W,B), where T is the number of valid observations in that year, and B is the number of bands (we selected 10 bands). For Sentinel-1, we extracted both ascending and descending orbit data. Taking the ascending orbit as an example, the composite shape is (T',H,W,B'), where T' is the number of valid ascending observations in that year, and B' is 2 because we only obtain VV and VH bands.
 
 We source Sentinel-1 and Sentinel-2 data from Microsoft's Planetary Computer, which has been preprocessed to a large extent and can be used directly. This saves a lot of data preprocessing trouble.
+- Sentinel-1 data source: https://planetarycomputer.microsoft.com/dataset/sentinel-1-rtc
+- Sentinel-2 data source: https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a
 
 Currently, our pipeline only accepts TIFF format input. The resolution of the tiff file can vary, but up to 10m granularity as this is the highest resolution for Sentinel-2 imagery. For valid ROI areas within the TIFF, the value is 1; otherwise, it's 0. If you only have a shapefile, that's fine too - we provide a `convert_shp_to_tiff.py` script.
 
