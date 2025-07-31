@@ -267,8 +267,11 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 Next, download the model weights from [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) (only Cambridge members have access) and place the `.pt` file in the `tessera_infer/checkpoints` directory:
 
 ```
-checkpoints
- ┗ best_model_fsdp_20250427_084307.pt
+tessera_infer
+ ┗ checkpoints
+     ┗ best_model_fsdp_20250427_084307.pt
+ ┗ configs
+ ┗ src
 ```
 
 ### Configure Bash Script
