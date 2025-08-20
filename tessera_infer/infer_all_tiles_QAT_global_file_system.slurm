@@ -11,6 +11,7 @@
 #SBATCH --time=36:00:00
 #SBATCH --output=slurm_logs/global_infer_%A_%a_%N.out
 #SBATCH --error=slurm_logs/global_infer_%A_%a_%N.err
+#SBATCH --exclude=pvc-s-38
 
 ######################## DAWN ENVIRONMENT SETUP #########################
 module purge
@@ -44,9 +45,9 @@ LOCAL_REPRESENTATION_DIR="${LOCAL_SCRATCH_DIR}/global_representation"
 
 # Remote hosts and paths
 OTRERA_HOST="zf281@otrera.cl.cam.ac.uk"
-ANTIOPE_HOST="zf281@antiope.cl.cam.ac.uk"
+MYRINA_HOST="zf281@myrina.cl.cam.ac.uk"
 OTRERA_D_PIXEL_PATH="/tank/zf281/global_0.1_degree_tiff_d_pixel"
-ANTIOPE_REPRESENTATION_PATH="/tank/zf281/global_0.1_degree_representation"
+MYRINA_REPRESENTATION_PATH="/tank/zf281/global_0.1_degree_representation"
 
 # Paths to script and models
 INFERENCE_SCRIPT="src/multi_tile_infer_QAT.py"
@@ -324,8 +325,8 @@ LOCAL_D_PIXEL_DIR = Path("$LOCAL_D_PIXEL_DIR")
 LOCAL_REPRESENTATION_DIR = Path("$LOCAL_REPRESENTATION_DIR")
 
 # Remote upload destination
-ANTIOPE_HOST = "$ANTIOPE_HOST"
-ANTIOPE_REPRESENTATION_PATH = "$ANTIOPE_REPRESENTATION_PATH"
+MYRINA_HOST = "$MYRINA_HOST"
+MYRINA_REPRESENTATION_PATH = "$MYRINA_REPRESENTATION_PATH"
 
 # Inference parameters
 INFERENCE_SCRIPT = "$INFERENCE_SCRIPT"
@@ -395,11 +396,11 @@ def process_task(task_path):
     if not generated_repr_file.exists() or not generated_scale_file.exists():
         raise FileNotFoundError("Inference output files not found")
 
-    remote_upload_path = f"{ANTIOPE_REPRESENTATION_PATH}/{year}/{grid_id}"
-    run_command(f"ssh {ANTIOPE_HOST} 'mkdir -p {remote_upload_path}'")
-    logging.info(f"Uploading representation to {ANTIOPE_HOST}:{remote_upload_path}")
+    remote_upload_path = f"{MYRINA_REPRESENTATION_PATH}/{year}/{grid_id}"
+    run_command(f"ssh {MYRINA_HOST} 'mkdir -p {remote_upload_path}'")
+    logging.info(f"Uploading representation to {MYRINA_HOST}:{remote_upload_path}")
     # Use rsync instead of scp
-    run_command(f"rsync -azP {generated_repr_file} {generated_scale_file} {ANTIOPE_HOST}:{remote_upload_path}/")
+    run_command(f"rsync -azP {generated_repr_file} {generated_scale_file} {MYRINA_HOST}:{remote_upload_path}/")
     
     # Clean up local files
     os.remove(generated_repr_file)
@@ -481,8 +482,7 @@ FINALIZE_INTERVAL=900  # Finalize batches every 15 minutes
 
 while true; do
     # Check if there are pending tasks remotely
-    REMOTE_PENDING_COUNT=$(ssh "$OTRERA_HOST" "ls -1q ${INFER_PENDING_DIR}/*.task 2>/dev/null | wc -l")
-    LOCAL_PENDING_COUNT=$(ls -1q "${LOCAL_PENDING_DIR}"/*.task 2>/dev/null | wc -l)
+    REMOTE_PENDING_COUNT=$(ssh "$OTRERA_HOST" "find ${INFER_PENDING_DIR} -maxdepth 1 -name '*.task' -type f | wc -l")    LOCAL_PENDING_COUNT=$(ls -1q "${LOCAL_PENDING_DIR}"/*.task 2>/dev/null | wc -l)
     
     # If local queue is low and remote has tasks, fetch a new batch
     if [ "$LOCAL_PENDING_COUNT" -lt 20 ] && [ "$REMOTE_PENDING_COUNT" -gt 0 ]; then

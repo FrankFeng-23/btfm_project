@@ -27,7 +27,7 @@ export ZE_AFFINITY_MASK=0,1,2,3,4,5,6,7
 ###############This needs to be modified to your environment###############
 # Set default values
 # This is the main directory where all processed and raw data will be stored
-BASE_DATA_DIR="/home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/biomassters_test"
+BASE_DATA_DIR="/home/zf281/rds/rds-sj514-data-WBrUDmBgqOo/biomassters_train"
 
 # Python environment that has the required packages installed
 source ~/rds/hpc-work/Softwares/anaconda3/bin/activate btfm-my
@@ -83,8 +83,8 @@ LOG_INTERVAL=5      # Log every N batches
 
 # TILES_DIR="${BASE_DATA_DIR}/retiled_d_pixel"
 # OUTPUT_DIR="${BASE_DATA_DIR}/representation_retiled"
-TILES_DIR="${BASE_DATA_DIR}/test_agbm_d_pixel"
-OUTPUT_DIR="${BASE_DATA_DIR}/test_agbm_representation"
+TILES_DIR="${BASE_DATA_DIR}/train_agbm_d_pixel"
+OUTPUT_DIR="${BASE_DATA_DIR}/train_agbm_representation"
 CONFIG_FILE="configs/multi_tile_infer_config.py"
 PYTHON_SCRIPT="src/multi_tile_infer_QAT.py"
 

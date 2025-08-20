@@ -240,7 +240,7 @@ def main():
     parser = argparse.ArgumentParser(description="Initialize the inference task queue with optimization.")
     parser.add_argument('--dry-run', action='store_true', help="Print tasks without creating them")
     parser.add_argument('--dry-remove', action='store_true', help="Print d-pixel folders to remove without actually removing them")
-    parser.add_argument('--remove-d-pixel', action='store_true', help="Actually remove d-pixel folders for completed grids")
+    parser.add_argument('--remove-d-pixel', default=True, help="Actually remove d-pixel folders for completed grids")
     parser.add_argument('--years', nargs='+', type=int, help="Specific years to process")
     parser.add_argument('--workers', type=int, default=MAX_WORKERS, help="Number of parallel workers")
     args = parser.parse_args()
