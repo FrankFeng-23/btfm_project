@@ -46,6 +46,7 @@
     - [Configure Bash Script](#configure-bash-script)
     - [Start Inference](#start-inference)
     - [Stitch Final Representation Map](#stitch-final-representation-map)
+  - [Citation](#citation)
   - [Acknowledgments](#acknowledgments)
 
 ## Introduction
@@ -411,6 +412,22 @@ Finally, you'll get a stitched representation map in the `my_data` directory wit
 npy_path = "/maps/usr/tessera_project/my_data/stitched_representation.npy"  # Change to the actual npy file path
 ref_tiff_path = "/maps/usr/tessera_project/my_data/roi.tiff"  # Change to the actual reference tiff file path
 out_dir = "/maps/usr/tessera_project/my_data/"  # Change to the actual output directory
+```
+
+## Citation
+
+If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv.org/abs/2506.20380):
+
+```bibtex
+@misc{feng2025tesseratemporalembeddingssurface,
+      title={TESSERA: Temporal Embeddings of Surface Spectra for Earth Representation and Analysis}, 
+      author={Zhengpeng Feng and Clement Atzberger and Sadiq Jaffer and Jovana Knezevic and Silja Sormunen and Robin Young and Madeline C Lisaius and Markus Immitzer and David A. Coomes and Anil Madhavapeddy and Andrew Blake and Srinivasan Keshav},
+      year={2025},
+      eprint={2506.20380},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2506.20380}, 
+}
 ```
 
 ## Acknowledgments
