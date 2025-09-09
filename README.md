@@ -9,16 +9,17 @@
 <!--             <a href="https://www.youtube.com/watch?v=eERBj4FUD3s" style="flex-grow: 1; text-align: center; padding: 0 10px;">View Our Talk 🌐</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
             <a href="http://arxiv.org/abs/2506.20380" style="flex-grow: 1; text-align: center; padding: 0 10px;">View Our Paper :bookmark_tabs:</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Report Bug :hammer_and_wrench:</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Request Feature 🙋</a>
+            <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Request Feature 🙋</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://svr-sk818-web.cl.cam.ac.uk/keshav/wiki/images/9/9d/TESSERA.m4a" style="flex-grow: 1; text-align: center; padding: 0 10px;">Podcast 🎧</a>
         </div>
     </p>
 </div>
 
-![Version](https://img.shields.io/badge/version-alpha-red)
-![Status](https://img.shields.io/badge/status-internal%20use%20only-yellow)
+<!--  ![Version](https://img.shields.io/badge/version-alpha-red) -->
+![PyPI version](https://img.shields.io/pypi/v/geotessera?label=PyPI%20version&color=blue)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
-**Alpha testing, primarily for Cambridge internal users. External users can contact zf281@cam.ac.uk for access.**
+**For any questions regarding model access, future collaborations, etc., please do not hesitate to contact zf281@cam.ac.uk**
 
 **We strongly recommend that you quickly review the entire tutorial before running the pipeline.**
 
@@ -46,6 +47,7 @@
     - [Configure Bash Script](#configure-bash-script)
     - [Start Inference](#start-inference)
     - [Stitch Final Representation Map](#stitch-final-representation-map)
+  - [Downstream Tasks](#downstream-tasks)
   - [Citation](#citation)
   - [Acknowledgments](#acknowledgments)
 
@@ -265,7 +267,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 ### Model Weight
 
-Next, download the model weights from [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) (only Cambridge members have access) and place the `.pt` file in the `tessera_infer/checkpoints` directory:
+Next, download the model weights from [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) (please request for access) and place the `.pt` file in the `tessera_infer/checkpoints` directory:
 
 ```
 tessera_infer
@@ -413,6 +415,10 @@ npy_path = "/maps/usr/tessera_project/my_data/stitched_representation.npy"  # Ch
 ref_tiff_path = "/maps/usr/tessera_project/my_data/roi.tiff"  # Change to the actual reference tiff file path
 out_dir = "/maps/usr/tessera_project/my_data/"  # Change to the actual output directory
 ```
+
+## Downstream tasks
+
+If you want to reproduce the downstream tasks in the paper, you can visit https://github.com/ucam-eo/tessera-downstream-task. There are many example codes provided there.
 
 ## Citation
 
