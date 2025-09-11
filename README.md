@@ -23,8 +23,8 @@
 ## Table of Contents
 
   - [Introduction](#introduction)
-  - [Global Embeddings Access](#global-embeddings-access)
   - [Representation Visualization](#representation-visualization)
+  - [Global Embeddings Access](#global-embeddings-access)
   - [Hardware Requirements](#hardware-requirements)
   - [Data Preprocessing](#data-preprocessing)
   - [Inference](#inference)
@@ -40,6 +40,13 @@ Our work introduces TESSERA, an open foundation model that preserves spectral-te
 
 To our knowledge, TESSERA is unprecedented in its ease of use, scale, and accuracy: no other foundation model provides analysis-ready outputs, is open, and provides global, annual coverage at 10m resolution using only spectral-temporal features at pixel level.
 
+## Representation Visualization
+
+Below are some visualization results of the TESSERA representation map (using the first three channels as RGB):
+
+![repr_demo](images/repr_demo.png)
+
+
 ## Global Embeddings Access
 
 We are currently generating global 10m resolution embeddings, which can be directly downloaded and used for downstream applications, saving significant computational time and resources. We are starting with embeddings for 2024 and will progressively extending coverage backwards year by year until 2017. The current coverage map is below:
@@ -48,12 +55,6 @@ We are currently generating global 10m resolution embeddings, which can be direc
 
 
 **Access Global Embeddings:** https://github.com/ucam-eo/geotessera
-
-## Representation Visualization
-
-Below are some visualization results of the TESSERA representation map (using the first three channels as RGB):
-
-![repr_demo](images/repr_demo.png)
 
 **We strongly recommend that you quickly review the entire tutorial before running the pipeline.**
 
