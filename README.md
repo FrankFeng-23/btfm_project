@@ -19,9 +19,6 @@
 ![PyPI version](https://img.shields.io/pypi/v/geotessera?label=PyPI%20version&color=blue)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
-**For any questions regarding model access, future collaborations, etc., please do not hesitate to contact zf281@cam.ac.uk**
-
-**We strongly recommend that you quickly review the entire tutorial before running the pipeline.**
 
 ## Table of Contents
 
@@ -53,21 +50,27 @@
 
 ## Introduction
 
-TESSERA (formerly known as BTFM) is a foundation model for Earth observation that processes Sentinel-1 and Sentinel-2 satellite data to generate representation (embedding) maps. It compresses a full year of Sentinel-1 and Sentinel-2 data and learns useful temporal-spectral features.
+Satellite remote sensing enables a wide range of downstream applications, including habitat mapping, carbon accounting, and strategies for conservation and sustainable land use. However, satellite time series are voluminous and often corrupted, making them challenging to use: the scientific community's ability to extract actionable insights is often constrained by the scarcity of labelled training datasets and the computational burden of processing temporal data.
+
+Our work introduces TESSERA, an open foundation model that preserves spectral-temporal signals in 128-dimensional latent representations at 10-meter resolution globally. It uses self-supervised learning to summarise petabytes of Earth observation data. We compare our work with state-of-the-art task-specific models and other foundation models in five diverse downstream tasks and find that TESSERA closely matches or outperforms these baselines. By preserving temporal phenological signals that are typically lost in conventional approaches, TESSERA enables new insights into ecosystem dynamics, agricultural food systems, and environmental change detection. Moreover, our open-source implementation supports reproducibility and extensibility, while the privacy-preserving design allows researchers to maintain data sovereignty.
+
+To our knowledge, TESSERA is unprecedented in its ease of use, scale, and accuracy: no other foundation model provides analysis-ready outputs, is open, and provides global, annual coverage at 10m resolution using only spectral-temporal features at pixel level.
 
 ## Global Embeddings Access
 
-We are currently generating global 10m resolution embeddings for users who prefer not to run the entire pipeline themselves. These pre-computed embeddings can be directly downloaded and used for downstream applications, saving significant computational time and resources.
+We are currently generating global 10m resolution embeddings, which can be directly downloaded and used for downstream applications, saving significant computational time and resources.
 
 **Access Global Embeddings:** https://github.com/ucam-eo/geotessera
 
-We began collecting embeddings from 2024 and are progressively extending coverage backwards year by year until 2017.
+We are currently generating embeddings from 2024 and will progressively extending coverage backwards year by year until 2017.
 
 ## Representation Visualization
 
 Below are some visualization results of the TESSERA representation map (using the first three channels as RGB):
 
 ![repr_demo](images/repr_demo.png)
+
+**We strongly recommend that you quickly review the entire tutorial before running the pipeline.**
 
 ## Hardware Requirements
 
