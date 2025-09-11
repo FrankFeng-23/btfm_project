@@ -421,7 +421,7 @@ out_dir = "/maps/usr/tessera_project/my_data/"  # Change to the actual output di
 
 ## Downstream tasks
 
-If you want to reproduce the downstream tasks in the paper, you can visit https://github.com/ucam-eo/tessera-downstream-task. There are many example codes provided there.
+If you want to reproduce the downstream tasks in the paper, you can visit https://github.com/ucam-eo/tessera-downstream-task. There are many examples provided there.
 
 ## Citation
 
@@ -430,7 +430,7 @@ If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv
 ```bibtex
 @misc{feng2025tesseratemporalembeddingssurface,
       title={TESSERA: Temporal Embeddings of Surface Spectra for Earth Representation and Analysis}, 
-      author={Zhengpeng Feng and Clement Atzberger and Sadiq Jaffer and Jovana Knezevic and Silja Sormunen and Robin Young and Madeline C Lisaius and Markus Immitzer and David A. Coomes and Anil Madhavapeddy and Andrew Blake and Srinivasan Keshav},
+      author={Zhengpeng Feng et al.},
       year={2025},
       eprint={2506.20380},
       archivePrefix={arXiv},
