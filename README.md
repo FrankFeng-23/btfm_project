@@ -42,11 +42,12 @@ To our knowledge, TESSERA is unprecedented in its ease of use, scale, and accura
 
 ## Global Embeddings Access
 
-We are currently generating global 10m resolution embeddings, which can be directly downloaded and used for downstream applications, saving significant computational time and resources.
+We are currently generating global 10m resolution embeddings, which can be directly downloaded and used for downstream applications, saving significant computational time and resources. We are starting with embeddings for 2024 and will progressively extending coverage backwards year by year until 2017. The current coverage map is below:
+
+<img src="https://github.com/ucam-eo/tessera-coverage-map/blob/main/map.png"> 
+
 
 **Access Global Embeddings:** https://github.com/ucam-eo/geotessera
-
-We are currently generating embeddings from 2024 and will progressively extending coverage backwards year by year until 2017.
 
 ## Representation Visualization
 
