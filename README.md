@@ -31,6 +31,7 @@
   - [Downstream Tasks](#downstream-tasks)
   - [Citation](#citation)
   - [Acknowledgments](#acknowledgments)
+  - [Star History](#star-history)
 
 ## Introduction
 
@@ -427,3 +428,7 @@ If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv
 
 ## Acknowledgments
 We would like to express our gratitude to [DAWN](https://www.hpc.cam.ac.uk/d-w-n), the fastest artificial intelligence supercomputer at Cambridge, and AMD for their generous support in this project. This work would not have been possible without their computational resources and technical assistance.
+
+
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=ucam-eo/tessera&type=Date)](https://www.star-history.com/#ucam-eo/tessera&Date)
