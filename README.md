@@ -10,6 +10,7 @@
             <a href="http://arxiv.org/abs/2506.20380" style="flex-grow: 1; text-align: center; padding: 0 10px;">View Our Paper :bookmark_tabs:</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Report Bug :hammer_and_wrench:</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Request Feature 🙋</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/Acceptable_use_policy" style="flex-grow: 1; text-align: center; padding: 0 10px;">Acceptable Use Policy</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <a href="https://svr-sk818-web.cl.cam.ac.uk/keshav/wiki/images/9/9d/TESSERA.m4a" style="flex-grow: 1; text-align: center; padding: 0 10px;">Podcast 🎧</a>
         </div>
     </p>
