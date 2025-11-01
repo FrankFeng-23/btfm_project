@@ -268,6 +268,8 @@ tessera_infer
  ┗ src
 ```
 
+_**Note that the checkpoint mentioned above is an early-stage model, which natively generates float32 embeddings. Therefore, this model is not the one used to generate the int8 embeddings in the geotessera library. We will soon deploy the specific checkpoint that was used to create the geotessera embeddings into the full pipeline.**_
+
 ### Configure Bash Script
 
 To simplify inference configuration, we provide `tessera_infer/infer_all_tiles.sh`. You only need to edit a few parameters:
