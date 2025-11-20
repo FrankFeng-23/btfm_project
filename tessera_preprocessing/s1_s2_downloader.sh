@@ -33,7 +33,7 @@ S1_TOTAL_WORKERS=12                # Total number of S1 Dask workers
 S1_WORKER_MEMORY=4                 # Memory per S1 worker (GB)
 S1_CHUNKSIZE=1024                  # S1 stackstac chunk size
 S1_ORBIT_STATE="both"              # Orbit state: ascending/descending/both
-S1_MIN_COVERAGE=10.0               # Minimum valid pixel coverage for S1 (%)
+S1_MIN_COVERAGE=0.01               # Minimum valid pixel coverage for S1 (%) set this to 0.01 to mitigate the tiling artefact!
 S1_RESOLUTION=$RESOLUTION          # S1 output resolution (meters)
 S1_OVERWRITE=true                  # Overwrite existing S1 files
 
@@ -43,9 +43,9 @@ S2_PARTITIONS=24                   # Number of S2 parallel partitions
 S2_TOTAL_WORKERS=24                # Total number of S2 Dask workers
 S2_WORKER_MEMORY=4                 # Memory per S2 worker (GB)
 S2_CHUNKSIZE=1024                  # S2 stackstac chunk size
-S2_MAX_CLOUD=90                    # Maximum cloud coverage for S2 (%)
+S2_MAX_CLOUD=100                   # Maximum cloud coverage for S2 (%) set this to 100 to mitigate the tiling artefact!
 S2_RESOLUTION=$RESOLUTION          # S2 output resolution (meters)
-S2_MIN_COVERAGE=10.0               # Minimum valid pixel coverage for S2 (%)
+S2_MIN_COVERAGE=0.01               # Minimum valid pixel coverage for S2 (%) set this to 0.01 to mitigate the tiling artefact!
 S2_OVERWRITE=true                  # Overwrite existing S2 files
 
 # === System Configuration ===
