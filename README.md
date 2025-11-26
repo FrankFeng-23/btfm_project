@@ -99,7 +99,7 @@ First, create an empty working directory:
 ```bash
 mkdir tessera_project
 cd tessera_project
-git clone https://github.com/FrankFeng-23/btfm_project.git
+git clone https://github.com/ucam-eo/tessera.git
 ```
 
 For easier pipeline operation, we recommend placing the data output directory at the same level as `tessera_infer` and `tessera_preprocessing`:
