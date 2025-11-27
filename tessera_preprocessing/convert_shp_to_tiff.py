@@ -261,7 +261,7 @@ def main():
     Main function to run the conversion process.
     """
     # Input shapefile path
-    shp_path = '/home/zf281/rds/rds-airr-p3-w8D3JcRiKZQ/cambridge/cambridge_shp/cambridge.shp'
+    shp_path = 'absolute_path_to_your_shp_file'
 
     # Call the conversion function
     try:
