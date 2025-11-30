@@ -53,7 +53,7 @@ Below are some visualization results of the TESSERA representation map (using th
 
 We are currently generating global 10m resolution embeddings, which can be directly downloaded and used for downstream applications, saving significant computational time and resources. We are starting with embeddings for 2024 and will progressively extending coverage backwards year by year until 2017. The current coverage map is below:
 
-<img src="https://github.com/ucam-eo/tessera-coverage-map/blob/main/map.png"> 
+<img src="https://github.com/ucam-eo/tessera-coverage-map/blob/main/tessera_coverage.png"> 
 
 
 **Access Global Embeddings:** https://github.com/ucam-eo/geotessera
