@@ -58,8 +58,6 @@ We are currently generating global 10m resolution embeddings, which can be direc
 
 **Access Global Embeddings:** https://github.com/ucam-eo/geotessera
 
-<span style="color:red;">This text is redWe strongly recommend that you quickly review the entire tutorial before running the pipeline.</span> 
-
 ## Hardware Requirements
 
 ### 1. Storage Requirements
@@ -83,6 +81,7 @@ For the model inference part, we have only tested it on Linux and Windows WSL, a
 ## Data Preprocessing
 
 ### Overview
+_**We strongly recommend that you quickly review the entire tutorial before running the pipeline.**_
 
 In this step, we stack a full year of Sentinel-1 and Sentinel-2 data along the time dimension to generate a composite. For Sentinel-2, the composite shape is (T,H,W,B), where T is the number of valid observations in that year, and B is the number of bands (we selected 10 bands). For Sentinel-1, we extracted both ascending and descending orbit data. Taking the ascending orbit as an example, the composite shape is (T',H,W,B'), where T' is the number of valid ascending observations in that year, and B' is 2 because we only obtain VV and VH bands.
 
@@ -114,6 +113,8 @@ tessera_project
 ```
 
 The `roi.tiff` can be generated using `convert_shp_to_tiff.py` located in `tessera_preprocessing/convert_shp_to_tiff.py`. To use it, simply specify the path to your shapefile in the main function, and it will output a TIFF with the same name in the same directory.
+
+⚠️Notice: _If your ROI is relatively large, for example 100 km × 100 km, we strongly recommend pre-splitting the TIFF into smaller sections no larger than 20 km × 20 km. Then process each small TIFF file sequentially in the pipeline. An excessively large ROI may cause issues with Microsoft Planetary Computer._
 
 ### Python Environment
 
