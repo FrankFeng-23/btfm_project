@@ -66,7 +66,7 @@ Running this pipeline requires substantial storage space. Although the pipeline 
 
 ### 2. Memory Requirements
 
-Thanks to Microsoft Planetary Computer, most of the geo-preprocessing has been done. Still, we recommend having at least 128GB of RAM.
+We use preprocessed data, initially from Microsoft Planetary Computer. Howecer, the next generation of embeddings will use OPERA from ASF DAAC. In either case, most of the geo-preprocessing has been done. Still, we recommend having at least 128GB of RAM.
 
 ### 3. CPU and GPU
 
@@ -85,9 +85,11 @@ _**We strongly recommend that you quickly review the entire tutorial before runn
 
 In this step, we stack a full year of Sentinel-1 and Sentinel-2 data along the time dimension to generate a composite. For Sentinel-2, the composite shape is (T,H,W,B), where T is the number of valid observations in that year, and B is the number of bands (we selected 10 bands). For Sentinel-1, we extracted both ascending and descending orbit data. Taking the ascending orbit as an example, the composite shape is (T',H,W,B'), where T' is the number of valid ascending observations in that year, and B' is 2 because we only obtain VV and VH bands.
 
-We source Sentinel-1 and Sentinel-2 data from Microsoft's Planetary Computer, which has been preprocessed to a large extent and can be used directly. This saves a lot of data preprocessing trouble.
+We initially sourced Sentinel-1 and Sentinel-2 data from Microsoft's Planetary Computer.
 - Sentinel-1 data source: https://planetarycomputer.microsoft.com/dataset/sentinel-1-rtc
 - Sentinel-2 data source: https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a
+
+The new generation of embeddings will use OPERA from ASF DAAC.
 
 Currently, our pipeline only accepts TIFF format input. The resolution of the tiff file can vary, but up to 10m granularity as this is the highest resolution for Sentinel-2 imagery. For valid ROI areas within the TIFF, the value is 1; otherwise, it's 0. If you only have a shapefile, that's fine too - we provide a `convert_shp_to_tiff.py` script.
 
@@ -114,7 +116,7 @@ tessera_project
 
 The `roi.tiff` can be generated using `convert_shp_to_tiff.py` located in `tessera_preprocessing/convert_shp_to_tiff.py`. To use it, simply specify the path to your shapefile in the main function, and it will output a TIFF with the same name in the same directory.
 
-⚠️Notice: _If your ROI is relatively large, for example 100 km × 100 km, we strongly recommend pre-splitting the TIFF into smaller sections no larger than 20 km × 20 km. Then process each small TIFF file sequentially in the pipeline. An excessively large ROI may cause issues with Microsoft Planetary Computer._
+⚠️Notice: _If your ROI is relatively large, for example 100 km × 100 km, we strongly recommend pre-splitting the TIFF into smaller sections no larger than 20 km × 20 km. Then process each small TIFF file sequentially in the pipeline. An excessively large ROI may cause issues with backend tile providers_
 
 ### Python Environment
 
@@ -126,7 +128,7 @@ pip install -r requirements.txt
 
 ### Script Configuration
 
-We use Microsoft's Planetary Computer, which eliminates much of the hassle of data preprocessing, especially for Sentinel-1. The script configuration is very simple. First, navigate to the `tessera_preprocessing` folder:
+First, navigate to the `tessera_preprocessing` folder:
 
 ```bash
 cd tessera_preprocessing
