@@ -66,7 +66,7 @@ Running this pipeline requires substantial storage space. Although the pipeline 
 
 ### 2. Memory Requirements
 
-We use preprocessed data, initially from Microsoft Planetary Computer. Howecer, the next generation of embeddings will use OPERA from ASF DAAC. In either case, most of the geo-preprocessing has been done. Still, we recommend having at least 128GB of RAM.
+We use preprocessed data, initially from Microsoft Planetary Computer. However, the next generation of embeddings will use OPERA from ASF DAAC. In either case, most of the geo-preprocessing has been done. Still, we recommend having at least 128GB of RAM.
 
 ### 3. CPU and GPU
 
