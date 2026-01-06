@@ -85,11 +85,13 @@ _**We strongly recommend that you quickly review the entire tutorial before runn
 
 In this step, we stack a full year of Sentinel-1 and Sentinel-2 data along the time dimension to generate a composite. For Sentinel-2, the composite shape is (T,H,W,B), where T is the number of valid observations in that year, and B is the number of bands (we selected 10 bands). For Sentinel-1, we extracted both ascending and descending orbit data. Taking the ascending orbit as an example, the composite shape is (T',H,W,B'), where T' is the number of valid ascending observations in that year, and B' is 2 because we only obtain VV and VH bands.
 
-We initially sourced Sentinel-1 and Sentinel-2 data from Microsoft's Planetary Computer.
+We initially sourced Sentinel-1 and Sentinel-2 data from Microsoft's Planetary Computer:
 - Sentinel-1 data source: https://planetarycomputer.microsoft.com/dataset/sentinel-1-rtc
 - Sentinel-2 data source: https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a
 
-The new generation of embeddings will use OPERA from ASF DAAC.
+The new generation of embeddings will use OPERA from ASF DAAC: 
+- Sentinel-1 data source:  https://registry.opendata.aws/nasa-operal2rtc-s1v1/ 
+- Sentinel-2 data source: https://registry.opendata.aws/sentinel-2-l2a-cogs/
 
 Currently, our pipeline only accepts TIFF format input. The resolution of the tiff file can vary, but up to 10m granularity as this is the highest resolution for Sentinel-2 imagery. For valid ROI areas within the TIFF, the value is 1; otherwise, it's 0. If you only have a shapefile, that's fine too - we provide a `convert_shp_to_tiff.py` script.
 
