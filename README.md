@@ -166,8 +166,9 @@ Note: `RESOLUTION` controls output pixel size. The pipeline keeps the ROI bounds
 Sentinel-2 on Earth-search is public and **does not require credentials**.
 
 Sentinel-1 OPERA RTC-S1 is accessed via ASF Earthdata Cloud (COG over HTTPS). You need an Earthdata Login token:
-- **Create an Earthdata account**: via NASA Earthdata Login.
-- **Obtain an EDL Bearer token / JWT** and store it locally (do not commit it). Recommended:
+- **Create an Earthdata account**: via [NASA Earthdata Login](https://urs.earthdata.nasa.gov/home).
+- **Approve Application**: After registering your account, you can go to the Applications tab and add Alaska Satellite Facility Data Access to the list of approved applications.
+- **Obtain an EDL Bearer token / JWT** by clicking **Generate Token** and store it locally (do not commit it).
 
 Recommended (simple + explicit):
 
