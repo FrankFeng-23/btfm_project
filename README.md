@@ -435,7 +435,7 @@ If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv
 ```
 
 ## Acknowledgments
-We would like to express our gratitude to [DAWN](https://www.hpc.cam.ac.uk/d-w-n), the fastest artificial intelligence supercomputer at Cambridge, for their generous support in this project. We also acknowledge the support from [AMD](https://www.amd.com/en.html),  [Vultr](https://www.vultr.com/), [Microsoft AI For Good Lab](https://www.microsoft.com/en-us/research/group/ai-for-good-research-lab/), [dClimate](https://www.dclimate.net/), and [Amazon Web Services (AWS)](https://aws.amazon.com/). This work would not have been possible without their computational resources and technical assistance.  
+We would like to express our gratitude to UKRI and the [DAWN](https://www.hpc.cam.ac.uk/d-w-n) supercomputer team at Cambridge, for their generous support in this project. We also acknowledge support from [AMD](https://www.amd.com/en.html),  [Vultr](https://www.vultr.com/), [Microsoft AI For Good Lab](https://www.microsoft.com/en-us/research/group/ai-for-good-research-lab/), [dClimate](https://www.dclimate.net/), and [Amazon Web Services (AWS)](https://aws.amazon.com/) under their AWS Open Data program (https://opendata.aws/). This work would not have been possible without their computational resources and technical assistance.  
 
 
 ## Star History
