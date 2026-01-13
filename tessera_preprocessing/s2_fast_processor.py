@@ -23,6 +23,7 @@ import numpy as np
 import psutil, rasterio, xarray as xr, rioxarray
 from rasterio.enums import Resampling
 from rasterio.warp import transform_bounds, reproject
+from rasterio.transform import from_origin
 import pystac_client, planetary_computer, stackstac
 
 import dask
@@ -41,14 +42,27 @@ warnings.filterwarnings("ignore", message=".*invalid value encountered in true_d
 warnings.filterwarnings("ignore", message=".*invalid value encountered in log10.*")
 
 # ─── Constants ──────────────────────────────────────────────────────────────────────
-BAND_MAPPING = {
+# NOTE: Band/asset keys differ by data source:
+# - MPC (planetarycomputer sentinel-2-l2a): assets are band codes like B02/B03/.../SCL
+# - AWS (earth-search sentinel-2-l2a): assets are names like blue/green/.../scl
+MPC_BAND_MAPPING = {
     "B02": "blue", "B03": "green", "B04": "red",
     "B05": "rededge1", "B06": "rededge2", "B07": "rededge3",
     "B08": "nir", "B8A": "nir08",
     "B11": "swir16", "B12": "swir22",
     "SCL": "scl",
 }
-S2_BANDS        = list(BAND_MAPPING.keys())
+AWS_BAND_MAPPING = {
+    "blue": "blue", "green": "green", "red": "red",
+    "rededge1": "rededge1", "rededge2": "rededge2", "rededge3": "rededge3",
+    "nir": "nir", "nir08": "nir08",
+    "swir16": "swir16", "swir22": "swir22",
+    "scl": "scl",
+}
+
+# Will be set in main() based on --data_source
+BAND_MAPPING = MPC_BAND_MAPPING
+S2_BANDS = list(BAND_MAPPING.keys())
 BASELINE_CUTOFF = datetime.datetime(2022, 1, 25)
 BASELINE_OFFSET = 1000
 
@@ -140,6 +154,8 @@ def get_args():
                    help="Partition ID (for log identification)")
     P.add_argument("--temp_dir",     default=TEMP_DIR,
                    help="Temporary file storage directory, default uses system temp directory")
+    P.add_argument("--data_source", default="mpc", choices=["mpc", "aws"],
+                   help="Data source backend: mpc (Planetary Computer) or aws (Earth-search on AWS)")
     return P.parse_args()
 
 # ─── logging ──────────────────────────────────────────────────────────────────
@@ -223,27 +239,72 @@ def make_client(req_workers:int, req_mem:int, partition_id: str):
     return cli
 
 # ─── ROI & Mask ────────────────────────────────────────────────────────────────
-def load_roi(tiff: Path, partition_id: str):
-    """Load ROI data with logic to simplify large masks"""
+def load_roi(tiff: Path, partition_id: str, out_resolution_m: float):
+    """
+    Load ROI bounds + CRS from the input TIFF, but build an OUTPUT template grid at out_resolution_m.
+    The ROI mask is resampled (nearest) into that OUTPUT grid so all downstream mosaics use
+    the same extent but fixed resolution (e.g. 10m).
+    """
     with rasterio.open(tiff) as src:
-        tpl = dict(crs=src.crs,
-                   transform=src.transform,
-                   width=src.width,
-                   height=src.height)
-        bbox_proj = src.bounds
-        bbox_ll   = transform_bounds(src.crs, "EPSG:4326", *bbox_proj,
-                                     densify_pts=21)
-        
-        # Read mask and convert to 1-bit data to save memory
-        mask_np = (src.read(1) > 0).astype(np.uint8)
+        if src.crs is None:
+            raise ValueError(f"ROI has no CRS: {tiff}")
+        bbox_src = src.bounds
+        bbox_ll = transform_bounds(
+            src.crs,
+            "EPSG:4326",
+            bbox_src.left,
+            bbox_src.bottom,
+            bbox_src.right,
+            bbox_src.top,
+            densify_pts=21,
+        )
+
+        # Read ROI mask in source grid
+        mask_src = (src.read(1) > 0).astype(np.uint8)
+
+        # Build OUTPUT grid: same bounds, forced pixel size out_resolution_m
+        left, bottom, right, top = bbox_src.left, bbox_src.bottom, bbox_src.right, bbox_src.top
+        res = float(out_resolution_m)
+        width = int(np.ceil((right - left) / res))
+        height = int(np.ceil((top - bottom) / res))
+        if width <= 0 or height <= 0:
+            raise ValueError(f"Invalid output grid computed from bounds/res: width={width} height={height}")
+        transform = from_origin(left, top, res, res)
+
+        tpl = dict(crs=src.crs, transform=transform, width=width, height=height)
+        bbox_proj = rasterio.coords.BoundingBox(left=left, bottom=bottom, right=right, top=top)
+
+        # Resample ROI mask into OUTPUT grid (nearest)
+        mask_np = np.zeros((height, width), dtype=np.uint8)
+        reproject(
+            source=mask_src,
+            destination=mask_np,
+            src_transform=src.transform,
+            src_crs=src.crs,
+            dst_transform=transform,
+            dst_crs=src.crs,
+            resampling=Resampling.nearest,
+            src_nodata=0,
+            dst_nodata=0,
+        )
         
     # Check ROI size and log info
     roi_size_mb = (mask_np.size * mask_np.itemsize) / (1024 * 1024)
-    logging.info(f"[{partition_id}] ROI (CRS={tpl['crs']}): {tpl['width']}×{tpl['height']} ({roi_size_mb:.2f} MB)")
+    logging.info(f"[{partition_id}] ROI/output grid (CRS={tpl['crs']}): {tpl['width']}×{tpl['height']} @ {out_resolution_m}m ({roi_size_mb:.2f} MB)")
     logging.info(f"[{partition_id}] ROI bbox proj: {fmt_bbox(bbox_proj)}")
     logging.info(f"[{partition_id}] ROI bbox lon/lat: {fmt_bbox(bbox_ll)}")
     
     return tpl, bbox_proj, bbox_ll, mask_np
+
+
+def tpl_resolution_tuple(tpl) -> tuple:
+    """
+    Return (xres, yres) from the ROI template transform.
+    Using a tuple prevents subtle grid mismatch when ROI pixels are not
+    perfectly square, which can otherwise manifest as 'zoomed' outputs.
+    """
+    tr = tpl["transform"]
+    return (abs(float(tr.a)), abs(float(tr.e)))
 
 def mask_to_xr(mask_np, tpl):
     """Convert mask to xarray object"""
@@ -277,12 +338,28 @@ def search_items(bbox_ll, date_range:str, max_cloud, partition_id: str):
     
     while retries <= max_retries:
         try:
-            cat = pystac_client.Client.open(
-                "https://planetarycomputer.microsoft.com/api/stac/v1",
-                modifier=planetary_computer.sign_inplace)
-            q = cat.search(collections=["sentinel-2-l2a"],
-                       bbox=bbox_ll, datetime=search_date_range,
-                       query={"eo:cloud_cover": {"lt": max_cloud}})
+            # Backend switch:
+            # - mpc: planetarycomputer STAC with signing
+            # - aws: earth-search STAC (public)
+            if getattr(search_items, "_data_source", "mpc") == "aws":
+                cat = pystac_client.Client.open("https://earth-search.aws.element84.com/v1")
+                q = cat.search(
+                    collections=["sentinel-2-l2a"],
+                    bbox=bbox_ll,
+                    datetime=search_date_range,
+                    query={"eo:cloud_cover": {"lt": max_cloud}},
+                )
+            else:
+                cat = pystac_client.Client.open(
+                    "https://planetarycomputer.microsoft.com/api/stac/v1",
+                    modifier=planetary_computer.sign_inplace,
+                )
+                q = cat.search(
+                    collections=["sentinel-2-l2a"],
+                    bbox=bbox_ll,
+                    datetime=search_date_range,
+                    query={"eo:cloud_cover": {"lt": max_cloud}},
+                )
             items = list(q.get_items())
             logging.info(f"[{partition_id}] STAC found {len(items)} items (cloud < {max_cloud}%)")
             if items:
@@ -653,7 +730,7 @@ def process_band(items, band_name, date_key, tpl, bbox_proj, mask_np, tile_selec
                 da = stackstac.stack(
                     items=items,
                     assets=assets,
-                    resolution=res,
+                    resolution=tpl_resolution_tuple(tpl),
                     epsg=tpl["crs"].to_epsg(),
                     bounds=bbox_proj,
                     chunksize=chunksize,
@@ -811,8 +888,9 @@ def process_scl_assessment_and_generation(items, date_key, tpl, bbox_proj, mask_
     t0 = time.time()
     logging.info(f"[{partition_id}]   Processing SCL band for quality assessment and generating SCL output file")
 
-    # Build SCL output path
-    scl_out_name = BAND_MAPPING["SCL"]
+    # Build SCL output path (key differs by backend: SCL vs scl)
+    scl_key = "scl" if BAND_MAPPING is AWS_BAND_MAPPING else "SCL"
+    scl_out_name = BAND_MAPPING[scl_key]
     scl_dir = out_root / scl_out_name
     scl_dir.mkdir(parents=True, exist_ok=True)
     scl_out_path = scl_dir / f"{date_key}_mosaic.tiff"
@@ -864,11 +942,14 @@ def process_scl_assessment_and_generation(items, date_key, tpl, bbox_proj, mask_
                 logging.warning(f"[{partition_id}]   Error analyzing existing SCL file: {e}, will regenerate")
                 scl_out_path.unlink()
 
+    # Determine SCL asset key for this backend
+    scl_asset_key = "scl" if BAND_MAPPING is AWS_BAND_MAPPING else "SCL"
+
     # Check if SCL assets are included in items
-    if not all('SCL' in item.assets for item in items):
+    if not all(scl_asset_key in item.assets for item in items):
         logging.warning(f"[{partition_id}]   Some items missing SCL assets, trying to use only available SCL")
         # Filter items with SCL assets
-        scl_items = [item for item in items if 'SCL' in item.assets]
+        scl_items = [item for item in items if scl_asset_key in item.assets]
         if not scl_items:
             logging.warning(f"[{partition_id}]   All items missing SCL assets, cannot perform quality assessment!")
             # Return failure result
@@ -880,8 +961,8 @@ def process_scl_assessment_and_generation(items, date_key, tpl, bbox_proj, mask_
             # Use stackstac.stack to load SCL band
             da = stackstac.stack(
                 items=items,
-                assets=['SCL'],
-                resolution=res,
+                assets=[scl_asset_key],
+                resolution=tpl_resolution_tuple(tpl),
                 epsg=tpl["crs"].to_epsg(),
                 bounds=bbox_proj,
                 chunksize=chunksize,
@@ -899,7 +980,7 @@ def process_scl_assessment_and_generation(items, date_key, tpl, bbox_proj, mask_
                         da = da.squeeze(dim, drop=True)
             
             # Extract SCL data
-            scl_da = da.sel(band='SCL')
+            scl_da = da.sel(band=scl_asset_key)
             
             # Get numpy array
             scl_arr = scl_da.values
@@ -924,7 +1005,7 @@ def process_scl_assessment_and_generation(items, date_key, tpl, bbox_proj, mask_
             metadata = {
                 "TIFFTAG_DATETIME": datetime.datetime.now().strftime("%Y:%m:%d %H:%M:%S"),
                 "DATE_ACQUIRED": date_key,
-                "BAND_NAME": "SCL",
+                "BAND_NAME": scl_asset_key,
                 "ITEMS_COUNT": len(items),
                 "VALID_COVERAGE_PCT": f"{valid_pct:.2f}"
             }
@@ -1029,7 +1110,8 @@ def process_day(date_key:str, items, tpl, bbox_proj, mask_np,
             
             try:
                 # Use thread pool to process bands in parallel (excluding SCL)
-                other_bands = [band for band in S2_BANDS if band != "SCL"]
+                scl_key = "scl" if BAND_MAPPING is AWS_BAND_MAPPING else "SCL"
+                other_bands = [band for band in S2_BANDS if band != scl_key]
                 max_workers = min(DEFAULT_MAX_WORKERS, os.cpu_count())
                 logging.info(f"[{partition_id}]   Using {max_workers} threads to process {len(other_bands)} bands in parallel (excluding SCL)")
                 
@@ -1123,15 +1205,27 @@ def main():
     global TEMP_DIR
     TEMP_DIR = a.temp_dir
 
+    # Configure backend-dependent band mapping + STAC backend selection
+    global BAND_MAPPING, S2_BANDS
+    if a.data_source == "aws":
+        BAND_MAPPING = AWS_BAND_MAPPING
+        S2_BANDS = list(BAND_MAPPING.keys())
+        search_items._data_source = "aws"  # type: ignore[attr-defined]
+    else:
+        BAND_MAPPING = MPC_BAND_MAPPING
+        S2_BANDS = list(BAND_MAPPING.keys())
+        search_items._data_source = "mpc"  # type: ignore[attr-defined]
+
     setup_logging(a.debug, out_dir, a.partition_id)
     logging.info(f"[{a.partition_id}] ⚡ S2 Fast Processor startup (Optimized Parallel Edition - SCL Original Value Preservation Version)"); 
+    logging.info(f"[{a.partition_id}] Data source: {a.data_source}")
     log_sys(a.partition_id)
     logging.info(f"[{a.partition_id}] Processing timeout settings: Overall {PROCESS_TIMEOUT//60} minutes, Single day {DAY_TIMEOUT//60} minutes, Single band {BAND_TIMEOUT//60} minutes, SCL assessment {SCL_BAND_TIMEOUT//60} minutes")
     logging.info(f"[{a.partition_id}] SCL assessment attempt count: {SCL_MAX_ATTEMPTS}")
     logging.info(f"[{a.partition_id}] Temporary directory: {TEMP_DIR}")
     logging.info(f"[{a.partition_id}] Processing time period: {a.start_date} → {a.end_date}")
 
-    tpl, bbox_proj, bbox_ll, mask_np = load_roi(Path(a.input_tiff), a.partition_id)
+    tpl, bbox_proj, bbox_ll, mask_np = load_roi(Path(a.input_tiff), a.partition_id, a.resolution)
 
     # Search STAC items
     search_date_range = f"{a.start_date}/{a.end_date}"

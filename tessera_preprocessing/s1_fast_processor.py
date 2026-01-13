@@ -16,6 +16,8 @@ import psutil, rasterio, xarray as xr, rioxarray
 from rasterio.enums import Resampling
 from rasterio.warp import transform_bounds, reproject
 from rasterio.merge import merge
+from rasterio.vrt import WarpedVRT
+from rasterio.transform import from_origin
 import pystac_client, planetary_computer, stackstac
 import shapely.geometry
 import concurrent.futures
@@ -23,6 +25,7 @@ import uuid
 import tempfile
 import shutil
 import random
+import requests
 
 import dask
 from dask.distributed import Client, LocalCluster, performance_report, wait
@@ -43,6 +46,12 @@ warnings.filterwarnings("ignore", category=rasterio.errors.NotGeoreferencedWarni
 warnings.filterwarnings("ignore", category=UserWarning, message=".*The array is being split into many small chunks.*")
 warnings.filterwarnings("ignore", message=".*invalid value encountered in true_divide.*")
 warnings.filterwarnings("ignore", message=".*invalid value encountered in log10.*")
+
+# OPERA RTC-S1 (ASF) CMR collection id for AWS mode
+OPERA_RTC_S1_CMR_CONCEPT_ID = "C2777436413-ASF"
+
+# Optional EDL bearer token file (used to enable GDAL HTTP header auth for ASF/OPERA COG range reads)
+DEFAULT_EDL_TOKEN_FILE = os.path.expanduser("~/.edl_bearer_token")
 
 # Valid coverage threshold (skip processing if below this value)
 MIN_VALID_COVERAGE = 10.0  # percentage
@@ -125,6 +134,8 @@ def get_args():
                    help="Maximum retries for STAC search")
     P.add_argument("--search_chunk_days", type=int, default=15,
                    help="Days per search chunk when splitting large date ranges")
+    P.add_argument("--data_source", default="mpc", choices=["mpc", "aws"],
+                   help="Data source backend: mpc (Planetary Computer sentinel-1-rtc) or aws (OPERA RTC-S1 via CMR links)")
     return P.parse_args()
 
 # Logging
@@ -200,20 +211,69 @@ def make_client(req_workers:int, req_mem:int, partition_id: str):
     return cli
 
 # ROI & Mask
-def load_roi(tiff: Path, partition_id: str):
+def load_roi(tiff: Path, partition_id: str, out_resolution_m: float):
     with rasterio.open(tiff) as src:
-        tpl = dict(crs=src.crs,
-                   transform=src.transform,
-                   width=src.width,
-                   height=src.height)
-        bbox_proj = src.bounds
-        bbox_ll   = transform_bounds(src.crs, "EPSG:4326", *bbox_proj,
-                                     densify_pts=21)
-        mask_np   = (src.read(1) > 0).astype(np.uint8)
-    logging.info(f"[{partition_id}] ROI (CRS={tpl['crs']}): {tpl['width']}×{tpl['height']}")
+        if src.crs is None:
+            raise ValueError(f"ROI has no CRS: {tiff}")
+        bbox_src = src.bounds
+        bbox_ll = transform_bounds(
+            src.crs,
+            "EPSG:4326",
+            bbox_src.left,
+            bbox_src.bottom,
+            bbox_src.right,
+            bbox_src.top,
+            densify_pts=21,
+        )
+
+        # Read ROI mask in source grid
+        mask_src = (src.read(1) > 0).astype(np.uint8)
+
+        # Build OUTPUT template grid: keep bounds the same, but force pixel size to out_resolution_m
+        left, bottom, right, top = bbox_src.left, bbox_src.bottom, bbox_src.right, bbox_src.top
+        res = float(out_resolution_m)
+        # Use ceil so output fully covers the ROI bounds even if bounds are not an exact multiple of res.
+        width = int(np.ceil((right - left) / res))
+        height = int(np.ceil((top - bottom) / res))
+        if width <= 0 or height <= 0:
+            raise ValueError(f"Invalid output grid computed from bounds/res: width={width} height={height}")
+        transform = from_origin(left, top, res, res)
+
+        tpl = dict(crs=src.crs, transform=transform, width=width, height=height)
+        bbox_proj = rasterio.coords.BoundingBox(left=left, bottom=bottom, right=right, top=top)
+
+        # Reproject/resample ROI mask to OUTPUT template grid
+        mask_np = np.zeros((height, width), dtype=np.uint8)
+        reproject(
+            source=mask_src,
+            destination=mask_np,
+            src_transform=src.transform,
+            src_crs=src.crs,
+            dst_transform=transform,
+            dst_crs=src.crs,
+            resampling=Resampling.nearest,
+            src_nodata=0,
+            dst_nodata=0,
+        )
+
+    logging.info(
+        f"[{partition_id}] ROI/output grid (CRS={tpl['crs']}): {tpl['width']}×{tpl['height']} @ {out_resolution_m}m"
+    )
     logging.info(f"[{partition_id}] ROI bbox proj: {fmt_bbox(bbox_proj)}")
     logging.info(f"[{partition_id}] ROI bbox lon/lat: {fmt_bbox(bbox_ll)}")
     return tpl, bbox_proj, bbox_ll, mask_np
+
+
+def tpl_resolution_tuple(tpl) -> tuple:
+    """
+    Return (xres, yres) from the ROI template transform.
+    Using a tuple is critical when ROI pixels are not perfectly square
+    (e.g. xres=30.02857, yres=30.0), otherwise stackstac will generate a
+    slightly different grid and downstream code may silently crop, causing
+    apparent 'zoomed' outputs in QGIS.
+    """
+    tr = tpl["transform"]
+    return (abs(float(tr.a)), abs(float(tr.e)))
 
 def mask_to_xr(mask_np, tpl):
     da = xr.DataArray(mask_np, dims=("y", "x"))
@@ -243,6 +303,330 @@ def search_items_single(bbox_ll, date_range: str, orbit_state="both", partition_
     items = list(q.items())
     
     return items
+
+
+# -------------------------
+# AWS mode: CMR granule search for OPERA RTC-S1
+# -------------------------
+def _cmr_get(url: str, params: dict, timeout_s: int = 60):
+    """CMR GET with basic retry on transient failures."""
+    for attempt in range(5):
+        try:
+            r = requests.get(url, params=params, timeout=timeout_s)
+            r.raise_for_status()
+            return r
+        except Exception as e:
+            if attempt < 4 and is_network_error(e):
+                delay = robust_sleep(1.5, attempt)
+                logging.warning(f"[CMR] request failed (attempt {attempt+1}/5): {e}; retry in {delay:.1f}s")
+                continue
+            raise
+
+
+def cmr_search_opera_rtc_s1(bbox_ll, start_date: str, end_date: str, partition_id: str):
+    """
+    Search OPERA RTC-S1 granules via CMR and return the raw CMR entries.
+    bbox_ll: [minLon, minLat, maxLon, maxLat]
+    Dates: YYYY-MM-DD
+    """
+    url = "https://cmr.earthdata.nasa.gov/search/granules.json"
+    temporal = f"{start_date}T00:00:00Z,{end_date}T23:59:59Z"
+    page_num = 1
+    page_size = 2000
+    entries = []
+    while True:
+        params = {
+            "collection_concept_id": OPERA_RTC_S1_CMR_CONCEPT_ID,
+            "bounding_box": ",".join(map(str, bbox_ll)),
+            "temporal": temporal,
+            "page_size": page_size,
+            "page_num": page_num,
+        }
+        r = _cmr_get(url, params=params, timeout_s=60)
+        js = r.json()
+        batch = js.get("feed", {}).get("entry", []) or []
+        entries.extend(batch)
+        logging.info(f"[{partition_id}] CMR OPERA search page {page_num}: {len(batch)} granules")
+        if len(batch) < page_size:
+            break
+        page_num += 1
+    return entries
+
+
+def cmr_entry_to_opera_links(entry: dict) -> tuple[str, str]:
+    """
+    Return (vv_href, vh_href) from a CMR granule entry links list.
+    Prefers https links (cumulus.asf.earthdatacloud.nasa.gov).
+    """
+    # Prefer cumulus earthdatacloud links (COG-friendly + token/cookie auth),
+    # but fall back to datapool links (HTTP Basic via ~/.netrc) when needed.
+    vv_candidates = []
+    vh_candidates = []
+    for l in entry.get("links", []) or []:
+        if not isinstance(l, dict):
+            continue
+        href = l.get("href") or ""
+        if not href.startswith("http"):
+            continue
+        if href.endswith("_VV.tif"):
+            vv_candidates.append(href)
+        elif href.endswith("_VH.tif"):
+            vh_candidates.append(href)
+
+    title = entry.get("title") or entry.get("producer_granule_id") or ""
+
+    def pick(cands, pol_suffix: str):
+        if not cands:
+            # Some CMR entries only include datapool https links, but the same object may
+            # still exist in ASF Earthdata Cloud (cumulus) under the canonical path.
+            if title:
+                base = f"https://cumulus.asf.earthdatacloud.nasa.gov/OPERA/OPERA_L2_RTC-S1/{title}/{title}"
+                return base + pol_suffix
+            return None
+        for h in cands:
+            if "cumulus.asf.earthdatacloud.nasa.gov" in h:
+                return h
+        # If only datapool is present, prefer constructing cumulus first (often works),
+        # because datapool may require different auth policies.
+        if title:
+            base = f"https://cumulus.asf.earthdatacloud.nasa.gov/OPERA/OPERA_L2_RTC-S1/{title}/{title}"
+            return base + pol_suffix
+        return cands[0]
+
+    vv = pick(vv_candidates, "_VV.tif")
+    vh = pick(vh_candidates, "_VH.tif")
+
+    if not vv or not vh:
+        raise RuntimeError(f"Missing VV/VH links for granule {entry.get('title')}")
+    return vv, vh
+
+
+def ensure_gdal_http_header_file(token_file: str = DEFAULT_EDL_TOKEN_FILE, out_dir=None):
+    """
+    Best-effort: create a GDAL_HTTP_HEADER_FILE containing Authorization Bearer + asf-urs cookie.
+    Returns header file path or None if token missing.
+    """
+    try:
+        token = Path(token_file).read_text(encoding="utf-8").strip()
+    except Exception:
+        return None
+    if not token:
+        return None
+    if out_dir is None:
+        out_dir = Path.home() / ".cache" / "btfm4rs"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    header_path = out_dir / "gdal_http_headers_asf.txt"
+    try:
+        os.umask(0o077)
+    except Exception:
+        pass
+    header_path.write_text(
+        f"Authorization: Bearer {token}\nCookie: asf-urs={token}\n",
+        encoding="utf-8",
+    )
+    try:
+        os.chmod(header_path, 0o600)
+    except Exception:
+        pass
+    return str(header_path)
+
+def group_opera_by_date(entries, partition_id: str):
+    """
+    Group CMR granules by acquisition date (YYYY-MM-DD) from time_start.
+    """
+    g = defaultdict(list)
+    for e in entries:
+        ts = e.get("time_start") or ""
+        d = ts[:10] if ts else (e.get("title", "")[0:10])
+        if not d or len(d) != 10:
+            continue
+        g[d].append(e)
+    logging.info(f"[{partition_id}] ⇒ {len(g)} OPERA observation days (date-only; orbit split happens during processing)")
+    return dict(sorted(g.items()))
+
+
+def _opera_open_env(header_file, use_header: bool):
+    """
+    Build rasterio.Env kwargs for OPERA/ASF COG access.
+    Note: uses GDAL_HTTP_HEADER_FILE if provided (EDL token-based auth).
+    """
+    env = {
+        "GDAL_DISABLE_READDIR_ON_OPEN": "EMPTY_DIR",
+        "GDAL_HTTP_MULTIRANGE": "YES",
+        "GDAL_HTTP_MERGE_CONSECUTIVE_RANGES": "YES",
+        "CPL_VSIL_CURL_ALLOWED_EXTENSIONS": ".tif,.tiff,.xml",
+        # allow HTTP Basic via ~/.netrc (needed for datapool links)
+        "GDAL_HTTP_NETRC": "YES",
+        "GDAL_HTTP_NETRC_FILE": os.path.expanduser("~/.netrc"),
+    }
+    if header_file and use_header:
+        env["GDAL_HTTP_HEADER_FILE"] = header_file
+    return env
+
+
+def _read_opera_band_to_roi(href: str, tpl, resampling: Resampling, header_file, partition_id: str):
+    """
+    Read a remote OPERA COG band into the ROI grid defined by tpl (crs/transform/width/height).
+    Returns (array, tags_dict).
+    """
+    # datapool URLs require HTTP Basic via netrc; do not send Bearer header there.
+    use_header = "datapool.asf.alaska.edu" not in href
+    env = _opera_open_env(header_file, use_header=use_header)
+    with rasterio.Env(**env):
+        with rasterio.open(href) as src:
+            tags = src.tags()
+            with WarpedVRT(
+                src,
+                crs=tpl["crs"],
+                transform=tpl["transform"],
+                width=tpl["width"],
+                height=tpl["height"],
+                resampling=resampling,
+            ) as vrt:
+                arr = vrt.read(1)
+    return arr, tags
+
+
+def process_day_opera(
+    date_str: str,
+    entries_for_day,
+    tpl,
+    bbox_proj,
+    mask_np,
+    out_dir,
+    resolution,
+    chunksize,
+    min_coverage,
+    partition_id,
+    orbit_state_filter: str,
+    overwrite: bool,
+    header_file,
+) -> bool:
+    """
+    AWS mode: process one date of OPERA RTC-S1 bursts.
+    - Determine orbit direction per burst from GeoTIFF tag ORBIT_PASS_DIRECTION.
+    - Convert to MPC-like int16 scaled dB and mosaic per orbit+polarization.
+    - Output naming matches MPC: {date}_vv_{ascending|descending}.tiff, same for VH.
+    """
+    logging.info(f"[{partition_id}] → {date_str} (OPERA granules={len(entries_for_day)})")
+    t0 = time.time()
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Temp dir for this day
+    temp_dir = tempfile.mkdtemp(prefix=f"s1aws_{date_str}_")
+
+    vv_by_orbit = defaultdict(list)
+    vh_by_orbit = defaultdict(list)
+
+    try:
+        for i, entry in enumerate(entries_for_day):
+            title = entry.get("title") or entry.get("producer_granule_id") or f"granule_{i}"
+            try:
+                vv_href, vh_href = cmr_entry_to_opera_links(entry)
+            except Exception as e:
+                logging.warning(f"[{partition_id}]   Skipping granule (missing links): {title}: {e}")
+                continue
+
+            uid = uuid.uuid4().hex[:8]
+            vv_tmp = Path(temp_dir) / f"{date_str}_vv_{uid}.tiff"
+            vh_tmp = Path(temp_dir) / f"{date_str}_vh_{uid}.tiff"
+
+            try:
+                vv_arr, vv_tags = _read_opera_band_to_roi(vv_href, tpl, Resampling.bilinear, header_file, partition_id)
+                vh_arr, _ = _read_opera_band_to_roi(vh_href, tpl, Resampling.bilinear, header_file, partition_id)
+            except Exception as e:
+                logging.warning(f"[{partition_id}]   Failed reading OPERA COG for {title}: {e}")
+                continue
+
+            orbit_dir = (vv_tags.get("ORBIT_PASS_DIRECTION") or "unknown").lower()
+            if orbit_dir not in ("ascending", "descending"):
+                orbit_dir = "unknown"
+
+            if orbit_state_filter != "both" and orbit_dir != orbit_state_filter:
+                continue
+
+            # Coverage
+            _, vv_valid_pct = analyze_coverage(vv_arr, mask_np, partition_id)
+            _, vh_valid_pct = analyze_coverage(vh_arr, mask_np, partition_id)
+            if vv_valid_pct < min_coverage and vh_valid_pct < min_coverage:
+                logging.info(f"[{partition_id}]   Skip {title} ({orbit_dir}) coverage VV={vv_valid_pct:.2f} VH={vh_valid_pct:.2f} < {min_coverage}")
+                continue
+
+            # Convert to MPC-like int16 scaled dB and apply ROI mask
+            vv_db = amplitude_to_db(vv_arr, mask=mask_np) if vv_valid_pct >= min_coverage else None
+            vh_db = amplitude_to_db(vh_arr, mask=mask_np) if vh_valid_pct >= min_coverage else None
+
+            if vv_db is not None:
+                vv_metadata = {
+                    "band_desc": "VV polarization, amplitude to dB, +50 offset, scale=200 (AWS OPERA source)",
+                    "TIFFTAG_DATETIME": datetime.datetime.now().strftime("%Y:%m:%d %H:%M:%S"),
+                    "ORBIT_STATE": orbit_dir,
+                    "DATE_ACQUIRED": date_str,
+                    "POLARIZATION": "VV",
+                    "SOURCE": "OPERA_RTC_S1",
+                    "SOURCE_GRANULE": title,
+                }
+                write_tiff(vv_db, vv_tmp, tpl, "int16", vv_metadata)
+                if validate_tiff(vv_tmp, (tpl["height"], tpl["width"]), tpl["crs"], tpl["transform"]):
+                    vv_by_orbit[orbit_dir].append(str(vv_tmp))
+
+            if vh_db is not None:
+                vh_metadata = {
+                    "band_desc": "VH polarization, amplitude to dB, +50 offset, scale=200 (AWS OPERA source)",
+                    "TIFFTAG_DATETIME": datetime.datetime.now().strftime("%Y:%m:%d %H:%M:%S"),
+                    "ORBIT_STATE": orbit_dir,
+                    "DATE_ACQUIRED": date_str,
+                    "POLARIZATION": "VH",
+                    "SOURCE": "OPERA_RTC_S1",
+                    "SOURCE_GRANULE": title,
+                }
+                write_tiff(vh_db, vh_tmp, tpl, "int16", vh_metadata)
+                if validate_tiff(vh_tmp, (tpl["height"], tpl["width"]), tpl["crs"], tpl["transform"]):
+                    vh_by_orbit[orbit_dir].append(str(vh_tmp))
+
+        # Mosaic outputs per orbit dir
+        any_success = False
+        for orbit_dir in ("ascending", "descending", "unknown"):
+            if orbit_state_filter != "both" and orbit_dir != orbit_state_filter:
+                continue
+
+            vv_out = out_dir / f"{date_str}_vv_{orbit_dir}.tiff"
+            vh_out = out_dir / f"{date_str}_vh_{orbit_dir}.tiff"
+
+            if not overwrite:
+                vv_ok = vv_out.exists() and validate_tiff(vv_out, (tpl["height"], tpl["width"]), tpl["crs"], tpl["transform"])
+                vh_ok = vh_out.exists() and validate_tiff(vh_out, (tpl["height"], tpl["width"]), tpl["crs"], tpl["transform"])
+                if vv_ok and vh_ok:
+                    logging.info(f"[{partition_id}]   {date_str}_{orbit_dir} outputs exist+valid, skipping")
+                    any_success = True
+                    continue
+
+            vv_files = vv_by_orbit.get(orbit_dir) or []
+            vh_files = vh_by_orbit.get(orbit_dir) or []
+
+            if vv_files:
+                if len(vv_files) == 1:
+                    shutil.copy2(vv_files[0], vv_out)
+                    any_success = True
+                else:
+                    any_success = mosaic_tiffs(vv_files, vv_out, tpl, date_str, orbit_dir, "VV", partition_id) is not None or any_success
+
+            if vh_files:
+                if len(vh_files) == 1:
+                    shutil.copy2(vh_files[0], vh_out)
+                    any_success = True
+                else:
+                    any_success = mosaic_tiffs(vh_files, vh_out, tpl, date_str, orbit_dir, "VH", partition_id) is not None or any_success
+
+        logging.info(f"[{partition_id}] ← {date_str} OPERA processing done in {time.time()-t0:.1f}s")
+        return any_success
+
+    finally:
+        try:
+            shutil.rmtree(temp_dir)
+        except Exception:
+            pass
 
 def search_items_chunked(bbox_ll, start_date: str, end_date: str, chunk_days: int, orbit_state="both", partition_id="unknown"):
     """Search items by splitting date range into smaller chunks"""
@@ -654,8 +1038,11 @@ def process_item(item, tpl, bbox_proj, mask_np, resolution, chunksize, temp_dir,
     logging.info(f"[{partition_id}]   Processing item {item_id} ({date_str}_{orbit_state})")
     
     # Robust data loading
+    # IMPORTANT: always use output template resolution (derived from out_resolution_m) for stackstac.
+    res_param = tpl_resolution_tuple(tpl)
+
     data_result, error_msg = robust_stackstac_load(
-        item, bbox_proj, tpl["crs"].to_epsg(), resolution, chunksize, partition_id
+        item, bbox_proj, tpl["crs"].to_epsg(), res_param, chunksize, partition_id
     )
     
     if data_result is None:
@@ -996,59 +1383,120 @@ def main():
 
     setup_logging(args.debug, out_dir, args.partition_id)
     logging.info(f"[{args.partition_id}] ⚡ S1 Fast Processor starting (Robust Network Edition)"); 
+    logging.info(f"[{args.partition_id}] Data source: {args.data_source}")
     log_sys(args.partition_id)
     logging.info(f"[{args.partition_id}] Network settings: search retries {args.max_search_retries}, chunk size {args.search_chunk_days} days")
     logging.info(f"[{args.partition_id}] Processing timeout settings: overall {PROCESS_TIMEOUT//60}min, single day {DAY_TIMEOUT//60}min, single item {ITEM_TIMEOUT//60}min, search {SEARCH_TIMEOUT//60}min")
     logging.info(f"[{args.partition_id}] Processing time period: {args.start_date} → {args.end_date}")
 
-    tpl, bbox_proj, bbox_ll, mask_np = load_roi(Path(args.input_tiff), args.partition_id)
-    
-    # Search items based on orbit state with robust retry
-    if args.orbit_state == "both":
-        logging.info(f"[{args.partition_id}] Searching ascending and descending orbit data")
-        items = search_items(bbox_ll, f"{args.start_date}/{args.end_date}", 
-                           partition_id=args.partition_id, 
-                           max_retries=args.max_search_retries,
-                           chunk_days=args.search_chunk_days)
+    tpl, bbox_proj, bbox_ll, mask_np = load_roi(Path(args.input_tiff), args.partition_id, args.resolution)
+
+    if args.data_source == "aws":
+        # AWS/OPERA path: search CMR, group by date only, orbit split happens per burst tag.
+        header_file = ensure_gdal_http_header_file(DEFAULT_EDL_TOKEN_FILE, out_dir=Path.home() / ".cache" / "btfm4rs")
+        if header_file:
+            logging.info(f"[{args.partition_id}] Using GDAL_HTTP_HEADER_FILE for OPERA COG auth: {header_file}")
+        else:
+            logging.warning(f"[{args.partition_id}] No EDL token found at {DEFAULT_EDL_TOKEN_FILE}; OPERA COG reads may fail (401).")
+
+        entries = cmr_search_opera_rtc_s1(bbox_ll, args.start_date, args.end_date, args.partition_id)
+        if not entries:
+            logging.warning(f"[{args.partition_id}] No OPERA granules found, exiting")
+            return
+        groups = group_opera_by_date(entries, args.partition_id)
+
+        with make_client(args.dask_workers, args.worker_memory, args.partition_id):
+            report_path = out_dir / f"dask-report-{args.partition_id}.html"
+            with performance_report(filename=report_path):
+                with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
+                    future_to_day = {}
+                    for date_str, day_entries in groups.items():
+                        future = executor.submit(
+                            process_day_opera,
+                            date_str,
+                            day_entries,
+                            tpl,
+                            bbox_proj,
+                            mask_np,
+                            str(out_dir),
+                            args.resolution,
+                            args.chunksize,
+                            args.min_coverage,
+                            args.partition_id,
+                            args.orbit_state,
+                            args.overwrite,
+                            header_file,
+                        )
+                        future_to_day[future] = date_str
+
+                    results = []
+                    for future in concurrent.futures.as_completed(future_to_day):
+                        d = future_to_day[future]
+                        try:
+                            results.append(bool(future.result()))
+                        except Exception as e:
+                            logging.error(f"[{args.partition_id}] Exception occurred while processing {d}: {e}")
+                            results.append(False)
+
     else:
-        logging.info(f"[{args.partition_id}] Searching {args.orbit_state} orbit data")
-        items = search_items(bbox_ll, f"{args.start_date}/{args.end_date}", 
-                           args.orbit_state, args.partition_id,
-                           max_retries=args.max_search_retries,
-                           chunk_days=args.search_chunk_days)
-    
-    if not items:
-        logging.warning(f"[{args.partition_id}] No qualifying images found, exiting")
-        return
+        # MPC path (existing): search items with orbit_state and process by date+orbit.
+        if args.orbit_state == "both":
+            logging.info(f"[{args.partition_id}] Searching ascending and descending orbit data")
+            items = search_items(
+                bbox_ll,
+                f"{args.start_date}/{args.end_date}",
+                partition_id=args.partition_id,
+                max_retries=args.max_search_retries,
+                chunk_days=args.search_chunk_days,
+            )
+        else:
+            logging.info(f"[{args.partition_id}] Searching {args.orbit_state} orbit data")
+            items = search_items(
+                bbox_ll,
+                f"{args.start_date}/{args.end_date}",
+                args.orbit_state,
+                args.partition_id,
+                max_retries=args.max_search_retries,
+                chunk_days=args.search_chunk_days,
+            )
 
-    # Group by date and orbit state
-    groups = group_by_date_orbit(items, args.partition_id)
+        if not items:
+            logging.warning(f"[{args.partition_id}] No qualifying images found, exiting")
+            return
 
-    with make_client(args.dask_workers, args.worker_memory, args.partition_id):
-        report_path = out_dir / f"dask-report-{args.partition_id}.html"
-        with performance_report(filename=report_path):
-            # Create thread pool to process multiple dates
-            with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
-                # Submit all tasks
-                future_to_group = {}
-                for key, group_items in groups.items():
-                    future = executor.submit(
-                        process_day_orbit, key, group_items, tpl, bbox_proj, mask_np,
-                        str(out_dir), args.resolution, args.chunksize, args.min_coverage,
-                        args.partition_id, args.overwrite
-                    )
-                    future_to_group[future] = key
-                
-                # Process results
-                results = []
-                for future in concurrent.futures.as_completed(future_to_group):
-                    key = future_to_group[future]
-                    try:
-                        success = future.result()
-                        results.append(success)
-                    except Exception as e:
-                        logging.error(f"[{args.partition_id}] Exception occurred while processing {key}: {e}")
-                        results.append(False)
+        groups = group_by_date_orbit(items, args.partition_id)
+
+        with make_client(args.dask_workers, args.worker_memory, args.partition_id):
+            report_path = out_dir / f"dask-report-{args.partition_id}.html"
+            with performance_report(filename=report_path):
+                with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
+                    future_to_group = {}
+                    for key, group_items in groups.items():
+                        future = executor.submit(
+                            process_day_orbit,
+                            key,
+                            group_items,
+                            tpl,
+                            bbox_proj,
+                            mask_np,
+                            str(out_dir),
+                            args.resolution,
+                            args.chunksize,
+                            args.min_coverage,
+                            args.partition_id,
+                            args.overwrite,
+                        )
+                        future_to_group[future] = key
+
+                    results = []
+                    for future in concurrent.futures.as_completed(future_to_group):
+                        key = future_to_group[future]
+                        try:
+                            success = future.result()
+                            results.append(success)
+                        except Exception as e:
+                            logging.error(f"[{args.partition_id}] Exception occurred while processing {key}: {e}")
+                            results.append(False)
     
     success_count = sum(results)
     total_count = len(results)
