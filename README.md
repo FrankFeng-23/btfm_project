@@ -136,7 +136,7 @@ First, navigate to the `tessera_preprocessing` folder:
 cd tessera_preprocessing
 ```
 
-Then modify the following:
+Then edit the file s1_s2_downloader.sh to point to the ROI TIFF file, the output and temporary directories, and the data source:
 
 ```bash
 # === Basic Configuration ===
