@@ -74,7 +74,7 @@ The pipeline has no strict requirements for CPU and GPU, but more CPU cores and 
 
 ### 4. Operating System
 
-For the data preprocessing pipeline, we support almost all Linux and macOS systems. For Windows, we recommend using WSL.
+For the data preprocessing pipeline, we support almost all Linux systems. For Windows, we recommend using WSL.
 
 For the model inference part, we have only tested it on Linux and Windows WSL, and they are working.
 
