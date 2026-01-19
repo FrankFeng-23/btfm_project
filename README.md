@@ -74,7 +74,7 @@ The pipeline has no strict requirements for CPU and GPU, but more CPU cores and 
 
 ### 4. Operating System
 
-For the data preprocessing pipeline, we support almost all Linux and macOS systems. For Windows, we recommend using WSL.
+For the data preprocessing pipeline, we support almost all Linux systems. For Windows, we recommend using WSL. We do not support MacOS at this point.
 
 For the model inference part, we have only tested it on Linux and Windows WSL, and they are working.
 
@@ -126,6 +126,11 @@ We need some geographic processing packages (fortunately, we won't be using GDAL
 
 ```bash
 pip install -r requirements.txt
+```
+Note: If you are in a managed environment, you may need to install a venv first, using 
+```bash
+python3 -m venv venv
+source venv/bin/activate
 ```
 
 ### Script Configuration
