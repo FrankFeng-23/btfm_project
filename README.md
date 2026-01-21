@@ -72,7 +72,7 @@ The pipeline has no strict requirements for CPU and GPU, but more CPU cores and 
 
 ### 4. Operating System
 
-For the data preprocessing pipeline, we support almost all Linux systems. For Windows, we recommend using WSL.
+For the data preprocessing pipeline, we support almost all Linux systems. For Windows, we recommend using WSL. We do not support MacOS at this point.
 
 For the model inference part, we have only tested it on Linux and Windows WSL, and they are working.
 
@@ -91,7 +91,7 @@ The new generation of embeddings will use OPERA from ASF DAAC:
 - Sentinel-1 data source:  https://registry.opendata.aws/nasa-operal2rtc-s1v1/ 
 - Sentinel-2 data source: https://registry.opendata.aws/sentinel-2-l2a-cogs/
 
-Currently, our pipeline only accepts TIFF format input. The resolution of the tiff file can vary, but up to 10m granularity as this is the highest resolution for Sentinel-2 imagery. For valid ROI areas within the TIFF, the value is 1; otherwise, it's 0. If you only have a shapefile, that's fine too - we provide a `convert_shp_to_tiff.py` script.
+Currently, our pipeline only accepts TIFF format input. The resolution of the input ROI TIFF can vary (e.g., 30m), but the pipeline will **always generate Sentinel-1 and Sentinel-2 outputs at the configured `RESOLUTION`** (default 10m) while keeping the **ROI extent/bounds identical**. For valid ROI areas within the TIFF, the value is 1; otherwise, it's 0. If you only have a shapefile, that's fine too - we provide a `convert_shp_to_tiff.py` script.
 
 ### Download Source Code
 
@@ -125,6 +125,11 @@ We need some geographic processing packages (fortunately, we won't be using GDAL
 ```bash
 pip install -r requirements.txt
 ```
+Note: If you are in a managed environment, you may need to install a venv first, using 
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
 ### Script Configuration
 
@@ -134,7 +139,7 @@ First, navigate to the `tessera_preprocessing` folder:
 cd tessera_preprocessing
 ```
 
-Then modify the following:
+Then edit the file s1_s2_downloader.sh to point to the ROI TIFF file, the output and temporary directories, and the data source:
 
 ```bash
 # === Basic Configuration ===
@@ -149,11 +154,39 @@ mkdir -p "$OUT_DIR"
 PYTHON_ENV="/absolute/path/to/your/python_env/bin/python"
 
 # === Sentinel-1 & Sentinel-2 Processing Configuration ===
-YEAR=2022 # Range [2017-2024]
-RESOLUTION=10.0  # Resolution of the input TIFF, also the output resolution (meters)
+YEAR=2022 # Range [2017-2025]
+RESOLUTION=10.0  # Output resolution (meters). ROI TIFF can be any resolution; extent is preserved.
+
+# === Data Source Configuration ===
+# mpc: Microsoft Planetary Computer (sentinel-1-rtc, sentinel-2-l2a)
+# aws: AWS Open Data backends (S1=OPERA RTC-S1 via ASF/CMR + ASF Earthdata Cloud COGs, S2=Earth-search Sentinel-2 L2A COGs)
+DATA_SOURCE="mpc"   # choices: mpc/aws
 ```
 
-Note that the `RESOLUTION` needs to match the resolution of your input TIFF; otherwise, there may be misalignments in geographic coverage. Below the above configuration, there are some additional configurations that you can modify according to your computer's performance.
+Note: `RESOLUTION` controls output pixel size. The pipeline keeps the ROI bounds fixed and resamples the ROI mask into the output grid.
+
+### AWS Credentials (only needed when `DATA_SOURCE="aws"`)
+Sentinel-2 on Earth-search is public and **does not require credentials**.
+
+Sentinel-1 OPERA RTC-S1 is accessed via ASF Earthdata Cloud (COG over HTTPS). You need an Earthdata Login token:
+- **Create an Earthdata account**: via [NASA Earthdata Login](https://urs.earthdata.nasa.gov/home).
+- **Approve Application**: After registering your account, you can go to the Applications tab and add Alaska Satellite Facility Data Access to the list of approved applications.
+- **Obtain an EDL Bearer token / JWT** by clicking **Generate Token** and store it locally (do not commit it).
+
+Recommended (simple + explicit):
+
+```bash
+nano ~/.edl_bearer_token
+# paste token, save+exit (Ctrl-O Enter, then Ctrl-X)
+chmod 600 ~/.edl_bearer_token
+```
+
+The AWS S1 downloader will use this token to read COGs from ASF Earthdata Cloud.
+
+If you want to retrieve temporary S3 credentials (advanced; usually not required for this pipeline), see ASF guidance:
+- `https://cumulus.asf.alaska.edu/s3credentialsREADME`
+
+Below the above configuration, there are some additional configurations that you can modify according to your computer's performance.
 
 First, give permission to `s1_s2_downloader.sh`:
 
