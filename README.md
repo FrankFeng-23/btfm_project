@@ -465,6 +465,7 @@ If you want to reproduce the downstream tasks in the paper, you can visit https:
 
 ## Presentations
 
+* [TESSERA: Precomputed FAIR Global Pixel Embeddings for Earth Representation and Analysis](https://www.grss-ieee.org/event/tessera-precomputed-fair-global-pixel-embeddings-for-earth-representation-and-analysis/) IEEE GRSS Talk, Frank Feng, 12 December, 2025
 * [2-slide summary (PPTX)](https://svr-sk818-web.cl.cam.ac.uk/tessera/images/a/a3/CRI-2slide.pptx) for CRI Flash Talks, S. Keshav, October 7, 2025
 * [Foundation model overview](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:251006_LabMeeting_BallJGC.pptx) (PPTX) for Ecology Groups meeting, University of Cambridge, DAB, James Ball, October 6, 2025
 * [TESSERA overview presentation with a focus on ecological applications](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:Tessera_talk_maryland_1st_Oct.pdf) (PDF) University of Maryland, Frank Feng, October 1, 2025
