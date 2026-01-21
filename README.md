@@ -294,7 +294,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 ### Model Weight
 
-Next, download the model weights from [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) (please request for access) and place the `.pt` file in the `tessera_infer/checkpoints` directory:
+Next, download the model weights from [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) and place the `.pt` file in the `tessera_infer/checkpoints` directory:
 
 ```
 tessera_infer
