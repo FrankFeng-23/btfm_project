@@ -30,6 +30,7 @@
   - [Downstream Tasks](#downstream-tasks)
   - [Citation](#citation)
   - [Acknowledgments](#acknowledgments)
+  - [Team](#team)
   - [Star History](#star-history)
 
 ## Introduction
@@ -46,13 +47,13 @@ Here are some visualization results of the TESSERA representation map (using the
 
 ## License
 
-TESSERA software is release under the standard MIT license. Embeddings are released under the [CC0] (https://creativecommons.org/publicdomain/zero/1.0/) license: essentially, 
+TESSERA software is release under the standard MIT license. Embeddings are released under the [CC0](https://creativecommons.org/publicdomain/zero/1.0/) license: essentially, 
 they can be freely used for both commercial and non-commercial purposes. Although we do not legally require attribution,
 we do request it.
 
 ## Accessing Embeddings using GeoTessera (recommended)
 
-We have generated embeddings for the whole globe at 10m resolution for 2024. T
+We have generated embeddings for the whole globe at 10m resolution for 2024.
 These can be downloaded and used for downstream applications, saving significant computational time and resources, using 
 the [GeoTessera](https://github.com/ucam-eo/geotessera) library. 
 We will progressively extending coverage backwards year by year until 2017. The current coverage map is below:
@@ -482,6 +483,41 @@ If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv
 ## Acknowledgments
 We would like to express our gratitude to UKRI and the [DAWN](https://www.hpc.cam.ac.uk/d-w-n) supercomputer team at Cambridge, for their generous support in this project. We also acknowledge support from [AMD](https://www.amd.com/en.html),  [Vultr](https://www.vultr.com/), [Microsoft AI For Good Lab](https://www.microsoft.com/en-us/research/group/ai-for-good-research-lab/), [dClimate](https://www.dclimate.net/), and [Amazon Web Services (AWS)](https://aws.amazon.com/) under their AWS Open Data program (https://opendata.aws/). This work would not have been possible without their computational resources and technical assistance.  
 
+## Team
+
+### Cambridge Faculty
+* [S. Keshav](https://svr-sk818-web.cl.cam.ac.uk/keshav/wiki/index.php/Main_Page)
+* [Anil Madhavapeddy](https://anil.recoil.org)
+* [David Coomes](https://www.plantsci.cam.ac.uk/directory/david-coomes)
+* Sadiq Jaffer
+
+### Postdoc
+* James Ball
+
+### PhD
+* Madeleine Lisaius
+* Zhengpeng (Frank) Feng
+* Robin Young
+* Jovana Knezevic
+
+### MPhil
+
+### Undergrad
+* Zejia Yang (Part II student, working with Frank Feng on MAE pretraining of spatial feature extractors)
+
+### Interns
+* Kenzy Soror (U. Waterloo, working with Robin Young)
+* Artyom Gabtraupov (U. Waterloo, working with Robin Young)
+* Gabriel Mahler (U. Cambridge, working with Anil Madhavapeddy and Silviu Petrovan on [hedgehog habitats and tracking](https://anil.recoil.org/ideas/hedgehog-mapping))
+* Leyu Pan (Imperial College, working with Frank Feng on text embeddings generated from OSM)
+
+### Collaborators
+* [Clement Atzberger](https://www.linkedin.com/in/clement-atzberger-8abb8065/?originalSubdomain=at), dClimate Labs
+* [Andrew Blake](https://en.wikipedia.org/wiki/Andrew_Blake_(computer_scientist)), Mantle Labs
+
+### Visitors
+* Silja Sormunnen, Aalto University, Finland
+* Isabel Mansley (U. Edinburgh, working with David Coomes and Anil Madhavapeddy on [habitat mapping in Scotland](https://anil.recoil.org/ideas/cairngorms-connect-habitats)
 
 ## Star History
 [![Star History Chart](https://api.star-history.com/svg?repos=ucam-eo/tessera&type=Date)](https://www.star-history.com/#ucam-eo/tessera&Date)
