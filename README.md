@@ -46,7 +46,7 @@ Here are some visualization results of the TESSERA representation map (using the
 
 ## License
 
-TESSERA software is release under the standard MIT license. Embeddings are released under the [CC0](https://creativecommons.org/publicdomain/zero/1.0/) license: essentially, 
+TESSERA software is release under the standard MIT license. Embeddings and model weights are released under the [CC0](https://creativecommons.org/publicdomain/zero/1.0/) license: essentially, 
 they can be freely used for both commercial and non-commercial purposes. Although we do not legally require attribution,
 we do request it.
 
