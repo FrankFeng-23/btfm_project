@@ -23,10 +23,8 @@
 
   - [Introduction](#introduction)
   - [License](#License)
-  - [Global Embeddings Access](#global-embeddings-access)
-  - [Hardware Requirements](#hardware-requirements)
-  - [Data Preprocessing](#data-preprocessing)
-  - [Inference](#inference)
+  - [Accessing Embeddings](#global-embeddings-access)
+  - [Creating your own Embeddings](#creating-your-own-embeddings)
   - [Downstream Tasks](#downstream-tasks)
   - [Citation](#citation)
   - [Acknowledgments](#acknowledgments)
@@ -488,19 +486,17 @@ We would like to express our gratitude to UKRI and the [DAWN](https://www.hpc.ca
 ### Cambridge Faculty
 * [S. Keshav](https://svr-sk818-web.cl.cam.ac.uk/keshav/wiki/index.php/Main_Page)
 * [Anil Madhavapeddy](https://anil.recoil.org)
+* [Sadiq Jaffer](https://toao.com)
 * [David Coomes](https://www.plantsci.cam.ac.uk/directory/david-coomes)
-* Sadiq Jaffer
 
 ### Postdoc
 * James Ball
-
+  
 ### PhD
 * Madeleine Lisaius
 * Zhengpeng (Frank) Feng
 * Robin Young
 * Jovana Knezevic
-
-### MPhil
 
 ### Undergrad
 * Zejia Yang (Part II student, working with Frank Feng on MAE pretraining of spatial feature extractors)
