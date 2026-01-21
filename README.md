@@ -26,6 +26,7 @@
   - [Accessing Embeddings](#global-embeddings-access)
   - [Creating your own Embeddings](#creating-your-own-embeddings)
   - [Downstream Tasks](#downstream-tasks)
+  - [Presentations](#presentations)
   - [Citation](#citation)
   - [Acknowledgments](#acknowledgments)
   - [Team](#team)
@@ -462,6 +463,15 @@ out_dir = "/maps/usr/tessera_project/my_data/"  # Change to the actual output di
 
 If you want to reproduce the downstream tasks in the paper, you can visit https://github.com/ucam-eo/tessera-downstream-task. There are many examples provided there.
 
+## Presentations
+
+* [2-slide summary (PPTX)](https://svr-sk818-web.cl.cam.ac.uk/tessera/images/a/a3/CRI-2slide.pptx) for CRI Flash Talks, S. Keshav, October 7, 2025
+* [Foundation model overview](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:251006_LabMeeting_BallJGC.pptx) (PPTX) for Ecology Groups meeting, University of Cambridge, DAB, James Ball, October 6, 2025
+* [TESSERA overview presentation with a focus on ecological applications](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:Tessera_talk_maryland_1st_Oct.pdf) (PDF) University of Maryland, Frank Feng, October 1, 2025
+* [TESSERA overview presentation](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:JCU-tesserav2.pptx) (PPTX) James Cook University, S. Keshav, September 29, 2025
+* [TESSERA overview presentation](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:TESSERA_Talk_DAB_5_20.pdf) (PDF) University of Cambridge, DAB, Frank Feng, May 20, 2025
+* [Self-supervised learning for earth observation](https://svr-sk818-web.cl.cam.ac.uk/tessera/images/b/b3/BTFM_talk_Exeter_v2.pptx) (PPTX) S. Keshav, Exeter, April 2025
+  
 ## Citation
 
 If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv.org/abs/2506.20380):
