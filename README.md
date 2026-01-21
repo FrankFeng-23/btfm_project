@@ -1,18 +1,16 @@
 # Temporal Embeddings of Surface Spectra for Earth Representation and Analysis (TESSERA)
-<a name="readme-top"></a>
-<div>
-    <a align="center">
-        <img src="images/banner.png"> 
+<div align="center">
+    <a href="#readme-top">
+        <img src="images/banner.png" alt="Banner">
     </a>
+    <br />
     <p align="center">
-        <div style="display: flex; justify-content: space-evenly; align-items: center; width: 100%;">
-            <a href="https://www.grss-ieee.org/event/tessera-precomputed-fair-global-pixel-embeddings-for-earth-representation-and-analysis/" style="flex-grow: 1; text-align: center; padding: 0 10px;">View Our Talk 🌐</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="http://arxiv.org/abs/2506.20380" style="flex-grow: 1; text-align: center; padding: 0 10px;">View Our Paper :bookmark_tabs:</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Report Bug :hammer_and_wrench:</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Request Feature 🙋</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/Acceptable_use_policy" style="flex-grow: 1; text-align: center; padding: 0 10px;">Acceptable Use Policy</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="https://svr-sk818-web.cl.cam.ac.uk/keshav/wiki/images/9/9d/TESSERA.m4a" style="flex-grow: 1; text-align: center; padding: 0 10px;">Podcast 🎧</a>
-        </div>
+        <a href="https://www.grss-ieee.org/event/tessera-precomputed-fair-global-pixel-embeddings-for-earth-representation-and-analysis/">IEEE Talk 🌐</a> &nbsp;&nbsp;•&nbsp;&nbsp;
+        <a href="http://arxiv.org/abs/2506.20380">Paper 📄</a> &nbsp;&nbsp;•&nbsp;&nbsp;
+        <a href="https://github.com/FrankFeng-23/btfm_project/issues">Report Bugs 🛠️</a> &nbsp;&nbsp;•&nbsp;&nbsp;
+        <a href="https://github.com/FrankFeng-23/btfm_project/issues">Request Features 💡</a> &nbsp;&nbsp;•&nbsp;&nbsp;
+        <a href="https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/Acceptable_use_policy">Policy ⚖️</a> &nbsp;&nbsp;•&nbsp;&nbsp;
+        <a href="https://www.satellite-image-deep-learning.com/p/tessera-a-temporal-foundation-model">Podcast 🎧</a>
     </p>
 </div>
 
