@@ -22,7 +22,7 @@
 ## Table of Contents
 
   - [Introduction](#introduction)
-  - [Representation Visualization](#representation-visualization)
+  - [License](#License)
   - [Global Embeddings Access](#global-embeddings-access)
   - [Hardware Requirements](#hardware-requirements)
   - [Data Preprocessing](#data-preprocessing)
@@ -40,21 +40,35 @@ Our work introduces TESSERA, an open foundation model that preserves spectral-te
 
 To our knowledge, TESSERA is unprecedented in its ease of use, scale, and accuracy: no other foundation model provides analysis-ready outputs, is open, and provides global, annual coverage at 10m resolution using only spectral-temporal features at pixel level.
 
-## Representation Visualization
-
-Below are some visualization results of the TESSERA representation map (using the first three channels as RGB):
+Here are some visualization results of the TESSERA representation map (using the first three channels as RGB):
 
 ![repr_demo](images/repr_demo.png)
 
+## License
 
-## Global Embeddings Access
+TESSERA software is release under the standard MIT license. Embeddings are released under the [CC0] (https://creativecommons.org/publicdomain/zero/1.0/) license: essentially, 
+they can be freely used for both commercial and non-commercial purposes. Although we do not legally require attribution,
+we do request it.
 
-We are currently generating global 10m resolution embeddings, which can be directly downloaded and used for downstream applications, saving significant computational time and resources. We are starting with embeddings for 2024 and will progressively extending coverage backwards year by year until 2017. The current coverage map is below:
+## Accessing Embeddings using GeoTessera (recommended)
+
+We have generated embeddings for the whole globe at 10m resolution for 2024. T
+These can be downloaded and used for downstream applications, saving significant computational time and resources, using 
+the [GeoTessera](https://github.com/ucam-eo/geotessera) library. 
+We will progressively extending coverage backwards year by year until 2017. The current coverage map is below:
 
 <img src="https://github.com/ucam-eo/tessera-coverage-map/blob/main/map.png"> 
 
-
 **Access Global Embeddings:** https://github.com/ucam-eo/geotessera
+
+## TESSERA Users Group
+
+Interested users are invited to join our [Zulip](https://eeg.zulipchat.com/login/) discussion groups.
+
+
+# Creating Your Own Embeddings
+
+If you would like to use our software to create your own embeddings, please follow the instructions below. Note that this is a comptuationally challenging task and you will need access to significant computational and storage resources. 
 
 ## Hardware Requirements
 
