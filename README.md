@@ -5,12 +5,12 @@
     </a>
     <br />
     <p align="center">
-        <a href="https://www.grss-ieee.org/event/tessera-precomputed-fair-global-pixel-embeddings-for-earth-representation-and-analysis/">IEEE Talk 🌐</a> &nbsp;&nbsp;•&nbsp;&nbsp;
+        <a href="https://www.grss-ieee.org/event/tessera-precomputed-fair-global-pixel-embeddings-for-earth-representation-and-analysis/">Talk 🌐</a> &nbsp;&nbsp;•&nbsp;&nbsp;
+        <a href="https://www.satellite-image-deep-learning.com/p/tessera-a-temporal-foundation-model">Podcast 🎧</a> &nbsp;&nbsp;•&nbsp;&nbsp;
         <a href="http://arxiv.org/abs/2506.20380">Paper 📄</a> &nbsp;&nbsp;•&nbsp;&nbsp;
+        <a href="https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/Acceptable_use_policy">AUP ⚖️</a> &nbsp;&nbsp;•&nbsp;&nbsp;
         <a href="https://github.com/FrankFeng-23/btfm_project/issues">Report Bugs 🛠️</a> &nbsp;&nbsp;•&nbsp;&nbsp;
-        <a href="https://github.com/FrankFeng-23/btfm_project/issues">Request Features 💡</a> &nbsp;&nbsp;•&nbsp;&nbsp;
-        <a href="https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/Acceptable_use_policy">Policy ⚖️</a> &nbsp;&nbsp;•&nbsp;&nbsp;
-        <a href="https://www.satellite-image-deep-learning.com/p/tessera-a-temporal-foundation-model">Podcast 🎧</a>
+        <a href="https://github.com/FrankFeng-23/btfm_project/issues">Request Features 💡</a>
     </p>
 </div>
 
@@ -19,19 +19,28 @@
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 
-## Table of Contents
+# Table of Contents
 
-  - [Introduction](#introduction)
-  - [License](#License)
-  - [Accessing Embeddings](#global-embeddings-access)
-  - [Creating your own Embeddings](#creating-your-own-embeddings)
-  - [Downstream Tasks](#downstream-tasks)
-  - [Presentations](#presentations)
-  - [Citation](#citation)
-  - [Acknowledgments](#acknowledgments)
-  - [Team](#team)
-  - [Star History](#star-history)
+  - Learning about TESSERA
+      - [Introduction](#introduction)
+      - [Paper](http://arxiv.org/abs/2506.20380)
+      - [Podcast](https://www.satellite-image-deep-learning.com/p/tessera-a-temporal-foundation-model)
+      - [Presentations](#presentations)
+      - [License](#License)
+  - Using TESSERA
+      - [Acceptable_use_policy](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/)
+      - [Accessing Precomputed Embeddings](#global-embeddings-access)
+      - [Creating Your Own Embeddings](#creating-your-own-embeddings)
+      - [Downstream Tasks](#downstream-tasks)
+      - [TESSERA Users Group](tessera-users-group)
+  - Additional information
+      - [Team](#team)
+      - [Contact](#contact)
+      - [Citation](#citation)
+      - [Acknowledgments](#acknowledgments)
+      - [Star History](#star-history)
 
+# Learning about TESSERA
 ## Introduction
 
 Satellite remote sensing enables a wide range of downstream applications, including habitat mapping, carbon accounting, and strategies for conservation and sustainable land use. However, satellite time series are voluminous and often corrupted, making them challenging to use: the scientific community's ability to extract actionable insights is often constrained by the scarcity of labelled training datasets and the computational burden of processing temporal data.
@@ -44,11 +53,23 @@ Here are some visualization results of the TESSERA representation map (using the
 
 ![repr_demo](images/repr_demo.png)
 
+## Presentations
+
+* [TESSERA: Precomputed FAIR Global Pixel Embeddings for Earth Representation and Analysis](https://www.grss-ieee.org/event/tessera-precomputed-fair-global-pixel-embeddings-for-earth-representation-and-analysis/) IEEE GRSS Talk, Frank Feng, 12 December, 2025
+* [2-slide summary (PPTX)](https://svr-sk818-web.cl.cam.ac.uk/tessera/images/a/a3/CRI-2slide.pptx) for CRI Flash Talks, S. Keshav, October 7, 2025
+* [Foundation model overview](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:251006_LabMeeting_BallJGC.pptx) (PPTX) for Ecology Groups meeting, University of Cambridge, DAB, James Ball, October 6, 2025
+* [TESSERA overview presentation with a focus on ecological applications](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:Tessera_talk_maryland_1st_Oct.pdf) (PDF) University of Maryland, Frank Feng, October 1, 2025
+* [TESSERA overview presentation](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:JCU-tesserav2.pptx) (PPTX) James Cook University, S. Keshav, September 29, 2025
+* [TESSERA overview presentation](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:TESSERA_Talk_DAB_5_20.pdf) (PDF) University of Cambridge, DAB, Frank Feng, May 20, 2025
+* [Self-supervised learning for earth observation](https://svr-sk818-web.cl.cam.ac.uk/tessera/images/b/b3/BTFM_talk_Exeter_v2.pptx) (PPTX) S. Keshav, Exeter, April 2025
+
 ## License
 
 TESSERA software is release under the standard MIT license. Embeddings and model weights are released under the [CC0](https://creativecommons.org/publicdomain/zero/1.0/) license: essentially, 
 they can be freely used for both commercial and non-commercial purposes. Although we do not legally require attribution,
 we do request it.
+
+# Using TESSERA
 
 ## Accessing Embeddings using GeoTessera (recommended)
 
@@ -463,34 +484,7 @@ out_dir = "/maps/usr/tessera_project/my_data/"  # Change to the actual output di
 
 If you want to reproduce the downstream tasks in the paper, you can visit https://github.com/ucam-eo/tessera-downstream-task. There are many examples provided there.
 
-## Presentations
-
-* [TESSERA: Precomputed FAIR Global Pixel Embeddings for Earth Representation and Analysis](https://www.grss-ieee.org/event/tessera-precomputed-fair-global-pixel-embeddings-for-earth-representation-and-analysis/) IEEE GRSS Talk, Frank Feng, 12 December, 2025
-* [2-slide summary (PPTX)](https://svr-sk818-web.cl.cam.ac.uk/tessera/images/a/a3/CRI-2slide.pptx) for CRI Flash Talks, S. Keshav, October 7, 2025
-* [Foundation model overview](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:251006_LabMeeting_BallJGC.pptx) (PPTX) for Ecology Groups meeting, University of Cambridge, DAB, James Ball, October 6, 2025
-* [TESSERA overview presentation with a focus on ecological applications](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:Tessera_talk_maryland_1st_Oct.pdf) (PDF) University of Maryland, Frank Feng, October 1, 2025
-* [TESSERA overview presentation](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:JCU-tesserav2.pptx) (PPTX) James Cook University, S. Keshav, September 29, 2025
-* [TESSERA overview presentation](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:TESSERA_Talk_DAB_5_20.pdf) (PDF) University of Cambridge, DAB, Frank Feng, May 20, 2025
-* [Self-supervised learning for earth observation](https://svr-sk818-web.cl.cam.ac.uk/tessera/images/b/b3/BTFM_talk_Exeter_v2.pptx) (PPTX) S. Keshav, Exeter, April 2025
-  
-## Citation
-
-If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv.org/abs/2506.20380):
-
-```bibtex
-@misc{feng2025tesseratemporalembeddingssurface,
-      title={TESSERA: Temporal Embeddings of Surface Spectra for Earth Representation and Analysis}, 
-      author={Zhengpeng Feng et al.},
-      year={2025},
-      eprint={2506.20380},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
-      url={https://arxiv.org/abs/2506.20380}, 
-}
-```
-
-## Acknowledgments
-We would like to express our gratitude to UKRI and the [DAWN](https://www.hpc.cam.ac.uk/d-w-n) supercomputer team at Cambridge, for their generous support in this project. We also acknowledge support from [AMD](https://www.amd.com/en.html),  [Vultr](https://www.vultr.com/), [Microsoft AI For Good Lab](https://www.microsoft.com/en-us/research/group/ai-for-good-research-lab/), [dClimate](https://www.dclimate.net/), and [Amazon Web Services (AWS)](https://aws.amazon.com/) under their AWS Open Data program (https://opendata.aws/). This work would not have been possible without their computational resources and technical assistance.  
+# Additional information
 
 ## Team
 
@@ -525,6 +519,29 @@ We would like to express our gratitude to UKRI and the [DAWN](https://www.hpc.ca
 ### Visitors
 * Silja Sormunnen, Aalto University, Finland
 * Isabel Mansley (U. Edinburgh, working with David Coomes and Anil Madhavapeddy on [habitat mapping in Scotland](https://anil.recoil.org/ideas/cairngorms-connect-habitats)
+
+## Contact
+
+Please direct your technical questions to Frank Feng (zf281@cam.ac.uk) or ask it on our [Zulip forum](https://eeg.zulipchat.com/login/). Non-technical questions can be sent to Prof. S. Keshav (sk818@cam.ac.uk).
+
+## Citation
+
+If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv.org/abs/2506.20380):
+
+```bibtex
+@misc{feng2025tesseratemporalembeddingssurface,
+      title={TESSERA: Temporal Embeddings of Surface Spectra for Earth Representation and Analysis}, 
+      author={Zhengpeng Feng et al.},
+      year={2025},
+      eprint={2506.20380},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2506.20380}, 
+}
+```
+
+## Acknowledgments
+We would like to express our gratitude to UKRI and the [DAWN](https://www.hpc.cam.ac.uk/d-w-n) supercomputer team at Cambridge, for their generous support in this project. We also acknowledge support from [AMD](https://www.amd.com/en.html),  [Vultr](https://www.vultr.com/), [Microsoft AI For Good Lab](https://www.microsoft.com/en-us/research/group/ai-for-good-research-lab/), [dClimate](https://www.dclimate.net/), and [Amazon Web Services (AWS)](https://aws.amazon.com/) under their AWS Open Data program (https://opendata.aws/). This work would not have been possible without their computational resources and technical assistance.  
 
 ## Star History
 [![Star History Chart](https://api.star-history.com/svg?repos=ucam-eo/tessera&type=Date)](https://www.star-history.com/#ucam-eo/tessera&Date)
