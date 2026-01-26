@@ -28,7 +28,7 @@
       - [Presentations](#presentations)
       - [License](#License)
   - Using TESSERA
-      - [Acceptable_use_policy](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/)
+      - [Acceptable Use Policy](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/Acceptable_use_policy)
       - [Accessing Precomputed Embeddings](#global-embeddings-access)
       - [Creating Your Own Embeddings](#creating-your-own-embeddings)
       - [Downstream Tasks](#downstream-tasks)
