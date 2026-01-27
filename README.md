@@ -524,7 +524,7 @@ If you want to reproduce the downstream tasks in the paper, you can visit https:
 ## Papers
 We additionally have a number of publications and pre-prints related to TESSERA, which are listed chronologically:
 * Lisaius, M. C., Blake, A., Keshav, S., & Atzberger, C. (2024). Using Barlow Twins to Create Representations From Cloud-Corrupted Remote Sensing Time Series. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing, 17, 13162–13168. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing. https://doi.org/10.1109/JSTARS.2024.3426044
-* Lisaius, M. C., Blake, A., Atzberger, C., & Keshava, S. (2026). Towards improved crop type classification: A compact embedding approach suitable for small fields. Accepted in Proceedings of the ISPRS Conference 2026. International Society for Photogrammetry and Remote Sensing.
+* Lisaius, M. C., Blake, A., Atzberger, C., & Keshav, S. (2026). Towards improved crop type classification: A compact embedding approach suitable for small fields. Accepted in Proceedings of the ISPRS Conference 2026. International Society for Photogrammetry and Remote Sensing.
 * Young, R., & Keshav, S. (2026). Calibrated Probabilistic Interpolation for GEDI Biomass (arXiv:2601.16834). arXiv. https://doi.org/10.48550/arXiv.2601.16834
 * Lisaius, M. C., Keshav, S., Blake, A., & Atzberger, C. (2026). Embedding -based Crop Type Classification in the Groundnut Basin of Senegal (arXiv:2601.16900). arXiv. https://doi.org/10.48550/arXiv.2601.16900
 
