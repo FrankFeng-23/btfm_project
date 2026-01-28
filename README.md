@@ -5,10 +5,6 @@
     </a>
     <br />
     <p align="center">
-        <a href="https://www.grss-ieee.org/event/tessera-precomputed-fair-global-pixel-embeddings-for-earth-representation-and-analysis/">Talk 🌐</a> &nbsp;&nbsp;•&nbsp;&nbsp;
-        <a href="https://www.satellite-image-deep-learning.com/p/tessera-a-temporal-foundation-model">Podcast 🎧</a> &nbsp;&nbsp;•&nbsp;&nbsp;
-        <a href="http://arxiv.org/abs/2506.20380">Paper 📄</a> &nbsp;&nbsp;•&nbsp;&nbsp;
-        <a href="https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/Acceptable_use_policy">AUP ⚖️</a> &nbsp;&nbsp;•&nbsp;&nbsp;
         <a href="https://github.com/FrankFeng-23/btfm_project/issues">Report Bugs 🛠️</a> &nbsp;&nbsp;•&nbsp;&nbsp;
         <a href="https://github.com/FrankFeng-23/btfm_project/issues">Request Features 💡</a>
     </p>
@@ -23,7 +19,7 @@
 
   - Learning about TESSERA
       - [Introduction](#introduction)
-      - [Paper](http://arxiv.org/abs/2506.20380)
+      - [Paper](#Papers)
       - [Podcast](https://www.satellite-image-deep-learning.com/p/tessera-a-temporal-foundation-model)
       - [Presentations](#presentations)
       - [License](#License)
@@ -527,6 +523,7 @@ We additionally have a number of publications and pre-prints related to TESSERA,
 * Lisaius, M. C., Blake, A., Atzberger, C., & Keshav, S. (2026). Towards improved crop type classification: A compact embedding approach suitable for small fields. Accepted in Proceedings of the ISPRS Conference 2026. International Society for Photogrammetry and Remote Sensing.
 * Young, R., & Keshav, S. (2026). Calibrated Probabilistic Interpolation for GEDI Biomass (arXiv:2601.16834). arXiv. https://doi.org/10.48550/arXiv.2601.16834
 * Lisaius, M. C., Keshav, S., Blake, A., & Atzberger, C. (2026). Embedding -based Crop Type Classification in the Groundnut Basin of Senegal (arXiv:2601.16900). arXiv. https://doi.org/10.48550/arXiv.2601.16900
+* Feng, Z. et al, [Applications of the TESSERA Geospatial Foundation Model to Diverse Environmental Mapping Tasks](http://ssrn.com/abstract=6142416), Preprint.
 
 
 ## Contact
