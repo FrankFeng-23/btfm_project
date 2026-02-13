@@ -33,6 +33,14 @@ class QATInferenceManager:
         self.args = args
         self.config = self.load_config()
         self.device, self.mode_prefix = setup_device(args)
+
+        if self.device.type == 'cpu':
+            if getattr(self.args, 'amx_enabled', False):
+                logging.info(f"[CPU] [{self.args.process_id}] AMX path active for CPU inference")
+            elif getattr(self.args, 'disable_amx', False):
+                logging.info(f"[CPU] [{self.args.process_id}] AMX explicitly disabled; using standard CPU path")
+            else:
+                logging.info(f"[CPU] [{self.args.process_id}] AMX not active; using standard CPU path")
         
         # Override config with command line args if provided
         if args.batch_size:
@@ -199,7 +207,9 @@ def main():
         if args.enable_bf16:
             logging.info(f"[{args.mode.upper()}] [{args.process_id}] BF16 precision enabled")
         if args.enable_amx:
-            logging.info(f"[{args.mode.upper()}] [{args.process_id}] AMX acceleration requested")
+            logging.info(f"[{args.mode.upper()}] [{args.process_id}] AMX requested via CLI")
+        if getattr(args, 'disable_amx', False):
+            logging.info(f"[{args.mode.upper()}] [{args.process_id}] AMX auto-detection disabled via CLI")
         if args.enable_profiling:
             logging.info(f"[{args.mode.upper()}] [{args.process_id}] Profiling enabled")
         if args.max_batches:

@@ -100,8 +100,10 @@ class ModelLoader:
 
         model.eval()
         
-        # Apply AMX optimizations if requested
-        if getattr(self.args, 'enable_amx', False):
+        use_amx = getattr(self.args, 'amx_enabled', getattr(self.args, 'enable_amx', False))
+
+        # Apply AMX optimizations if enabled
+        if use_amx:
             try:
                 # Convert to channels_last memory format for better AMX performance
                 # This is especially beneficial for convolutional operations
@@ -116,7 +118,7 @@ class ModelLoader:
                 model = model.to(dtype=torch.bfloat16)
                 logging.info(f"[{self.mode_prefix}] [{self.args.process_id}] PyTorch model converted to BF16")
                 
-                if getattr(self.args, 'enable_amx', False):
+                if use_amx:
                     logging.info(f"[{self.mode_prefix}] [{self.args.process_id}] AMX + BF16 model optimizations applied")
                     
             except Exception as e:

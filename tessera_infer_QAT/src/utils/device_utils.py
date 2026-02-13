@@ -11,9 +11,8 @@ def check_amx_support():
     """Check if AMX is supported on current hardware"""
     try:
         # Check CPU flags for AMX support
-        import subprocess
-        result = subprocess.run(['cat', '/proc/cpuinfo'], capture_output=True, text=True, check=True)
-        cpu_info = result.stdout.lower()
+        with open('/proc/cpuinfo', 'r', encoding='utf-8') as f:
+            cpu_info = f.read().lower()
         
         # Look for AMX-related CPU flags
         amx_bf16_support = 'amx_bf16' in cpu_info
@@ -38,14 +37,25 @@ def check_amx_support():
 
 def setup_amx_environment(args):
     """Setup AMX environment variables and optimizations"""
-    if not args.enable_amx:
+    if getattr(args, 'disable_amx', False):
+        logging.info(f"[{args.mode.upper()}] [{args.process_id}] AMX auto-detection is disabled by user")
+        args.amx_enabled = False
         return False
-        
+
     amx_info = check_amx_support()
     
     if not amx_info['supported']:
-        logging.warning(f"[{args.mode.upper()}] [{args.process_id}] AMX requested but not supported on this hardware")
+        if getattr(args, 'enable_amx', False):
+            logging.warning(f"[{args.mode.upper()}] [{args.process_id}] AMX requested but not supported on this hardware; falling back to standard CPU inference")
+        else:
+            logging.info(f"[{args.mode.upper()}] [{args.process_id}] AMX not detected on this CPU, using standard CPU inference")
+        args.amx_enabled = False
         return False
+
+    if getattr(args, 'enable_amx', False):
+        logging.info(f"[{args.mode.upper()}] [{args.process_id}] AMX requested and supported, enabling AMX optimizations")
+    else:
+        logging.info(f"[{args.mode.upper()}] [{args.process_id}] AMX detected automatically, enabling AMX optimizations")
     
     # Enable oneDNN verbose logging for AMX verification
     if args.log_level == 'DEBUG':
@@ -60,7 +70,8 @@ def setup_amx_environment(args):
         os.environ['ONEDNN_DEFAULT_FPMATH_MODE'] = 'BF16'
     
     logging.info(f"[{args.mode.upper()}] [{args.process_id}] AMX support detected - BF16: {amx_info['amx_bf16']}, INT8: {amx_info['amx_int8']}")
-    
+
+    args.amx_enabled = True
     return True
 
 
@@ -87,11 +98,12 @@ def setup_device(args):
                 logging.warning(f"[CPU] [{args.process_id}] BF16 may not be fully supported on this CPU, falling back to FP32")
         
         # Log AMX status
-        if args.enable_amx:
-            if amx_enabled:
-                logging.info(f"[CPU] [{args.process_id}] AMX acceleration enabled")
-            else:
-                logging.info(f"[CPU] [{args.process_id}] AMX requested but not available")
+        if amx_enabled:
+            logging.info(f"[CPU] [{args.process_id}] AMX acceleration enabled")
+        elif getattr(args, 'disable_amx', False):
+            logging.info(f"[CPU] [{args.process_id}] AMX disabled by user, using standard CPU inference")
+        else:
+            logging.info(f"[CPU] [{args.process_id}] Running with standard CPU inference")
         
         return device, mode_prefix
         

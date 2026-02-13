@@ -4,11 +4,43 @@ matplotlib.use('Agg')  # <-- 关键修复：设置非交互式后端，必须在
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 
+def load_and_dequantize_representation(representation_file_path, scales_file_path):
+    """
+    Load and dequantize int8 representations back to float32.
+    
+    Args:
+        representation_file_path: Path to the int8 representation file (H,W,C)
+        scales_file_path: Path to the float32 scales file (H,W)
+    
+    Returns:
+        representation_f32: float32 ndarray of shape (H,W,C)
+    """
+    # Load the files
+    representation_int8 = np.load(representation_file_path)  # (H, W, C), dtype=int8
+    scales = np.load(scales_file_path)  # (H, W), dtype=float32
+    
+    # Convert int8 to float32 for computation
+    representation_f32 = representation_int8.astype(np.float32)
+    
+    # Expand scales to match representation shape
+    # scales shape: (H, W) -> (H, W, 1)
+    scales_expanded = scales[..., np.newaxis]
+    
+    # Dequantize by multiplying with scales
+    representation_f32 = representation_f32 * scales_expanded
+    
+    return representation_f32
+
 # path = "0_2500_500_3000.npy"
-path = "/scratch/zf281/grid_-16.35_14.25_small.npy"
+path = "/scratch/zf281/tessera/data/test_artefact/representation_retiled_qat/0_2500_500_3000.npy"
 data = np.load(path, mmap_mode='r')
 print(data.dtype)  # Output the data type
 print(data.shape)  # Output the shape of the array
+
+# optional
+path_scales = "/scratch/zf281/tessera/data/test_artefact/representation_retiled_qat/0_2500_500_3000_scales.npy"
+scales = np.load(path_scales)
+data = load_and_dequantize_representation(path, path_scales)
 
 # === 第一个可视化：原始前三个维度 ===
 # first_three_band = data[::10,::10,:3].copy()

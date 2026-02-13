@@ -42,7 +42,9 @@ def create_parser():
     parser.add_argument('--enable_bf16', action='store_true',
                         help="Enable BF16 (Brain Floating Point 16-bit) inference")
     parser.add_argument('--enable_amx', action='store_true',
-                        help="Enable AMX (Advanced Matrix Extensions) for Intel Xeon processors")
+                        help="Force AMX optimization request on CPU (auto-detection is enabled by default)")
+    parser.add_argument('--disable_amx', action='store_true',
+                        help="Disable AMX auto-detection and force standard CPU inference")
     
     # Data loading arguments
     parser.add_argument('--batch_size', type=int, default=None,

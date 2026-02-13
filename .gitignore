@@ -52,3 +52,5 @@ tessera_infer/first_three_band.png
 tessera_infer/profiler/chat_history.txt
 *.pt
 chat_history.txt
+first_three_band.png
+pca_three_band.png

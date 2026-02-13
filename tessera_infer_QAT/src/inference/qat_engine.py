@@ -162,7 +162,7 @@ class QATInferenceEngine(BaseInferenceEngine):
         sum_repr = None
         
         # Setup AMX autocast context if enabled
-        use_amx = getattr(self.args, 'enable_amx', False) and self.is_cpu
+        use_amx = getattr(self.args, 'amx_enabled', getattr(self.args, 'enable_amx', False)) and self.is_cpu
         use_bf16 = getattr(self.args, 'enable_bf16', False)
         
         # Create appropriate inference context
