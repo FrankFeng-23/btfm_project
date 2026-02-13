@@ -26,3 +26,13 @@ tessera_preprocessing/downsample_tiff.py
 tessera_preprocessing/*.png
 tessera_preprocessing/tiff_shp_analyzer.py
 .vscode
+tessera_preprocessing/s1_s2_downloader_test.sh
+command_cheatsheet.txt
+convert_geojson_to_tiff.py
+data
+tessera_infer/checkpoints
+tessera_infer/logs
+tessera_infer_hpc/
+tessera_infer_QAT_CPU/
+tessera_infer/first_three_band.png
+tessera_infer/profiler/chat_history.txt

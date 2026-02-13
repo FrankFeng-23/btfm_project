@@ -353,7 +353,7 @@ def main():
         --tiff_path /your_data_path/roi.tif \
         --d_pixel_dir /your_data_path/data_processed \
         --patch_size 500 \
-        --out_dir /your_data_path/retiled_d-pixel \
+        --out_dir /your_data_path/retiled_d_pixel \
         --num_workers 16 \
         --overwrite \
         --block_size 2000
