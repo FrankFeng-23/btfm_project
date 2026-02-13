@@ -261,7 +261,7 @@ def main():
     Main function to run the conversion process.
     """
     # Input shapefile path
-    shp_path = '/scratch/zf281/tessera/data/tmp/roi.shp'
+    shp_path = 'absolute_path_to_your_shp_file'
 
     # Call the conversion function
     try:

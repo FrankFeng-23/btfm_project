@@ -12,19 +12,32 @@ set -u
 #######################################
 
 # === Basic Configuration ===
-INPUT_TIFF="/absolute/path/to/your/data_dir/roi.tiff"
-OUT_DIR="/absolute/path/to/your/data_dir"
+ : "${INPUT_TIFF:=/absolute/path/to/your/data_dir/roi.tiff}"
+ : "${OUT_DIR:=/absolute/path/to/your/data_dir}"
 
-export TEMP_DIR="/absolute/path/to/your/temp_dir"     # Temporary file directory
+ : "${TEMP_DIR:=/absolute/path/to/your/temp_dir}"     # Temporary file directory
+export TEMP_DIR
 
 mkdir -p "$OUT_DIR"
 
 # Python environment path
-PYTHON_ENV="/absolute/path/to/your/python_env/bin/python"
+ : "${PYTHON_ENV:=/absolute/path/to/your/python_env/bin/python}"
 
 # === Sentinel-1 & Sentinel-2 Processing Configuration ===
-YEAR=2022 # Range [2017-2024]
-RESOLUTION=10.0  # Resolution of the input TIFF, also the output resolution (meters)
+ : "${YEAR:=2022}" # Range [2017-2025]
+ : "${RESOLUTION:=10.0}"  # Resolution of the input TIFF, also the output resolution (meters)
+
+# === Data Source Configuration ===
+# mpc: Microsoft Planetary Computer (sentinel-1-rtc, sentinel-2-l2a)
+# aws: AWS Open Data backends (S1=OPERA RTC-S1 via CMR links, S2=Earth-search sentinel-2-l2a COGs)
+ : "${DATA_SOURCE:=mpc}"        # choices: mpc/aws
+
+# Optional: override processing date range (useful for quick tests)
+# Example:
+# START_TIME_OVERRIDE="2025-01-01"
+# END_TIME_OVERRIDE="2025-01-15"
+ : "${START_TIME_OVERRIDE:=}"
+ : "${END_TIME_OVERRIDE:=}"
 
 # === Sentinel-1 Configuration ===
 S1_ENABLED=true                    # Enable S1 processing
@@ -33,7 +46,7 @@ S1_TOTAL_WORKERS=12                # Total number of S1 Dask workers
 S1_WORKER_MEMORY=4                 # Memory per S1 worker (GB)
 S1_CHUNKSIZE=1024                  # S1 stackstac chunk size
 S1_ORBIT_STATE="both"              # Orbit state: ascending/descending/both
-S1_MIN_COVERAGE=10.0               # Minimum valid pixel coverage for S1 (%)
+S1_MIN_COVERAGE=0.01               # Minimum valid pixel coverage for S1 (%) set this to 0.01 to mitigate the tiling artefact!
 S1_RESOLUTION=$RESOLUTION          # S1 output resolution (meters)
 S1_OVERWRITE=true                  # Overwrite existing S1 files
 
@@ -43,9 +56,9 @@ S2_PARTITIONS=24                   # Number of S2 parallel partitions
 S2_TOTAL_WORKERS=24                # Total number of S2 Dask workers
 S2_WORKER_MEMORY=4                 # Memory per S2 worker (GB)
 S2_CHUNKSIZE=1024                  # S2 stackstac chunk size
-S2_MAX_CLOUD=90                    # Maximum cloud coverage for S2 (%)
+S2_MAX_CLOUD=100                   # Maximum cloud coverage for S2 (%) set this to 100 to mitigate the tiling artefact!
 S2_RESOLUTION=$RESOLUTION          # S2 output resolution (meters)
-S2_MIN_COVERAGE=10.0               # Minimum valid pixel coverage for S2 (%)
+S2_MIN_COVERAGE=0.01               # Minimum valid pixel coverage for S2 (%) set this to 0.01 to mitigate the tiling artefact!
 S2_OVERWRITE=true                  # Overwrite existing S2 files
 
 # === System Configuration ===
@@ -55,8 +68,8 @@ LOG_INTERVAL=10                    # Progress update interval (seconds)
 #######################################
 # Internal Variables (Be Careful to Modify)
 #######################################
-START_TIME="${YEAR}-01-01"
-END_TIME="${YEAR}-12-31"
+START_TIME="${START_TIME_OVERRIDE:-${YEAR}-01-01}"
+END_TIME="${END_TIME_OVERRIDE:-${YEAR}-12-31}"
 
 SCRIPT_START_TIME=$(date +%s)
 SCRIPT_NAME=$(basename "$0")
@@ -131,6 +144,17 @@ calculate_partitions() {
     local start_sec=$(time_to_seconds "$START_TIME")
     local end_sec=$(time_to_seconds "$END_TIME")
     local partitions=$1
+    # Guard: if requested partitions exceed available days, clamp partitions to day count
+    local total_days=$(( (end_sec - start_sec) / 86400 + 1 ))
+    if [[ $total_days -lt 1 ]]; then
+        total_days=1
+    fi
+    if [[ $partitions -gt $total_days ]]; then
+        # IMPORTANT: do not write to stdout here (stdout is parsed by mapfile). Send warning to stderr + main log only.
+        echo -e "$(date '+%Y-%m-%d %H:%M:%S') ${YELLOW}[WARNING]${NC} Requested partitions ($partitions) exceed available days ($total_days) for range $START_TIME..$END_TIME; clamping partitions to $total_days" \
+          | tee -a "$MAIN_LOG" >&2
+        partitions=$total_days
+    fi
     local total_seconds=$((end_sec - start_sec + 86400))
     local seconds_per_partition=$((total_seconds / partitions))
     
@@ -269,7 +293,8 @@ process_sentinel1() {
     
     # Generate partitions
     mapfile -t s1_partitions < <(calculate_partitions $S1_PARTITIONS)
-    mapfile -t s1_workers_per_partition < <(calculate_workers_per_partition $S1_TOTAL_WORKERS $S1_PARTITIONS)
+    local s1_actual_partitions=${#s1_partitions[@]}
+    mapfile -t s1_workers_per_partition < <(calculate_workers_per_partition $S1_TOTAL_WORKERS $s1_actual_partitions)
     
     log INFO "S1 Configuration:"
     log INFO "  - Partitions: $S1_PARTITIONS"
@@ -306,6 +331,7 @@ process_sentinel1() {
             --end_date "$p_end" \
             --output "$S1_OUTPUT" \
             --orbit_state "$S1_ORBIT_STATE" \
+            --data_source "$DATA_SOURCE" \
             --dask_workers "$workers" \
             --worker_memory "$S1_WORKER_MEMORY" \
             --resolution "$S1_RESOLUTION" \
@@ -347,7 +373,8 @@ process_sentinel2() {
     
     # Generate partitions
     mapfile -t s2_partitions < <(calculate_partitions $S2_PARTITIONS)
-    mapfile -t s2_workers_per_partition < <(calculate_workers_per_partition $S2_TOTAL_WORKERS $S2_PARTITIONS)
+    local s2_actual_partitions=${#s2_partitions[@]}
+    mapfile -t s2_workers_per_partition < <(calculate_workers_per_partition $S2_TOTAL_WORKERS $s2_actual_partitions)
     
     log INFO "S2 Configuration:"
     log INFO "  - Partitions: $S2_PARTITIONS"
@@ -389,6 +416,7 @@ process_sentinel2() {
             --end_date "$s2_end" \
             --output "$S2_OUTPUT" \
             --max_cloud "$S2_MAX_CLOUD" \
+            --data_source "$DATA_SOURCE" \
             --dask_workers "$workers" \
             --worker_memory "$S2_WORKER_MEMORY" \
             --chunksize "$S2_CHUNKSIZE" \

@@ -1,70 +1,101 @@
 # Temporal Embeddings of Surface Spectra for Earth Representation and Analysis (TESSERA)
-<a name="readme-top"></a>
-<div>
-    <a align="center">
-        <img src="images/banner.png"> 
+<div align="center">
+    <a href="#readme-top">
+        <img src="images/banner.png" alt="Banner">
     </a>
+    <br />
     <p align="center">
-        <div style="display: flex; justify-content: space-evenly; align-items: center; width: 100%;">
-<!--             <a href="https://www.youtube.com/watch?v=eERBj4FUD3s" style="flex-grow: 1; text-align: center; padding: 0 10px;">View Our Talk 🌐</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-            <a href="http://arxiv.org/abs/2506.20380" style="flex-grow: 1; text-align: center; padding: 0 10px;">View Our Paper :bookmark_tabs:</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Report Bug :hammer_and_wrench:</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="https://github.com/FrankFeng-23/btfm_project/issues" style="flex-grow: 1; text-align: center; padding: 0 10px;">Request Feature 🙋</a>
-        </div>
+        <a href="https://github.com/FrankFeng-23/btfm_project/issues">Report Bugs 🛠️</a> &nbsp;&nbsp;•&nbsp;&nbsp;
+        <a href="https://github.com/FrankFeng-23/btfm_project/issues">Request Features 💡</a>
     </p>
 </div>
 
-![Version](https://img.shields.io/badge/version-alpha-red)
-![Status](https://img.shields.io/badge/status-internal%20use%20only-yellow)
+<!--  ![Version](https://img.shields.io/badge/version-alpha-red) -->
+![PyPI version](https://img.shields.io/pypi/v/geotessera?label=PyPI%20version&color=blue)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
-**Alpha testing, primarily for Cambridge internal users. External users can contact zf281@cam.ac.uk for access.**
 
-**We strongly recommend that you quickly review the entire tutorial before running the pipeline.**
+# Table of Contents
 
-## Table of Contents
+  - Learning about TESSERA
+      - [Introduction](#introduction)
+      - [Papers](#Papers)
+      - [Podcast](https://www.satellite-image-deep-learning.com/p/tessera-a-temporal-foundation-model)
+      - [Presentations](#presentations)
+      - [License](#License)
+  - Using TESSERA
+      - [Acceptable Use Policy](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/Acceptable_use_policy)
+      - [Accessing Precomputed Embeddings](#global-embeddings-access)
+      - [Creating Your Own Embeddings](#creating-your-own-embeddings)
+      - [Downstream Tasks](#downstream-tasks)
+      - [TESSERA Users Group](tessera-users-group)
+  - Additional information
+      - [Team](#team)
+      - [Contact](#contact)
+      - [Citation](#citation)
+      - [Acknowledgments](#acknowledgments)
+      - [Star History](#star-history)
 
-- [Temporal Embeddings of Surface Spectra for Earth Representation and Analysis (TESSERA)](#temporal-embeddings-of-surface-spectra-for-earth-representation-and-analysis-tessera)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Global Embeddings Access](#global-embeddings-access)
-  - [Representation Visualization](#representation-visualization)
-  - [Hardware Requirements](#hardware-requirements)
-    - [1. Storage Requirements](#1-storage-requirements)
-    - [2. Memory Requirements](#2-memory-requirements)
-    - [3. CPU and GPU](#3-cpu-and-gpu)
-    - [4. Operating System](#4-operating-system)
-  - [Data Preprocessing](#data-preprocessing)
-    - [Overview](#overview)
-    - [Download Source Code](#download-source-code)
-    - [Python Environment](#python-environment)
-    - [Script Configuration](#script-configuration)
-  - [Inference](#inference)
-    - [Overview](#overview-1)
-    - [Pytorch Preparation](#pytorch-preparation)
-    - [Model Weight](#model-weight)
-    - [Configure Bash Script](#configure-bash-script)
-    - [Start Inference](#start-inference)
-    - [Stitch Final Representation Map](#stitch-final-representation-map)
-  - [Acknowledgments](#acknowledgments)
-
+# Learning about TESSERA
 ## Introduction
 
-TESSERA (formerly known as BTFM) is a foundation model for Earth observation that processes Sentinel-1 and Sentinel-2 satellite data to generate representation (embedding) maps. It compresses a full year of Sentinel-1 and Sentinel-2 data and learns useful temporal-spectral features.
+Satellite remote sensing enables a wide range of downstream applications, including habitat mapping, carbon accounting, and strategies for conservation and sustainable land use. However, satellite time series are voluminous and often corrupted, making them challenging to use: the scientific community's ability to extract actionable insights is often constrained by the scarcity of labelled training datasets and the computational burden of processing temporal data.
 
-## Global Embeddings Access
+Our work introduces TESSERA, an open foundation model that preserves spectral-temporal signals in 128-dimensional latent representations at 10-meter resolution globally. It uses self-supervised learning to summarise petabytes of Earth observation data. We compare our work with state-of-the-art task-specific models and other foundation models in five diverse downstream tasks and find that TESSERA closely matches or outperforms these baselines. By preserving temporal phenological signals that are typically lost in conventional approaches, TESSERA enables new insights into ecosystem dynamics, agricultural food systems, and environmental change detection. Moreover, our open-source implementation supports reproducibility and extensibility, while the privacy-preserving design allows researchers to maintain data sovereignty.
 
-We are currently generating global 10m resolution embeddings for users who prefer not to run the entire pipeline themselves. These pre-computed embeddings can be directly downloaded and used for downstream applications, saving significant computational time and resources.
+To our knowledge, TESSERA is unprecedented in its ease of use, scale, and accuracy: no other foundation model provides analysis-ready outputs, is open, and provides global, annual coverage at 10m resolution using only spectral-temporal features at pixel level.
+
+Here are some visualization results of the TESSERA representation map (using the first three channels as RGB):
+
+![repr_demo](images/repr_demo.png)
+
+## Papers
+Here are publications and preprints related to TESSERA, listed reverse chronologically:
+* Young, R., & Keshav, S. (2026). Interpolation of GEDI Biomass Estimates with Calibrated Uncertainty Quantification, arXiv preprint. https://doi.org/10.48550/ArXiv.2601.16834
+* Lisaius, M. C., Keshav, S., Blake, A., & Atzberger, C. (2026). Embedding -based Crop Type Classification in the Groundnut Basin of Senegal (arXiv:2601.16900). ArXiv preprint. https://doi.org/10.48550/arXiv.2601.16900
+* Z. Feng, C. Atzberger, S. Jaffer, J. Knezevic, S. Sormunen, R. Young, M.C. Lisaius, M. Immitzer, T. Jackson, J. Ball, D.A. Coomes, A. Madhavapeddy, A. Blake, S. Keshav, (2026) [Applications of the TESSERA Geospatial Foundation Model to Diverse Environmental Mapping Tasks](http://ssrn.com/abstract=6142416), SSRN preprint. http://ssrn.com/abstract=6142416
+* Z. Feng, C. Atzberger, S. Jaffer, J. Knezevic, S. Sormunen, R. Young, M.C. Lisaius, M. Immitzer, T. Jackson, J. Ball, D.A. Coomes, A. Madhavapeddy, A. Blake, S. Keshav (2025), [TESSERA: Temporal Embeddings of Surface Spectra for Earth Representation and Analysis](https://arxiv.org/abs/2506.20380), ArXiv reprint. https://arxiv.org/abs/2506.20380
+* Lisaius, M. C., Blake, A., Atzberger, C., & Keshav, S. (2026). Towards improved crop type classification: A compact embedding approach suitable for small fields. Accepted in Proceedings of the ISPRS Conference 2026. International Society for Photogrammetry and Remote Sensing.
+* Lisaius, M. C., Blake, A., Keshav, S., & Atzberger, C. (2024). Using Barlow Twins to Create Representations From Cloud-Corrupted Remote Sensing Time Series. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing, 17, 13162–13168. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing. https://doi.org/10.1109/JSTARS.2024.3426044
+  
+## Presentations
+
+* [TESSERA overview in AI for Good seminar](https://www.youtube.com/live/9yrpwFrwbGY), Frank Feng, Jan 22, 2026
+* [TESSERA: Precomputed FAIR Global Pixel Embeddings for Earth Representation and Analysis](https://www.grss-ieee.org/event/tessera-precomputed-fair-global-pixel-embeddings-for-earth-representation-and-analysis/) IEEE GRSS Talk, Frank Feng, 12 December, 2025
+* [2-slide summary (PPTX)](https://svr-sk818-web.cl.cam.ac.uk/tessera/images/a/a3/CRI-2slide.pptx) for CRI Flash Talks, S. Keshav, October 7, 2025
+* [Foundation model overview](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:251006_LabMeeting_BallJGC.pptx) (PPTX) for Ecology Groups meeting, University of Cambridge, DAB, James Ball, October 6, 2025
+* [TESSERA overview presentation with a focus on ecological applications](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:Tessera_talk_maryland_1st_Oct.pdf) (PDF) University of Maryland, Frank Feng, October 1, 2025
+* [TESSERA overview presentation](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:JCU-tesserav2.pptx) (PPTX) James Cook University, S. Keshav, September 29, 2025
+* [TESSERA overview presentation](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:TESSERA_Talk_DAB_5_20.pdf) (PDF) University of Cambridge, DAB, Frank Feng, May 20, 2025
+* [Self-supervised learning for earth observation](https://svr-sk818-web.cl.cam.ac.uk/tessera/images/b/b3/BTFM_talk_Exeter_v2.pptx) (PPTX) S. Keshav, Exeter, April 2025
+
+## License
+
+TESSERA software is released under the standard MIT license. Embeddings and model weights are released under the [CC0](https://creativecommons.org/publicdomain/zero/1.0/) license: essentially, 
+they can be freely used for both commercial and non-commercial purposes. Although we do not legally require attribution,
+we do request it.
+
+# Using TESSERA
+
+## Accessing Embeddings using GeoTessera (recommended)
+
+We have generated embeddings for the whole globe at 10m resolution for 2024.
+These can be downloaded and used for downstream applications, saving significant computational time and resources, using 
+the [GeoTessera](https://github.com/ucam-eo/geotessera) library. 
+We will progressively extending coverage backwards year by year until 2017. The current coverage map is below:
+
+<img src="https://github.com/ucam-eo/tessera-coverage-map/blob/main/map.png"> 
 
 **Access Global Embeddings:** https://github.com/ucam-eo/geotessera
 
-We began collecting embeddings from 2024 and are progressively extending coverage backwards year by year until 2017.
+## TESSERA Users Group
 
-## Representation Visualization
+Interested users are invited to join our [Zulip](https://eeg.zulipchat.com/login/) discussion groups.
 
-Below are some visualization results of the TESSERA representation map (using the first three channels as RGB):
 
-![repr_demo](images/repr_demo.png)
+# Creating Your Own Embeddings
+
+If you would like to use our software to create your own embeddings, please follow the instructions below. Note that this is a comptuationally challenging task and you will need access to significant computational and storage resources. 
 
 ## Hardware Requirements
 
@@ -74,7 +105,7 @@ Running this pipeline requires substantial storage space. Although the pipeline 
 
 ### 2. Memory Requirements
 
-Thanks to Microsoft Planetary Computer, most of the geo-preprocessing has been done. Still, we recommend having at least 128GB of RAM.
+We use preprocessed data, initially from Microsoft Planetary Computer. However, the next generation of embeddings will use OPERA from ASF DAAC. In either case, most of the geo-preprocessing has been done. Still, we recommend having at least 128GB of RAM.
 
 ### 3. CPU and GPU
 
@@ -82,21 +113,26 @@ The pipeline has no strict requirements for CPU and GPU, but more CPU cores and 
 
 ### 4. Operating System
 
-For the data preprocessing pipeline, we support almost all Linux and macOS systems. For Windows, we recommend using WSL.
+For the data preprocessing pipeline, we support almost all Linux systems. For Windows, we recommend using WSL. We do not support MacOS at this point.
 
 For the model inference part, we have only tested it on Linux and Windows WSL, and they are working.
 
 ## Data Preprocessing
 
 ### Overview
+_**We strongly recommend that you quickly review the entire tutorial before running the pipeline.**_
 
 In this step, we stack a full year of Sentinel-1 and Sentinel-2 data along the time dimension to generate a composite. For Sentinel-2, the composite shape is (T,H,W,B), where T is the number of valid observations in that year, and B is the number of bands (we selected 10 bands). For Sentinel-1, we extracted both ascending and descending orbit data. Taking the ascending orbit as an example, the composite shape is (T',H,W,B'), where T' is the number of valid ascending observations in that year, and B' is 2 because we only obtain VV and VH bands.
 
-We source Sentinel-1 and Sentinel-2 data from Microsoft's Planetary Computer, which has been preprocessed to a large extent and can be used directly. This saves a lot of data preprocessing trouble.
+We initially sourced Sentinel-1 and Sentinel-2 data from Microsoft's Planetary Computer:
 - Sentinel-1 data source: https://planetarycomputer.microsoft.com/dataset/sentinel-1-rtc
 - Sentinel-2 data source: https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a
 
-Currently, our pipeline only accepts TIFF format input. The resolution of the tiff file can vary, but up to 10m granularity as this is the highest resolution for Sentinel-2 imagery. For valid ROI areas within the TIFF, the value is 1; otherwise, it's 0. If you only have a shapefile, that's fine too - we provide a `convert_shp_to_tiff.py` script.
+The new generation of embeddings will use OPERA from ASF DAAC: 
+- Sentinel-1 data source:  https://registry.opendata.aws/nasa-operal2rtc-s1v1/ 
+- Sentinel-2 data source: https://registry.opendata.aws/sentinel-2-l2a-cogs/
+
+Currently, our pipeline only accepts TIFF format input. The resolution of the input ROI TIFF can vary (e.g., 30m), but the pipeline will **always generate Sentinel-1 and Sentinel-2 outputs at the configured `RESOLUTION`** (default 10m) while keeping the **ROI extent/bounds identical**. For valid ROI areas within the TIFF, the value is 1; otherwise, it's 0. If you only have a shapefile, that's fine too - we provide a `convert_shp_to_tiff.py` script.
 
 ### Download Source Code
 
@@ -105,7 +141,7 @@ First, create an empty working directory:
 ```bash
 mkdir tessera_project
 cd tessera_project
-git clone https://github.com/FrankFeng-23/btfm_project.git
+git clone https://github.com/ucam-eo/tessera.git
 ```
 
 For easier pipeline operation, we recommend placing the data output directory at the same level as `tessera_infer` and `tessera_preprocessing`:
@@ -121,6 +157,8 @@ tessera_project
 
 The `roi.tiff` can be generated using `convert_shp_to_tiff.py` located in `tessera_preprocessing/convert_shp_to_tiff.py`. To use it, simply specify the path to your shapefile in the main function, and it will output a TIFF with the same name in the same directory.
 
+⚠️Notice: _If your ROI is relatively large, for example 100 km × 100 km, we strongly recommend pre-splitting the TIFF into smaller sections no larger than 20 km × 20 km. Then process each small TIFF file sequentially in the pipeline. An excessively large ROI may cause issues with backend tile providers_
+
 ### Python Environment
 
 We need some geographic processing packages (fortunately, we won't be using GDAL, as configuring the environment is a nightmare) and some machine learning packages (PyTorch, but you'll need to install this yourself since the hardware on each computer is different). We've put some common packages in `requirements.txt`, which you can install as follows:
@@ -128,16 +166,21 @@ We need some geographic processing packages (fortunately, we won't be using GDAL
 ```bash
 pip install -r requirements.txt
 ```
+Note: If you are in a managed environment, you may need to install a venv first, using 
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
 ### Script Configuration
 
-We use Microsoft's Planetary Computer, which eliminates much of the hassle of data preprocessing, especially for Sentinel-1. The script configuration is very simple. First, navigate to the `tessera_preprocessing` folder:
+First, navigate to the `tessera_preprocessing` folder:
 
 ```bash
 cd tessera_preprocessing
 ```
 
-Then modify the following:
+Then edit the file s1_s2_downloader.sh to point to the ROI TIFF file, the output and temporary directories, and the data source:
 
 ```bash
 # === Basic Configuration ===
@@ -152,11 +195,39 @@ mkdir -p "$OUT_DIR"
 PYTHON_ENV="/absolute/path/to/your/python_env/bin/python"
 
 # === Sentinel-1 & Sentinel-2 Processing Configuration ===
-YEAR=2022 # Range [2017-2024]
-RESOLUTION=10.0  # Resolution of the input TIFF, also the output resolution (meters)
+YEAR=2022 # Range [2017-2025]
+RESOLUTION=10.0  # Output resolution (meters). ROI TIFF can be any resolution; extent is preserved.
+
+# === Data Source Configuration ===
+# mpc: Microsoft Planetary Computer (sentinel-1-rtc, sentinel-2-l2a)
+# aws: AWS Open Data backends (S1=OPERA RTC-S1 via ASF/CMR + ASF Earthdata Cloud COGs, S2=Earth-search Sentinel-2 L2A COGs)
+DATA_SOURCE="mpc"   # choices: mpc/aws
 ```
 
-Note that the `RESOLUTION` needs to match the resolution of your input TIFF; otherwise, there may be misalignments in geographic coverage. Below the above configuration, there are some additional configurations that you can modify according to your computer's performance.
+Note: `RESOLUTION` controls output pixel size. The pipeline keeps the ROI bounds fixed and resamples the ROI mask into the output grid.
+
+### AWS Credentials (only needed when `DATA_SOURCE="aws"`)
+Sentinel-2 on Earth-search is public and **does not require credentials**.
+
+Sentinel-1 OPERA RTC-S1 is accessed via ASF Earthdata Cloud (COG over HTTPS). You need an Earthdata Login token:
+- **Create an Earthdata account**: via [NASA Earthdata Login](https://urs.earthdata.nasa.gov/home).
+- **Approve Application**: After registering your account, you can go to the Applications tab and add Alaska Satellite Facility Data Access to the list of approved applications.
+- **Obtain an EDL Bearer token / JWT** by clicking **Generate Token** and store it locally (do not commit it).
+
+Recommended (simple + explicit):
+
+```bash
+nano ~/.edl_bearer_token
+# paste token, save+exit (Ctrl-O Enter, then Ctrl-X)
+chmod 600 ~/.edl_bearer_token
+```
+
+The AWS S1 downloader will use this token to read COGs from ASF Earthdata Cloud.
+
+If you want to retrieve temporary S3 credentials (advanced; usually not required for this pipeline), see ASF guidance:
+- `https://cumulus.asf.alaska.edu/s3credentialsREADME`
+
+Below the above configuration, there are some additional configurations that you can modify according to your computer's performance.
 
 First, give permission to `s1_s2_downloader.sh`:
 
@@ -264,12 +335,17 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 ### Model Weight
 
-Next, download the model weights from [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) (only Cambridge members have access) and place the `.pt` file in the `tessera_infer/checkpoints` directory:
+Next, download the model weights from [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) and place the `.pt` file in the `tessera_infer/checkpoints` directory:
 
 ```
-checkpoints
- ┗ best_model_fsdp_20250427_084307.pt
+tessera_infer
+ ┗ checkpoints
+     ┗ best_model_fsdp_20250427_084307.pt
+ ┗ configs
+ ┗ src
 ```
+
+_**Note that the checkpoint mentioned above is an early-stage model, which natively generates float32 embeddings. Therefore, this model is not the one used to generate the int8 embeddings in the geotessera library. We will soon deploy the specific checkpoint that was used to create the geotessera embeddings into the full pipeline.**_
 
 ### Configure Bash Script
 
@@ -410,5 +486,68 @@ ref_tiff_path = "/maps/usr/tessera_project/my_data/roi.tiff"  # Change to the ac
 out_dir = "/maps/usr/tessera_project/my_data/"  # Change to the actual output directory
 ```
 
+## Downstream tasks
+
+If you want to reproduce the downstream tasks in the paper, you can visit https://github.com/ucam-eo/tessera-downstream-task. There are many examples provided there.
+
+# Additional information
+
+## Team
+
+### Cambridge Faculty
+* [S. Keshav](https://svr-sk818-web.cl.cam.ac.uk/keshav/wiki/index.php/Main_Page)
+* [Anil Madhavapeddy](https://anil.recoil.org)
+* [Sadiq Jaffer](https://toao.com)
+* [David Coomes](https://www.plantsci.cam.ac.uk/directory/david-coomes)
+
+### Postdoc
+* James Ball
+  
+### PhD
+* Madeleine Lisaius
+* Zhengpeng (Frank) Feng
+* Robin Young
+* Jovana Knezevic
+
+### Undergrad
+* Zejia Yang (Part II student, working with Frank Feng on MAE pretraining of spatial feature extractors)
+
+### Interns
+* Kenzy Soror (U. Waterloo, working with Robin Young)
+* Artyom Gabtraupov (U. Waterloo, working with Robin Young)
+* Gabriel Mahler (U. Cambridge, working with Anil Madhavapeddy and Silviu Petrovan on [hedgehog habitats and tracking](https://anil.recoil.org/ideas/hedgehog-mapping))
+* Leyu Pan (Imperial College, working with Frank Feng on text embeddings generated from OSM)
+
+### Collaborators
+* [Clement Atzberger](https://www.linkedin.com/in/clement-atzberger-8abb8065/?originalSubdomain=at), dClimate Labs
+* [Andrew Blake](https://en.wikipedia.org/wiki/Andrew_Blake_(computer_scientist)), Mantle Labs
+
+### Visitors
+* Silja Sormunnen, Aalto University, Finland
+* Isabel Mansley (U. Edinburgh, working with David Coomes and Anil Madhavapeddy on [habitat mapping in Scotland](https://anil.recoil.org/ideas/cairngorms-connect-habitats)
+
+## Contact
+
+Please direct your technical questions to Frank Feng (zf281@cam.ac.uk) or ask it on our [Zulip forum](https://eeg.zulipchat.com/login/). Non-technical questions can be sent to Prof. S. Keshav (sk818@cam.ac.uk).
+
+## Citation
+
+If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv.org/abs/2506.20380):
+
+```bibtex
+@misc{feng2025tesseratemporalembeddingssurface,
+      title={TESSERA: Temporal Embeddings of Surface Spectra for Earth Representation and Analysis}, 
+      author={Zhengpeng Feng et al.},
+      year={2025},
+      eprint={2506.20380},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2506.20380}, 
+}
+```
+
 ## Acknowledgments
-We would like to express our gratitude to [DAWN](https://www.hpc.cam.ac.uk/d-w-n), the fastest artificial intelligence supercomputer at Cambridge, and AMD for their generous support in this project. This work would not have been possible without their computational resources and technical assistance.
+We would like to express our gratitude to UKRI and the [DAWN](https://www.hpc.cam.ac.uk/d-w-n) supercomputer team at Cambridge, for their generous support in this project. We also acknowledge support from [AMD](https://www.amd.com/en.html),  [Vultr](https://www.vultr.com/), the [Dirac High Performance Computing Facility](https://dirac.ac.uk), [Microsoft AI For Good Lab](https://www.microsoft.com/en-us/research/group/ai-for-good-research-lab/), Dr. Robert Sansom, [dClimate](https://www.dclimate.net/), and [Amazon Web Services (AWS)](https://aws.amazon.com/) under their AWS Open Data program (https://opendata.aws/). This work would not have been possible without their support, computational resources and technical assistance.  
+
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=ucam-eo/tessera&type=Date)](https://www.star-history.com/#ucam-eo/tessera&Date)

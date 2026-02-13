@@ -11,6 +11,20 @@ btfm_infer/src/tile_lists
 __pycache__
 rgb_visualization.png
 my_data
+# Any local data outputs (do not commit)
+my_data*/
+my_data_*/
+data_raw/
+data_sar_raw/
+data_processed/
+retiled_d_pixel/
+representation_retiled/
+tessera_preprocessing/s1_s2_downloader_my.sh
+
+# Temp + Dask reports
+**/temp/
+**/dask-report-*.html
+**/*.aux.xml
 *.log
 *.json
 tessera_data_preprocessing/d_pixel_processing_logs
