@@ -32,13 +32,13 @@ def load_and_dequantize_representation(representation_file_path, scales_file_pat
     return representation_f32
 
 # path = "0_2500_500_3000.npy"
-path = "/scratch/zf281/tessera/data/test_artefact/representation_retiled_qat/0_2500_500_3000.npy"
+path = "/absolute_path_to_data_dir/representation_retiled_qat/0_2500_500_3000.npy"
 data = np.load(path, mmap_mode='r')
 print(data.dtype)  # Output the data type
 print(data.shape)  # Output the shape of the array
 
 # optional
-path_scales = "/scratch/zf281/tessera/data/test_artefact/representation_retiled_qat/0_2500_500_3000_scales.npy"
+path_scales = "/absolute_path_to_data_dir/representation_retiled_qat/0_2500_500_3000_scales.npy"
 scales = np.load(path_scales)
 data = load_and_dequantize_representation(path, path_scales)
 

@@ -347,6 +347,22 @@ tessera_infer
 
 _**Note that the checkpoint mentioned above is an early-stage model, which natively generates float32 embeddings. Therefore, this model is not the one used to generate the int8 embeddings in the geotessera library. We will soon deploy the specific checkpoint that was used to create the geotessera embeddings into the full pipeline.**_
 
+### QAT Model Weight (Quantized Output)
+
+For quantized inference, use the QAT checkpoint from [Google Drive](https://drive.google.com/file/d/1HJ92aS5ERXMLfSFYJ4m3OKycJJdC1QvO/view?usp=sharing) and place it in `tessera_infer_QAT/checkpoints`:
+
+```
+tessera_infer_QAT
+ ┣ checkpoints
+ ┃   ┗ best_model_fsdp_20250608_220648_QAT.pt
+ ┣ configs
+ ┗ src
+```
+
+The QAT pipeline outputs quantized embeddings as **int8 + scales**:
+- `tile_name.npy`: int8 embedding tensor, shape `(H, W, 128)`
+- `tile_name_scales.npy`: float32 scale map, shape `(H, W)`
+
 ### Configure Bash Script
 
 To simplify inference configuration, we provide `tessera_infer/infer_all_tiles.sh`. You only need to edit a few parameters:
@@ -437,6 +453,30 @@ If successful, you should see logs like:
 ```
 
 At the same time, a `logs` folder will be generated in the `tessera_infer` folder with more detailed logging for each CPU and GPU process.
+
+### QAT Inference (CPU + GPU, with AMX auto-fallback)
+
+We also provide a QAT inference pipeline in `tessera_infer_QAT`:
+
+```bash
+cd tessera_infer_QAT
+chmod +x infer_all_tiles.sh
+bash infer_all_tiles.sh
+```
+
+Before running, edit these parameters in `tessera_infer_QAT/infer_all_tiles.sh`:
+
+```bash
+BASE_DATA_DIR="/absolute_path_to_your_data_dir"
+export PYTHON_ENV="/absolute_path_to_your_python/bin/python"
+CPU_GPU_SPLIT="1:1"  # CPU:GPU ratio, e.g. 1:0 or 0:1
+CHECKPOINT_PATH="checkpoints/best_model_fsdp_20250608_220648_QAT.pt"
+```
+
+Notes:
+- QAT now supports both CPU and GPU inference in one run (ratio-based split, same style as `tessera_infer`).
+- On CPU, AMX is automatically detected and enabled when available.
+- If AMX is not available, it automatically falls back to default CPU inference.
 
 ### Stitch Final Representation Map
 

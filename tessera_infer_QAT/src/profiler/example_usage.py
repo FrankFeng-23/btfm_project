@@ -17,8 +17,8 @@ python src/multi_tile_infer.py \\
     --config configs/cpu_optimized_config.py \\
     --mode cpu \\
     --checkpoint_path checkpoints/best_model_fsdp_20250427_084307.pt \\
-    --tile_path /scratch/zf281/tessera/data/cambridge/output/2024/retiled_d_pixel/0_2500_500_3000 \\
-    --output_dir /scratch/zf281/tessera/data/tmp \\
+    --tile_path /absolute_path_to_data_dir/retiled_d_pixel/0_2500_500_3000 \\
+    --output_dir /absolute_path_to_output_dir \\
     --num_threads 8 \\
     --batch_size 128 \\
     --enable_profiling \\
@@ -36,8 +36,8 @@ python src/multi_tile_infer.py \\
     --config configs/cpu_optimized_config.py \\
     --mode cpu \\
     --checkpoint_path checkpoints/best_model_fsdp_20250427_084307.pt \\
-    --tile_path /scratch/zf281/tessera/data/cambridge/output/2024/retiled_d_pixel/0_2500_500_3000 \\
-    --output_dir /scratch/zf281/tessera/data/tmp \\
+    --tile_path /absolute_path_to_data_dir/retiled_d_pixel/0_2500_500_3000 \\
+    --output_dir /absolute_path_to_output_dir \\
     --num_threads 8 \\
     --batch_size 128 \\
     --enable_profiling \\
@@ -55,8 +55,8 @@ python src/multi_tile_infer.py \\
     --config configs/cpu_optimized_config.py \\
     --mode cpu \\
     --checkpoint_path checkpoints/best_model_fsdp_20250427_084307.pt \\
-    --tile_path /scratch/zf281/tessera/data/cambridge/output/2024/retiled_d_pixel/0_2500_500_3000 \\
-    --output_dir /scratch/zf281/tessera/data/tmp \\
+    --tile_path /absolute_path_to_data_dir/retiled_d_pixel/0_2500_500_3000 \\
+    --output_dir /absolute_path_to_output_dir \\
     --num_threads 8 \\
     --batch_size 128 \\
     --enable_profiling \\
@@ -75,8 +75,8 @@ python src/multi_tile_infer.py \\
     --mode cpu \\
     --checkpoint_path checkpoints/best_model_fsdp_20250427_084307.pt \\
     --onnx_model_path checkpoints/model_optimized.onnx \\
-    --tile_path /scratch/zf281/tessera/data/cambridge/output/2024/retiled_d_pixel/0_2500_500_3000 \\
-    --output_dir /scratch/zf281/tessera/data/tmp \\
+    --tile_path /absolute_path_to_data_dir/retiled_d_pixel/0_2500_500_3000 \\
+    --output_dir /absolute_path_to_output_dir \\
     --num_threads 8 \\
     --batch_size 128 \\
     --enable_profiling \\
