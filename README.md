@@ -1,4 +1,4 @@
-# Temporal Embeddings of Surface Spectra for Earth Representation and Analysis (TESSERA)
+# Temporal Embeddings of Surface Spectra for Earth Representation and Analysis (TESSERA) [CVPR2026]
 <div align="center">
     <a href="#readme-top">
         <img src="images/banner.png" alt="Banner">
