@@ -607,7 +607,7 @@ Please accurately represent these characteristics in your work.
 
 We encourage responsible use and welcome community feedback. If you have concerns about potential applications or suggestions for improving these guidelines, please contact us.
 
-We reserve the right to update these guidelines based on community input and emerging considerations, though such updates do not retroactively affect the CC-BY 4.0 license under which data is released.
+We reserve the right to update these guidelines based on community input and emerging considerations, though such updates do not retroactively affect the CC-0 license under which data is released.
 
 ### Contact
 
