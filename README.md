@@ -80,7 +80,6 @@ we do request it.
 <a id="global-embeddings-access"></a>
 
 ## Accessing Embeddings using GeoTessera (recommended)
-## Accessing Embeddings using GeoTessera (recommended)
 
 We have generated embeddings for the whole globe at 10m resolution for 2024.
 These can be downloaded and used for downstream applications, saving significant computational time and resources, using 
@@ -88,8 +87,6 @@ the [GeoTessera](https://github.com/ucam-eo/geotessera) library.
 We will progressively extending coverage backwards year by year until 2017. The current coverage map is below:
 
 <img src="https://github.com/ucam-eo/tessera-coverage-map/blob/main/map.png"> 
-
-**Access Global Embeddings:** https://github.com/ucam-eo/geotessera
 
 ## TESSERA Users Group
 
