@@ -28,7 +28,7 @@
       - [Accessing Precomputed Embeddings](#global-embeddings-access)
       - [Creating Your Own Embeddings](#creating-your-own-embeddings)
       - [Downstream Tasks](#downstream-tasks)
-      - [TESSERA Users Group](tessera-users-group)
+      - [TESSERA Users Group](#tessera-users-group)
   - Additional information
       - [Team](#team)
       - [Contact](#contact)
@@ -77,6 +77,9 @@ we do request it.
 
 # Using TESSERA
 
+<a id="global-embeddings-access"></a>
+
+## Accessing Embeddings using GeoTessera (recommended)
 ## Accessing Embeddings using GeoTessera (recommended)
 
 We have generated embeddings for the whole globe at 10m resolution for 2024.
