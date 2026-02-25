@@ -564,8 +564,6 @@ This means you are free to:
 * **Share** — copy and redistribute the material in any medium or format
 * **Adapt** — remix, transform, and build upon the material for any purpose, even commercially
 
-The full license is available at: [https://creativecommons.org/licenses/by/4.0/](https://creativecommons.org/public-domain/cc0/)
-
 ### Purpose and Intended Uses
 
 TESSERA was developed to advance scientific research and support environmental monitoring, conservation, sustainable agriculture, and understanding of Earth systems. We designed this tool to enable:
