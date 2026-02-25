@@ -19,16 +19,16 @@
 
   - Learning about TESSERA
       - [Introduction](#introduction)
-      - [Papers](#Papers)
+      - [Papers](#papers)
       - [Podcast](https://www.satellite-image-deep-learning.com/p/tessera-a-temporal-foundation-model)
       - [Presentations](#presentations)
-      - [License](#License)
+      - [License](#license)
   - Using TESSERA
       - [Acceptable Use Policy](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/Acceptable_use_policy)
-      - [Accessing Precomputed Embeddings](#global-embeddings-access)
+      - [Accessing Precomputed Embeddings](#accessing-embeddings-using-geotessera-recommended)
       - [Creating Your Own Embeddings](#creating-your-own-embeddings)
       - [Downstream Tasks](#downstream-tasks)
-      - [TESSERA Users Group](tessera-users-group)
+      - [TESSERA Users Group](#tessera-users-group)
   - Additional information
       - [Team](#team)
       - [Contact](#contact)
