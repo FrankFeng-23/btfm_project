@@ -50,13 +50,19 @@ Here are some visualization results of the TESSERA representation map (using the
 ![repr_demo](images/repr_demo.png)
 
 ## Papers
-Here are publications and preprints related to TESSERA, listed reverse chronologically:
-* Young, R., & Keshav, S. (2026). Interpolation of GEDI Biomass Estimates with Calibrated Uncertainty Quantification, arXiv preprint. https://doi.org/10.48550/ArXiv.2601.16834
-* Lisaius, M. C., Keshav, S., Blake, A., & Atzberger, C. (2026). Embedding -based Crop Type Classification in the Groundnut Basin of Senegal (arXiv:2601.16900). ArXiv preprint. https://doi.org/10.48550/arXiv.2601.16900
-* Z. Feng, C. Atzberger, S. Jaffer, J. Knezevic, S. Sormunen, R. Young, M.C. Lisaius, M. Immitzer, T. Jackson, J. Ball, D.A. Coomes, A. Madhavapeddy, A. Blake, S. Keshav, (2026) [Applications of the TESSERA Geospatial Foundation Model to Diverse Environmental Mapping Tasks](http://ssrn.com/abstract=6142416), SSRN preprint. http://ssrn.com/abstract=6142416
-* Z. Feng, C. Atzberger, S. Jaffer, J. Knezevic, S. Sormunen, R. Young, M.C. Lisaius, M. Immitzer, T. Jackson, J. Ball, D.A. Coomes, A. Madhavapeddy, A. Blake, S. Keshav (2025), [TESSERA: Temporal Embeddings of Surface Spectra for Earth Representation and Analysis](https://arxiv.org/abs/2506.20380), ArXiv reprint. https://arxiv.org/abs/2506.20380
-* Lisaius, M. C., Blake, A., Atzberger, C., & Keshav, S. (2026). Towards improved crop type classification: A compact embedding approach suitable for small fields. Accepted in Proceedings of the ISPRS Conference 2026. International Society for Photogrammetry and Remote Sensing.
+Here are publications and preprints related to TESSERA, listed chronologically:
 * Lisaius, M. C., Blake, A., Keshav, S., & Atzberger, C. (2024). Using Barlow Twins to Create Representations From Cloud-Corrupted Remote Sensing Time Series. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing, 17, 13162–13168. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing. https://doi.org/10.1109/JSTARS.2024.3426044
+
+* Z. Feng, C. Atzberger, S. Jaffer, J. Knezevic, S. Sormunen, R. Young, M.C. Lisaius, M. Immitzer, T. Jackson, J. Ball, D.A. Coomes, A. Madhavapeddy, A. Blake, S. Keshav (2025), [TESSERA: Temporal Embeddings of Surface Spectra for Earth Representation and Analysis](https://arxiv.org/abs/2506.20380), To Appear, CVPR 2026. ArXiv reprint. https://arxiv.org/abs/2506.20380
+
+* Lisaius, M. C., Blake, A., Atzberger, C., & Keshav, S. (2026). Towards improved crop type classification: A compact embedding approach suitable for small fields. Accepted in Proceedings of the ISPRS Conference 2026. International Society for Photogrammetry and Remote Sensing.
+
+* Z. Feng, C. Atzberger, S. Jaffer, J. Knezevic, S. Sormunen, R. Young, M.C. Lisaius, M. Immitzer, T. Jackson, J. Ball, D.A. Coomes, A. Madhavapeddy, A. Blake, S. Keshav, (2026) [Applications of the TESSERA Geospatial Foundation Model to Diverse Environmental Mapping Tasks](http://ssrn.com/abstract=6142416), SSRN preprint. http://ssrn.com/abstract=6142416
+  
+* Young, R., & Keshav, S. (2026). Interpolation of GEDI Biomass Estimates with Calibrated Uncertainty Quantification, arXiv preprint. https://doi.org/10.48550/ArXiv.2601.16834
+  
+* Lisaius, M. C., Keshav, S., Blake, A., & Atzberger, C. (2026). Embedding-based Crop Type Classification in the Groundnut Basin of Senegal (arXiv:2601.16900). ArXiv preprint. https://doi.org/10.48550/arXiv.2601.16900
+
   
 ## Presentations
 
