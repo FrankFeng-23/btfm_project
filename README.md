@@ -72,7 +72,7 @@ Here are publications and preprints related to TESSERA, listed chronologically:
 * [2-slide summary (PPTX)](https://www.dropbox.com/scl/fi/zjo4trov0z2qnmdeitng0/CRI-2slide.pptx?rlkey=5kkojiknt6hdn2zplzlotqnbt&st=ezafh67n&dl=0) for CRI Flash Talks, S. Keshav, October 7, 2025
 * [Foundation model overview](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:251006_LabMeeting_BallJGC.pptx) (PPTX) for Ecology Groups meeting, University of Cambridge, DAB, James Ball, October 6, 2025
 * [TESSERA overview presentation with a focus on ecological applications](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:Tessera_talk_maryland_1st_Oct.pdf) (PDF) University of Maryland, Frank Feng, October 1, 2025
-* [TESSERA overview presentation]([https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:JCU-tesserav2.pptx](https://www.dropbox.com/scl/fi/0rsq4wkao3c7fgwljd8ec/JCU-tesserav2.pptx?rlkey=ccutcxgwi068c09n20t1yi549&st=13if23b3&dl=0) (PPTX) James Cook University, S. Keshav, September 29, 2025
+* [TESSERA overview presentation](https://www.dropbox.com/scl/fi/0rsq4wkao3c7fgwljd8ec/JCU-tesserav2.pptx?rlkey=ccutcxgwi068c09n20t1yi549&st=13if23b3&dl=0) (PPTX) James Cook University, S. Keshav, September 29, 2025
 * [TESSERA overview presentation](https://svr-sk818-web.cl.cam.ac.uk/tessera/index.php/File:TESSERA_Talk_DAB_5_20.pdf) (PDF) University of Cambridge, DAB, Frank Feng, May 20, 2025
 * [Self-supervised learning for earth observation](https://www.dropbox.com/scl/fi/zjo4trov0z2qnmdeitng0/CRI-2slide.pptx?rlkey=5kkojiknt6hdn2zplzlotqnbt&st=ezafh67n&dl=0) (PPTX) S. Keshav, Exeter, April 2025
 
