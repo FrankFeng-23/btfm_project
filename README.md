@@ -5,7 +5,8 @@
     </a>
     <br />
     <p align="center">
-        <a href="https://github.com/FrankFeng-23/btfm_project/issues">Report Bugs 🛠️</a> &nbsp;&nbsp;•&nbsp;&nbsp;
+        <a href="https://geotessera.org/">Project Website 🌐</a> &nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="https://github.com/FrankFeng-23/btfm_project/issues">Report Bugs 🛠️</a> &nbsp;&nbsp;&nbsp;&nbsp;
         <a href="https://github.com/FrankFeng-23/btfm_project/issues">Request Features 💡</a>
     </p>
 </div>
