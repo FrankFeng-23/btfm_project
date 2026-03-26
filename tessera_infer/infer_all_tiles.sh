@@ -11,15 +11,19 @@
 ###############This needs to be modified to your environment###############
 # Set default values
 # This is the main directory where all processed and raw data will be stored
-BASE_DATA_DIR="/absolute/path/to/your/data_dir"
+# BASE_DATA_DIR="/absolute/path/to/your/data_dir"
+BASE_DATA_DIR="/scratch/zf281/tessera/data/test_artefact"
 
 # Python environment that has the required packages installed
-export PYTHON_ENV="/absolute/path/to/your/python_env/bin/python"
+# export PYTHON_ENV="/absolute/path/to/your/python_env/bin/python"
+export PYTHON_ENV="/maps/zf281/miniconda3/envs/detectree-env/bin/python"
 
 # CPU:GPU split ratio
 # The script supports simultaneous inference using both CPU and GPU. This ratio specifies the proportion of retiled_patches each device will handle. 
 # Default is 1:1 (even split). For GPU-only inference, set to 0:1.
-CPU_GPU_SPLIT="1:1"  # Format: CPU:GPU ratio
+# CPU_GPU_SPLIT="1:1"  # Format: CPU:GPU ratio
+# CPU_GPU_SPLIT="1:0"  # Format: CPU:GPU ratio
+CPU_GPU_SPLIT="0:1"  # Format: CPU:GPU ratio
 
 # Maximum number of concurrent processes
 MAX_CONCURRENT_PROCESSES_CPU=20
@@ -30,7 +34,7 @@ TOTAL_CPU_CORES=$(nproc)  # Get total number of CPU cores
 AVAILABLE_CORES=$((TOTAL_CPU_CORES / 2)) # Use 50% of the cores
 
 # Define CPU batch size and workers
-CPU_BATCH_SIZE=256  # Small batch size for CPU
+CPU_BATCH_SIZE=1024  # Small batch size for CPU
 CPU_NUM_WORKERS=0   # Let main thread do the loading
 
 # Maximum number of concurrent GPU processes; this value usually equals the number of GPUs on the device.
@@ -52,6 +56,9 @@ PYTHON_SCRIPT="src/multi_tile_infer.py"
 
 # Path to the checkpoint file for the model
 CHECKPOINT_PATH="checkpoints/best_model_fsdp_20250427_084307.pt"
+
+# Path to the ONNX model for CPU inference (optional)
+ONNX_MODEL_PATH="checkpoints/model_optimized.onnx"
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -541,6 +548,7 @@ start_cpu_process() {
         --process_id $process_id \
         --num_threads $threads_per_process \
         --checkpoint_path "$CHECKPOINT_PATH" \
+        --onnx_model_path "$ONNX_MODEL_PATH" \
         --output_dir "$OUTPUT_DIR" \
         --batch_size $CPU_BATCH_SIZE \
         --num_workers $CPU_NUM_WORKERS \
