@@ -8,18 +8,18 @@
 
 ############### This needs to be modified to your environment ###############
 # Main directory where preprocessed tiles and outputs are located
-BASE_DATA_DIR="/absolute_path_to_data_dir"
+ : "${BASE_DATA_DIR:=/absolute_path_to_data_dir}"
 
 # Python environment with required dependencies
-export PYTHON_ENV="/absolute_path_to_python_env/bin/python"
+ : "${PYTHON_ENV:=/absolute/path/to/your/python_env/bin/python}"
 
 # CPU:GPU split ratio (Format: CPU:GPU)
 # Examples: "1:1" (balanced), "1:0" (CPU only), "0:1" (GPU only)
-CPU_GPU_SPLIT="1:0"
+ : "${CPU_GPU_SPLIT:=1:0}"
 
 # Max concurrent tile processes for CPU/GPU
-MAX_CONCURRENT_PROCESSES_CPU=20
-MAX_CONCURRENT_PROCESSES_GPU=1
+ : "${MAX_CONCURRENT_PROCESSES_CPU:=20}"
+ : "${MAX_CONCURRENT_PROCESSES_GPU:=1}"
 
 # CPU cores to use
 TOTAL_CPU_CORES=$(nproc)
