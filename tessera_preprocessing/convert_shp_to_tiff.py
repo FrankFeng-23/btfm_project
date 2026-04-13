@@ -3,6 +3,7 @@ import os
 import fiona
 import rasterio
 import logging
+import sys
 import numpy as np
 from rasterio.features import rasterize
 from rasterio.transform import from_origin
@@ -261,7 +262,11 @@ def main():
     Main function to run the conversion process.
     """
     # Input shapefile path
-    shp_path = 'absolute_path_to_your_shp_file'
+    if len(sys.argv) < 2:
+        # uv run ./convert_shp_to_tiff.py /path/to/shapefile.shp
+        print("Usage: python ./convert_shp_to_tiff.py /path/to/shapefile.shp")
+        sys.exit(1)
+    shp_path = sys.argv[1]
 
     # Call the conversion function
     try:
