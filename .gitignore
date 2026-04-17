@@ -27,6 +27,8 @@ tessera_preprocessing/s1_s2_downloader_my.sh
 **/*.aux.xml
 *.log
 *.json
+*.err
+*.out
 tessera_data_preprocessing/d_pixel_processing_logs
 tessera_data_preprocessing/_batch_submit.sh
 continuous_*.sh
@@ -54,3 +56,5 @@ tessera_infer/profiler/chat_history.txt
 chat_history.txt
 first_three_band.png
 pca_three_band.png
+core
+infer_v1_1.slurm

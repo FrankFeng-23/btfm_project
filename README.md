@@ -371,6 +371,67 @@ The QAT pipeline outputs quantized embeddings as **int8 + scales**:
 - `tile_name.npy`: int8 embedding tensor, shape `(H, W, 128)`
 - `tile_name_scales.npy`: float32 scale map, shape `(H, W)`
 
+### v1.1 QAT Model Weight (latest, recommended)
+
+TESSERA **v1.1** is a new pretrained QAT checkpoint. Compared to the v1.0 QAT
+checkpoint above, v1.1 brings:
+
+- **Three separate backbones** for Sentinel-2, Sentinel-1 ascending, and Sentinel-1
+  descending (instead of a merged S1 encoder), giving the model a clearer view of
+  each modality's acquisition geometry.
+- **Wider encoder** (`latent_dim=192`, transformer `d_model=768`) and an **MLP
+  `dim_reducer`** (Linear → LayerNorm → ReLU → Dropout → Linear) that outputs a
+  192-D representation; the first 128 dims are saved for downstream use.
+- **All-observation inference.** Unlike v1.0, which randomly samples a fixed 40
+  timesteps per pixel, v1.1 uses **every valid observation** per pixel. Observation
+  counts are bucketised to a configurable list `num_obs_checkpoints` (default: every
+  multiple of 8 from 8 to 256, i.e. `[8, 16, 24, 32, ..., 248, 256]`) so pixels
+  sharing the same bucket can be batched together.
+
+**Download** the checkpoint `best_model_fsdp_20260408_154724.pt` from
+[Google Drive](https://drive.google.com/file/d/1hxUr4j9daoNt9pxJZc6X6569bdpYUTAb/view?usp=sharing)
+(HuggingFace mirror coming soon) and place it into `tessera_infer_QAT/checkpoints`:
+
+```
+tessera_infer_QAT
+ ┣ checkpoints
+ ┃   ┗ best_model_fsdp_20260408_154724.pt
+ ┣ configs
+ ┃   ┗ v1_1_infer_config.py
+ ┣ src
+ ┃   ┗ infer_v1_1.py
+ ┗ visualize_embedding_v1_1.py
+```
+
+**Run inference** on a single preprocessed tile (a folder produced by the
+preprocessing pipeline containing `bands.npy`, `masks.npy`, `doys.npy`,
+`sar_ascending.npy`, `sar_ascending_doy.npy`, `sar_descending.npy`,
+`sar_descending_doy.npy`):
+
+```bash
+cd tessera_infer_QAT
+python src/infer_v1_1.py \
+    --config          configs/v1_1_infer_config.py \
+    --checkpoint_path checkpoints/best_model_fsdp_20260408_154724.pt \
+    --tile_path       /absolute/path/to/retiled_d_pixel/0_3500_500_4000 \
+    --output_dir      /absolute/path/to/representation_retiled_v1_1 \
+    --output_prefix   0_3500_500_4000
+```
+
+Adjust `num_obs_checkpoints` in `configs/v1_1_infer_config.py` to trade off
+between embedding quality and compute (fewer / smaller checkpoints = faster,
+more / larger = more temporal detail). For a Slurm cluster, see
+`tessera_infer_QAT/infer_v1_1.slurm` for a ready-to-edit template.
+
+**Output** files (same int8 + scales format as v1.0 QAT, with `_emb128_` naming):
+- `<prefix>_emb128_int8.npy`   — shape `(H, W, 128)`, dtype `int8`
+- `<prefix>_emb128_scales.npy` — shape `(H, W)`,      dtype `float32`
+
+Reconstruct fp32 embeddings with
+`fp32 = int8.astype(np.float32) * scales[..., None]`. A helper script
+`visualize_embedding_v1_1.py` dequantises the output and saves a first-3-dim RGB
+plus a PCA-3 RGB for quick visual inspection.
+
 ### Configure Bash Script
 
 To simplify inference configuration, we provide `tessera_infer/infer_all_tiles.sh`. You only need to edit a few parameters:

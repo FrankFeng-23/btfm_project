@@ -89,3 +89,29 @@ def dequantize_tensor_symmetric(x_quantized, scale):
     Dequantizes an integer tensor back to f32 using the scale factor.
     """
     return x_quantized.float() * scale
+
+
+def quantize_tensor_symmetric_per_row(x_f32, bits=8):
+    """
+    Per-row symmetric quantisation. Input shape ``(..., D)``; scale is computed
+    independently along the last axis so a (B, D) batch yields (B, 1) scales.
+    This matches the deployed Tessera v1.1 int8 embedding format, where every
+    pixel carries its own scale.
+    """
+    if bits == 8:
+        qmin, qmax, dtype = -128, 127, torch.int8
+    else:
+        qmin = -2 ** (bits - 1)
+        qmax = 2 ** (bits - 1) - 1
+        if bits <= 8:
+            dtype = torch.int8
+        elif bits <= 16:
+            dtype = torch.int16
+        else:
+            dtype = torch.int32
+    x_f32 = x_f32.to(torch.float32)
+    abs_max = torch.amax(torch.abs(x_f32.detach()), dim=-1, keepdim=True)
+    scale = torch.clamp(abs_max / qmax, min=1e-8)
+    q = torch.round(x_f32 / scale)
+    q = torch.clamp(q, qmin, qmax).to(dtype)
+    return q, scale
