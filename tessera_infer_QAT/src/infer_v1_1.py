@@ -79,8 +79,7 @@ def _collate(batch_list):
     seq length; we just stack."""
     return {
         "s2": torch.stack([b["s2"] for b in batch_list], dim=0),
-        "s1a": torch.stack([b["s1a"] for b in batch_list], dim=0),
-        "s1d": torch.stack([b["s1d"] for b in batch_list], dim=0),
+        "s1": torch.stack([b["s1"] for b in batch_list], dim=0),
         "i": torch.tensor([b["i"] for b in batch_list], dtype=torch.long),
         "j": torch.tensor([b["j"] for b in batch_list], dtype=torch.long),
         "global_idx": torch.tensor([b["global_idx"] for b in batch_list], dtype=torch.long),
@@ -101,6 +100,8 @@ def parse_args():
     p.add_argument("--device", default=None, choices=["cuda", "cpu", "xpu"])
     p.add_argument("--batch_size", type=int, default=None)
     p.add_argument("--num_workers", type=int, default=None)
+    p.add_argument("--data_source", default=None, choices=["mpc", "aws"],
+                   help="Override config['data_source']. MUST match the loaded checkpoint.")
     return p.parse_args()
 
 
@@ -138,6 +139,8 @@ def main():
         config["batch_size"] = args.batch_size
     if args.num_workers is not None:
         config["num_workers"] = args.num_workers
+    if args.data_source is not None:
+        config["data_source"] = args.data_source
 
     tile_path = os.path.abspath(args.tile_path.rstrip("/"))
     output_dir = os.path.abspath(args.output_dir)
@@ -148,6 +151,7 @@ def main():
     logging.info("Checkpoint: %s", args.checkpoint_path)
     logging.info("Tile: %s", tile_path)
     logging.info("Output: %s  (prefix=%s)", output_dir, output_prefix)
+    logging.info("data_source: %s", config.get("data_source", "mpc"))
     logging.info("num_obs_checkpoints: %s", config["num_obs_checkpoints"])
 
     # Build and load model
@@ -193,11 +197,10 @@ def main():
     with torch.no_grad():
         for step, batch in enumerate(loader, start=1):
             s2 = batch["s2"].to(device, non_blocking=True)
-            s1a = batch["s1a"].to(device, non_blocking=True)
-            s1d = batch["s1d"].to(device, non_blocking=True)
+            s1 = batch["s1"].to(device, non_blocking=True)
 
             with amp_ctx:
-                emb = model(s2, s1a, s1d)  # (B, repr_dim)
+                emb = model(s2, s1)  # (B, repr_dim)
 
             emb = emb[:, :save_dim].to(torch.float32)
             q_int8, per_row_scale = quantize_tensor_symmetric_per_row(emb, bits=int(config.get("qat_representation_bits", 8)))

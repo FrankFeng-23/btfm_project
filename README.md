@@ -373,12 +373,9 @@ The QAT pipeline outputs quantized embeddings as **int8 + scales**:
 
 ### v1.1 QAT Model Weight (latest, recommended)
 
-TESSERA **v1.1** is a new pretrained QAT checkpoint. Compared to the v1.0 QAT
-checkpoint above, v1.1 brings:
+TESSERA **v1.1** is a new pretrained QAT model that improves on the v1.0 QAT
+checkpoint above. Compared to v1.0, v1.1 brings:
 
-- **Three separate backbones** for Sentinel-2, Sentinel-1 ascending, and Sentinel-1
-  descending (instead of a merged S1 encoder), giving the model a clearer view of
-  each modality's acquisition geometry.
 - **Wider encoder** (`latent_dim=192`, transformer `d_model=768`) and an **MLP
   `dim_reducer`** (Linear → LayerNorm → ReLU → Dropout → Linear) that outputs a
   192-D representation; the first 128 dims are saved for downstream use.
@@ -387,41 +384,82 @@ checkpoint above, v1.1 brings:
   counts are bucketised to a configurable list `num_obs_checkpoints` (default: every
   multiple of 8 from 8 to 256, i.e. `[8, 16, 24, 32, ..., 248, 256]`) so pixels
   sharing the same bucket can be batched together.
+- **Per-modality S1 normalisation.** S1 ascending and descending are normalised
+  with their OWN per-band mean/std, then concatenated time-wise into a single
+  merged S1 stream that feeds one S1 backbone (same two-backbone topology as
+  v1.0).
 
-**Download** the checkpoint `best_model_fsdp_20260408_154724.pt` from
-[Google Drive](https://drive.google.com/file/d/1hxUr4j9daoNt9pxJZc6X6569bdpYUTAb/view?usp=sharing)
-(HuggingFace mirror coming soon) and place it into `tessera_infer_QAT/checkpoints`:
+#### Two data sources × two checkpoint flavours
+
+v1.1 ships **two checkpoints per preprocessing source × two flavours each**:
+
+- **encoder-only** (~250 MB, default for inference) — contains exactly the
+  weights consumed by the inference graph (`s2_backbone`, `s1_backbone`,
+  `dim_reducer`). This is what you almost always want.
+- **full** (~10 GB) — encoder + projector + optimiser/scaler state. Only
+  download this if you intend to **fine-tune** v1.1 on your own data.
+
+Each checkpoint was trained with its own normalisation statistics, so **you
+must pair the right checkpoint with the right `data_source` setting in the
+config** (otherwise the input distribution is silently mis-shifted and embedding
+quality collapses):
+
+| Data source | Encoder-only (recommended, ~221 MB)            | Full (fine-tune, ~10 GB)                         | `data_source` value |
+| ----------- | ----------------------------------------------- | ------------------------------------------------- | ------------------- |
+| Microsoft Planetary Computer (S2 L2A + S1 RTC)   | [`tessera_v1_1_mpc_encoder.pt`](https://drive.google.com/file/d/1t-gfTxi3Hg_uJXpJ9etROCRgKt2myfJ2/view?usp=drive_link) | [`tessera_v1_1_mpc_full.pt`](https://drive.google.com/file/d/1pBXlBscBedlh0CkfD6vW277XkN8WevZA/view?usp=sharing) | `"mpc"` |
+| AWS Open Data (Earth-search S2 L2A + ASF OPERA RTC-S1) | [`tessera_v1_1_aws_encoder.pt`](https://drive.google.com/file/d/1taLxwJOId-pfqUafEOCf5zDPXA7kzdyu/view?usp=sharing) | [`tessera_v1_1_aws_full.pt`](https://drive.google.com/file/d/1xa8P6dFuqcdUW1c3-07_-0-KHIrSZAci/view?usp=sharing) | `"aws"` |
+
+Per-source normalisation statistics are kept in
+`tessera_infer_QAT/src/datasets/v1_1_norm_stats.py`. The config field
+`data_source` (default `"mpc"`) selects which set is used at inference time.
+
+The inference loader uses `strict=False` and silently ignores keys that
+aren't part of the inference graph, so a *full* checkpoint will also work in
+the same command — it's just ~45× larger to download. (A HuggingFace mirror
+will follow once the Drive links stabilise.)
+
+**Download** one (or more) of the four checkpoints above and place into
+`tessera_infer_QAT/checkpoints`:
 
 ```
 tessera_infer_QAT
  ┣ checkpoints
- ┃   ┗ best_model_fsdp_20260408_154724.pt
+ ┃   ┣ tessera_v1_1_mpc_encoder.pt          # MPC, encoder-only (default)
+ ┃   ┣ tessera_v1_1_aws_encoder.pt          # AWS, encoder-only
+ ┃   ┣ tessera_v1_1_mpc_full.pt             # MPC, full (fine-tune only)
+ ┃   ┗ tessera_v1_1_aws_full.pt             # AWS, full (fine-tune only)
  ┣ configs
- ┃   ┗ v1_1_infer_config.py
+ ┃   ┗ v1_1_infer_config.py                 # set data_source = "mpc" or "aws"
  ┣ src
- ┃   ┗ infer_v1_1.py
+ ┃   ┣ infer_v1_1.py
+ ┃   ┗ datasets
+ ┃       └─ v1_1_norm_stats.py
  ┗ visualize_embedding_v1_1.py
 ```
 
-**Run inference** on a single preprocessed tile (a folder produced by the
-preprocessing pipeline containing `bands.npy`, `masks.npy`, `doys.npy`,
+**Run inference** on a single preprocessed tile (a folder produced by
+`tessera_preprocessing` containing `bands.npy`, `masks.npy`, `doys.npy`,
 `sar_ascending.npy`, `sar_ascending_doy.npy`, `sar_descending.npy`,
 `sar_descending_doy.npy`):
 
 ```bash
 cd tessera_infer_QAT
+
+# MPC inference (default; encoder-only ckp is enough)
 python src/infer_v1_1.py \
     --config          configs/v1_1_infer_config.py \
-    --checkpoint_path checkpoints/best_model_fsdp_20260408_154724.pt \
+    --checkpoint_path checkpoints/tessera_v1_1_mpc_encoder.pt \
     --tile_path       /absolute/path/to/retiled_d_pixel/0_3500_500_4000 \
-    --output_dir      /absolute/path/to/representation_retiled_v1_1 \
-    --output_prefix   0_3500_500_4000
+    --output_dir      /absolute/path/to/representation_retiled_v1_1
 ```
 
-Adjust `num_obs_checkpoints` in `configs/v1_1_infer_config.py` to trade off
-between embedding quality and compute (fewer / smaller checkpoints = faster,
-more / larger = more temporal detail). For a Slurm cluster, see
-`tessera_infer_QAT/infer_v1_1.slurm` for a ready-to-edit template.
+For AWS data, pass `--data_source aws` and use the AWS encoder ckp:
+`--checkpoint_path checkpoints/tessera_v1_1_aws_encoder.pt`.
+
+Adjust `num_obs_checkpoints` to trade off between embedding quality and compute
+(fewer / smaller checkpoints = faster, more / larger = more temporal detail).
+For a Slurm cluster, see `tessera_infer_QAT/infer_v1_1.slurm` for a
+ready-to-edit template.
 
 **Output** files (same int8 + scales format as v1.0 QAT, with `_emb128_` naming):
 - `<prefix>_emb128_int8.npy`   — shape `(H, W, 128)`, dtype `int8`
