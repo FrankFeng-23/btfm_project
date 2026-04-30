@@ -407,7 +407,21 @@ quality collapses):
 | Data source | Encoder-only (recommended, ~221 MB)            | Full (fine-tune, ~10 GB)                         | `data_source` value |
 | ----------- | ----------------------------------------------- | ------------------------------------------------- | ------------------- |
 | Microsoft Planetary Computer (S2 L2A + S1 RTC)   | [`tessera_v1_1_mpc_encoder.pt`](https://drive.google.com/file/d/1t-gfTxi3Hg_uJXpJ9etROCRgKt2myfJ2/view?usp=drive_link) | [`tessera_v1_1_mpc_full.pt`](https://drive.google.com/file/d/1pBXlBscBedlh0CkfD6vW277XkN8WevZA/view?usp=sharing) | `"mpc"` |
-| AWS Open Data (Earth-search S2 L2A + ASF OPERA RTC-S1) | [`tessera_v1_1_aws_encoder.pt`](https://drive.google.com/file/d/1taLxwJOId-pfqUafEOCf5zDPXA7kzdyu/view?usp=sharing) | [`tessera_v1_1_aws_full.pt`](https://drive.google.com/file/d/1xa8P6dFuqcdUW1c3-07_-0-KHIrSZAci/view?usp=sharing) | `"aws"` |
+| AWS Open Data (Earth-search S2 L2A + ASF OPERA RTC-S1) | [`tessera_v1_1_aws_encoder.pt`](https://drive.google.com/file/d/1taLxwJOId-pfqUafEOCf5zDPXA7kzdyu/view?usp=sharing) ⚠ | [`tessera_v1_1_aws_full.pt`](https://drive.google.com/file/d/1xa8P6dFuqcdUW1c3-07_-0-KHIrSZAci/view?usp=sharing) ⚠ | `"aws"` |
+
+> ⚠ **AWS checkpoint compatibility note (post-fix).** The AWS v1.1 checkpoints
+> currently published were trained on output from a preprocessing build that
+> double-applied the PB-04.00 BOA_ADD_OFFSET to AWS / Earth-search Sentinel-2
+> data (Earth-search ships COGs with the +1000 offset already removed; the old
+> `harmonize_arr` subtracted it again, producing values ~1000 too low for
+> post-2022-01-25 acquisitions on bands ≥1000). The bug is fixed in
+> `tessera_preprocessing/s2_fast_processor.py` (commit guarded by
+> `DATA_SOURCE != "aws"`), but the AWS norm stats in
+> `tessera_infer_QAT/src/datasets/v1_1_norm_stats.py` and the AWS checkpoints
+> still reflect the OLD (buggy) distribution. Until the AWS model is
+> re-pretrained on the corrected preprocessing output, AWS inference
+> end-to-end is **not yet recommended** — use the MPC checkpoints. (MPC was
+> always handled correctly and is unaffected.)
 
 Per-source normalisation statistics are kept in
 `tessera_infer_QAT/src/datasets/v1_1_norm_stats.py`. The config field

@@ -14,6 +14,16 @@
 import numpy as np
 
 
+# NOTE (2026-04-26): the AWS row below was computed from preprocessing output
+# that double-applied the PB-04.00 BOA_ADD_OFFSET to AWS / Earth-search
+# Sentinel-2 data (the bug fixed in tessera_preprocessing/s2_fast_processor.py).
+# These AWS stats are therefore offset ~1000 lower for bands whose true value
+# exceeds the offset on post-2022-01-25 acquisitions. They are kept here ONLY
+# so the currently-published AWS v1.1 checkpoints continue to receive
+# in-distribution inputs — i.e. AWS inference is consistent ONLY when paired
+# with the OLD (buggy) preprocessing output. After the AWS checkpoint is
+# re-pretrained on corrected preprocessing output, recompute and replace this
+# row from the new training data and remove this notice.
 NORM_STATS = {
     "mpc": {
         "s2_mean": np.array([2683.4553, 2223.3630, 2432.0950, 3633.1970, 3602.1755,

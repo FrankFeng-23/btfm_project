@@ -63,6 +63,7 @@ AWS_BAND_MAPPING = {
 # Will be set in main() based on --data_source
 BAND_MAPPING = MPC_BAND_MAPPING
 S2_BANDS = list(BAND_MAPPING.keys())
+DATA_SOURCE = "mpc"            # set in main(); controls baseline-offset handling
 BASELINE_CUTOFF = datetime.datetime(2022, 1, 25)
 BASELINE_OFFSET = 1000
 
@@ -391,8 +392,23 @@ def group_by_date(items, partition_id: str):
     return dict(sorted(g.items()))
 
 # ─── baseline correction ─────────────────────────────────────────────────────────────
-def harmonize_arr(arr: np.ndarray, date_key:str):
-    """Perform Baseline correction"""
+def harmonize_arr(arr: np.ndarray, date_key: str):
+    """Subtract the PB-04.00 BOA_ADD_OFFSET (1000) introduced on 2022-01-25.
+
+    Source-specific behaviour:
+      - MPC (planetarycomputer sentinel-2-l2a): COGs are stored RAW, i.e. with
+        the +1000 offset still present for post-cutoff acquisitions. We must
+        subtract 1000 here to harmonise with pre-04.00 scenes.
+      - AWS (Element84 earth-search sentinel-2-l2a): the offset has already
+        been removed at COG-generation time (per Element84 earth-search README:
+        "As part of the conversion to COGs, the offset has been applied"). The
+        data is therefore already harmonised; subtracting again would shift
+        post-2022-01-25 acquisitions ~1000 too low for bands whose value
+        exceeds the offset (matches the empirical ~1000 MPC↔AWS gap reported
+        by users).
+    """
+    if DATA_SOURCE == "aws":
+        return arr
     if datetime.datetime.strptime(date_key, "%Y-%m-%d") > BASELINE_CUTOFF:
         # Handle NaN values to avoid warnings
         valid_mask = ~np.isnan(arr) & (arr >= BASELINE_OFFSET)
@@ -1205,8 +1221,11 @@ def main():
     global TEMP_DIR
     TEMP_DIR = a.temp_dir
 
-    # Configure backend-dependent band mapping + STAC backend selection
-    global BAND_MAPPING, S2_BANDS
+    # Configure backend-dependent band mapping + STAC backend selection.
+    # DATA_SOURCE also gates the baseline-offset correction in `harmonize_arr`:
+    # MPC stores the raw +1000 offset, AWS earth-search has already removed it.
+    global BAND_MAPPING, S2_BANDS, DATA_SOURCE
+    DATA_SOURCE = a.data_source
     if a.data_source == "aws":
         BAND_MAPPING = AWS_BAND_MAPPING
         S2_BANDS = list(BAND_MAPPING.keys())
