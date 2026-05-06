@@ -743,6 +743,12 @@ def process_band(items, band_name, date_key, tpl, bbox_proj, mask_np, tile_selec
                 # Use stackstac.stack to load single band
                 assets = [band_name]
                 
+                # Bilinear for spectral bands so the native-20m bands (B05/B06/
+                # B07/B8A/B11/B12) are smoothly upsampled to the 10m output grid
+                # instead of being block-replicated. SCL takes a separate code
+                # path (`process_scl_assessment_and_generation`) which keeps
+                # Resampling.nearest because SCL values are categorical class
+                # IDs and must never be averaged.
                 da = stackstac.stack(
                     items=items,
                     assets=assets,
@@ -751,7 +757,7 @@ def process_band(items, band_name, date_key, tpl, bbox_proj, mask_np, tile_selec
                     bounds=bbox_proj,
                     chunksize=chunksize,
                     rescale=False,
-                    resampling=Resampling.nearest
+                    resampling=Resampling.bilinear
                 )
                 
                 # Flatten useless dimensions but keep multi-item dimension
