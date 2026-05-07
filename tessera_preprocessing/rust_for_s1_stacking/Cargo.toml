@@ -1,0 +1,25 @@
+[package]
+name = "s1_stack"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+chrono = "0.4"
+env_logger = "0.10"
+glob = "0.3"
+indicatif = "0.17"
+log = "0.4"
+memmap2 = "0.5"
+ndarray = "0.15"
+rayon = "1.8"  # Added rayon for parallelism
+regex = "1.7"
+structopt = "0.3"
+tiff = "0.9"
+
+[profile.release]
+# Optimization options
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
