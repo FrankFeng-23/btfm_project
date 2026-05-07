@@ -132,6 +132,23 @@ _**We strongly recommend that you quickly review the entire tutorial before runn
 
 In this step, we stack a full year of Sentinel-1 and Sentinel-2 data along the time dimension to generate a composite. For Sentinel-2, the composite shape is (T,H,W,B), where T is the number of valid observations in that year, and B is the number of bands (we selected 10 bands). For Sentinel-1, we extracted both ascending and descending orbit data. Taking the ascending orbit as an example, the composite shape is (T',H,W,B'), where T' is the number of valid ascending observations in that year, and B' is 2 because we only obtain VV and VH bands.
 
+> **Sentinel-2 channel order in `bands.npy`.** The 10 bands are stored in the order shown below. This is **not** the conventional Sentinel-2 wavelength-ascending order; it is the convention used during Tessera pretraining, and the released model checkpoints together with the `S2_BAND_MEAN` / `S2_BAND_STD` constants in `tessera_infer*/src/datasets/ssl_dataset.py` are all bound to this exact ordering. Do not reorder unless you are also retraining or reordering the input-projection weights of the checkpoint.
+>
+> | idx | name | S2 code |
+> |---|---|---|
+> | 0 | red | B04 |
+> | 1 | blue | B02 |
+> | 2 | green | B03 |
+> | 3 | nir | B08 |
+> | 4 | nir08 | B8A |
+> | 5 | rededge1 | B05 |
+> | 6 | rededge2 | B06 |
+> | 7 | rededge3 | B07 |
+> | 8 | swir16 | B11 |
+> | 9 | swir22 | B12 |
+>
+> Sentinel-1 (`sar_ascending.npy`, `sar_descending.npy`) channels are `[VV, VH]`.
+
 We initially sourced Sentinel-1 and Sentinel-2 data from Microsoft's Planetary Computer:
 - Sentinel-1 data source: https://planetarycomputer.microsoft.com/dataset/sentinel-1-rtc
 - Sentinel-2 data source: https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a
@@ -251,7 +268,77 @@ bash s1_s2_downloader.sh
 
 Due to network conditions, processing some tiles may time out. Our script includes sophisticated timeout management to avoid these issues. However, sometimes some tiles may still fail. Running the above command again usually resolves this.
 
-If all Sentinel-1 and Sentinel-2 data are generated correctly, they can be stacked along the time dimension. For this step, we use two Rust-generated executables, making it very fast. You can open `s1_s2_stacker.sh` and edit the following:
+If all Sentinel-1 and Sentinel-2 data are generated correctly, they can be stacked along the time dimension. For this step, we use two Rust-generated executables, making it very fast.
+
+#### (Optional) Build `s1_stack` and `s2_stack` from source
+
+The repository ships pre-built `s1_stack` and `s2_stack` binaries directly under `tessera_preprocessing/` so most users do not need to compile anything. The full Rust source for both stackers lives next to them:
+
+```
+tessera_preprocessing
+ ┣ rust_for_s1_stacking
+ ┃  ┣ Cargo.toml
+ ┃  ┣ Dockerfile
+ ┃  ┗ src/main.rs
+ ┣ rust_for_s2_stacking
+ ┃  ┣ Cargo.toml
+ ┃  ┣ Cargo.lock
+ ┃  ┣ Dockerfile
+ ┃  ┗ src/main.rs
+ ┣ s1_stack          # pre-built binary
+ ┗ s2_stack          # pre-built binary
+```
+
+Rebuild from source if you want to modify the stacker (e.g. change channel order, sampling logic) or need a binary for a different architecture.
+
+**Option A — Local Cargo build (fastest path; produces a dynamically linked binary):**
+
+```bash
+# Requires rustc / cargo >= 1.70
+cd tessera_preprocessing/rust_for_s1_stacking
+cargo build --release
+cp target/release/s1_stack ../s1_stack          # overwrite the shipped binary
+chmod +x ../s1_stack
+
+cd ../rust_for_s2_stacking
+cargo build --release
+# the s2 crate name is `process_tile_downstream_wo_json`
+cp target/release/process_tile_downstream_wo_json ../s2_stack
+chmod +x ../s2_stack
+```
+
+**Option B — Docker build (matches the way the shipped binaries are produced; statically linked against musl, runs on any Linux x86_64):**
+
+```bash
+# s1
+cd tessera_preprocessing/rust_for_s1_stacking
+docker build -t s1_stack .
+docker create --name tmp_s1 s1_stack
+docker cp tmp_s1:/s1_stack ../s1_stack
+docker rm tmp_s1
+chmod +x ../s1_stack
+
+# s2
+cd ../rust_for_s2_stacking
+docker build -t s2_stack .
+docker create --name tmp_s2 s2_stack
+docker cp tmp_s2:/s2_stack ../s2_stack
+docker rm tmp_s2
+chmod +x ../s2_stack
+```
+
+Sanity-check the resulting binaries:
+
+```bash
+./s1_stack --help
+./s2_stack --help
+```
+
+> **Important — do not casually change the S2 channel order.** The `BANDS` constant in `rust_for_s2_stacking/src/main.rs` defines the output channel order in `bands.npy`. It is bound to the released model checkpoints and the hard-coded `S2_BAND_MEAN` / `S2_BAND_STD` constants in `tessera_infer*/src/datasets/ssl_dataset.py`. Reordering it without also retraining (or reordering the input-projection weights of the checkpoint) will silently corrupt inference.
+
+#### Run the stacker
+
+You can open `s1_s2_stacker.sh` and edit the following:
 
 ```bash
 # === Basic Configuration ===
