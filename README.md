@@ -440,7 +440,7 @@ tessera_infer
  ┗ src
 ```
 
-_**Note that the checkpoint mentioned above is an early-stage model, which natively generates float32 embeddings. Therefore, this model is not the one used to generate the int8 embeddings in the geotessera library. We will soon deploy the specific checkpoint that was used to create the geotessera embeddings into the full pipeline.**_
+_**Note that the checkpoint mentioned above is an early-stage model, which natively generates float32 embeddings. Therefore, this model is not the one used to generate the int8 embeddings in the geotessera library. If you want to reproduce the in8 embedding in the geotessera library, please use the QAT model weight (see below).**_
 
 ### QAT Model Weight (Quantized Output)
 
