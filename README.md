@@ -780,14 +780,12 @@ Please direct your technical questions to Frank Feng (zf281@cam.ac.uk) or ask it
 If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv.org/abs/2506.20380):
 
 ```bibtex
-@misc{feng2025tesseratemporalembeddingssurface,
-      title={TESSERA: Temporal Embeddings of Surface Spectra for Earth Representation and Analysis}, 
-      author={Zhengpeng Feng et al.},
-      year={2025},
-      eprint={2506.20380},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
-      url={https://arxiv.org/abs/2506.20380}, 
+@inproceedings{feng2026tessera,
+  title={Tessera: Temporal embeddings of surface spectra for earth representation and analysis},
+  author={Feng, Zhengpeng and Atzberger, Clement and Jaffer, Sadiq and Knezevic, Jovana and Sormunen, Silja and Young, Robin and Lisaius, Madeline C and Immitzer, Markus and Jackson, Toby and Ball, James and others},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={34818--34831},
+  year={2026}
 }
 ```
 
