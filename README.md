@@ -1,3 +1,32 @@
+<!-- ┌─────────────────────────────────────────────────────────────────────┐ -->
+<!-- │  TESSERA v2 announcement — remove this block after the v2 release.   │ -->
+<!-- └─────────────────────────────────────────────────────────────────────┘ -->
+<div align="center">
+
+<h1>🌍&nbsp; TESSERA&nbsp;<sub><sup>v2</sup></sub>&nbsp; is&nbsp;coming &nbsp;🚀</h1>
+
+### The next generation of the TESSERA foundation model — *bigger, sharper, and fully open.*
+
+<a href="https://arxiv.org/abs/2607.03949"><img src="https://img.shields.io/badge/📄_Preprint-Now_Live-1f6feb?style=for-the-badge&labelColor=0d1117"></a>
+&nbsp;
+<a href="#"><img src="https://img.shields.io/badge/⚡_v2_Model-Coming_Soon-8250df?style=for-the-badge&labelColor=0d1117"></a>
+&nbsp;
+<a href="https://github.com/ucam-eo/tessera/subscription"><img src="https://img.shields.io/badge/⭐_Watch_this_repo-for_the_drop-238636?style=for-the-badge&labelColor=0d1117"></a>
+
+</div>
+
+> [!IMPORTANT]
+> ### 📢 The TESSERA v2 preprint is now live.
+> **TESSERA v2** is our next-generation Earth representation model. The preprint is out now, and
+> **all v2 code, model weights, and global embeddings will be released right here in this repository.**
+>
+> 👉 **Read the preprint:** https://arxiv.org/abs/2607.03949
+> 👉 **Don't miss the release:** hit **⭐ Star** and **👁 Watch → Custom → Releases** on this repo.
+>
+> *Everything below documents the current release (v1 / v1.1). v2 lands soon.*
+
+---
+
 # Temporal Embeddings of Surface Spectra for Earth Representation and Analysis (TESSERA) [CVPR2026]
 <div align="center">
     <a href="#readme-top">
@@ -65,6 +94,8 @@ Here are publications and preprints related to TESSERA, listed chronologically:
 * Lisaius, M. C., Keshav, S., Blake, A., & Atzberger, C. (2026). Embedding-based Crop Type Classification in the Groundnut Basin of Senegal (arXiv:2601.16900). ArXiv preprint. https://doi.org/10.48550/arXiv.2601.16900
 
 * Ball, J.G.C, Wicklein J.A. , Feng, Z.,  Knezevic, J.,  Jaffer, S., Atzberger, C.,  Dalponte, M., and Coomes, D. Geospatial foundation models enable data-efficient tree species mapping in temperate montane forests, BioArxiv, https://doi.org/10.64898/2026.02.23.707022
+
+* Z. Feng, S. Jaffer, I. Shokar, J. Knezevic, M. Elvers, C. Atzberger, R. Young, A. Naik, N. Robinson, A. Blake, D. Coomes, A. Madhavapeddy, S. Keshav (2026), [TESSERA v2: Scaling Pixel-wise Earth Foundation Models](https://arxiv.org/abs/2607.03949), arXiv preprint. https://arxiv.org/abs/2607.03949
 
 ## Presentations
 
