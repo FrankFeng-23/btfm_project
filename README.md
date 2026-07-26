@@ -35,7 +35,11 @@
       - [Acceptable Use Policy](#AUP)
       - [Accessing Precomputed Embeddings](#global-embeddings-access)
       - [Creating Your Own Embeddings](#creating-your-own-embeddings)
-      - [TESSERA v2 Inference](#tessera-v2-model-weights-latest)
+      - [Inference](#inference)
+          - [TESSERA v2 (recommended)](#tessera-v2-recommended)
+          - [TESSERA v1.1](#tessera-v11-qat-int8)
+          - [TESSERA v1.0 (QAT)](#tessera-v10-qat-int8)
+          - [TESSERA v1.0 (early)](#tessera-v10-early-float32)
       - [Downstream Tasks](#downstream-tasks)
       - [TESSERA Users Group](#tessera-users-group)
   - Additional information
@@ -395,20 +399,29 @@ If the above code runs smoothly, you can get some subfolders in `my_data/retiled
 
 ## Inference
 
-### Overview
+Once preprocessing has produced your tiles, you run a TESSERA model over them to
+generate embeddings. TESSERA comes in **several versions** — start with
+[**Before you start**](#before-you-start) (shared by all versions), pick one in
+[**Which version should I use?**](#which-version-should-i-use), follow that
+version's own subsection, then [**stitch the tiles**](#stitch-the-tiles-into-a-representation-map)
+into a single map.
 
-Once the data preprocessing is complete, we can start inference. Before proceeding, please check if there are subfolders in the `my_data/retiled_d_pixel` folder like:
+### Before you start
+
+**1. Check your preprocessed tiles.** Every version reads the same tile
+directories produced by `tessera_preprocessing`. Confirm `my_data/retiled_d_pixel`
+contains per-tile subfolders:
+
 ```
 retiled_d_pixel
  ┣ 0_3500_500_4000
  ┣ 0_4000_500_4500
  ┣ 0_4500_500_5000
- ┣ 0_5000_500_5500
- ┣ 0_5500_500_6000
- ┣ 0_6000_500_6500
+ ┗ ...
 ```
 
-Each subfolder should contain the following files:
+and that each subfolder has these files:
+
 ```
 0_3500_500_4000
  ┣ bands.npy
@@ -421,34 +434,38 @@ Each subfolder should contain the following files:
  ┗ sar_descending_doy.npy
 ```
 
-If these files exist, you can start inference. Otherwise, check if the first step completed successfully.
+If these files are missing, revisit the [Data Preprocessing](#data-preprocessing)
+step.
 
-Inference requires PyTorch. Since each system may have slightly different CUDA versions, we can't provide a Docker-encapsulated Python environment like we did for data preprocessing. Fortunately, the Python environment for inference is much simpler to configure than for data preprocessing, as it doesn't use geographic processing packages like GDAL or SNAP.
-
-### Pytorch Preparation
-
-If you haven't installed Pytorch, you can refer to the steps below. Otherwise, you can ignore this section.
-
-First, check your system's CUDA version:
-
-```bash
-nvidia-smi
-```
-
-Then visit https://pytorch.org/ and select the appropriate version to install based on your CUDA version, for example:
+**2. Install PyTorch.** Inference only needs PyTorch (no GDAL/SNAP), so it is far
+simpler to set up than preprocessing. If you don't already have it, check your
+CUDA version with `nvidia-smi`, then install the matching build from
+https://pytorch.org/, for example:
 
 ```bash
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 ```
 
-### TESSERA v2 Model Weights (latest)
+### Which version should I use?
+
+| Version | Code | Weights | Output | Use it when |
+| ------- | ---- | ------- | ------ | ----------- |
+| **[TESSERA v2](#tessera-v2-recommended)** (recommended) | `tessera_infer_v2/` | [Hugging Face](https://huggingface.co/geotessera) | 128-d Matryoshka (16/32/64/128) fp32, optional int8 | New projects — best quality, smallest models, flexible embedding size |
+| **[TESSERA v1.1](#tessera-v11-qat-int8)** | `tessera_infer_QAT/` | [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) | 128-d int8 + scales | You need the model behind the current GeoTessera int8 embeddings, MPC or AWS |
+| **[TESSERA v1.0 (QAT)](#tessera-v10-qat-int8)** | `tessera_infer_QAT/` | [Google Drive](https://drive.google.com/file/d/1HJ92aS5ERXMLfSFYJ4m3OKycJJdC1QvO/view?usp=sharing) | 128-d int8 + scales | Reproducing the original int8 embedding product |
+| **[TESSERA v1.0 (early)](#tessera-v10-early-float32)** | `tessera_infer/` | [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) | 128-d fp32 | Reproducing early fp32 results only |
+
+The four code directories are independent and their checkpoints are **not**
+interchangeable — a checkpoint only loads with the pipeline it belongs to. If in
+doubt, use **v2**.
+
+---
+
+### TESSERA v2 (recommended)
 
 **TESSERA v2** is the current generation of the model — see the preprint,
 [*TESSERA v2: Scaling Pixel-wise Earth Foundation Models*](https://arxiv.org/abs/2607.03949).
-Its inference code lives in **[`tessera_infer_v2/`](tessera_infer_v2/)**, separate from
-the v1.0 (`tessera_infer/`) and v1.1 (`tessera_infer_QAT/`) pipelines — v2 checkpoints
-cannot be loaded by the older code, and vice versa. The rest of this section documents
-v1.0 and v1.1; skip ahead if you only need v2.
+Its inference code lives in **[`tessera_infer_v2/`](tessera_infer_v2/)**.
 
 > **Don't want to run inference yourself?** You can ask us to generate v2 embeddings
 > for your region instead. Submit a
@@ -503,9 +520,8 @@ ckpt = hf_hub_download("geotessera/TESSERA-V-2.0-2B-M", "ckpt/student_medium.pt"
 
 #### Run v2 inference
 
-`tessera_infer_v2/infer_v2.py` consumes the same preprocessed tile directories as v1
-(`my_data/retiled_d_pixel/<tile>/` with `bands.npy`, `masks.npy`, `doys.npy` and the
-`sar_*.npy` files), so the data preprocessing steps above are unchanged:
+`tessera_infer_v2/infer_v2.py` consumes the preprocessed tile directories
+described in [Before you start](#before-you-start):
 
 ```bash
 cd tessera_infer_v2
@@ -552,41 +568,16 @@ emb16 = emb[..., :16]                             # Matryoshka truncation
 > normalisation across to the other model. Full details in
 > [`tessera_infer_v2/README.md`](tessera_infer_v2/README.md).
 
+When inference finishes, jump to
+[Stitch the tiles into a representation map](#stitch-the-tiles-into-a-representation-map).
 
-### Model Weight
+---
 
-Next, download the model weights from [Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing) and place the `.pt` file in the `tessera_infer/checkpoints` directory:
+### TESSERA v1.1 (QAT, int8)
 
-```
-tessera_infer
- ┗ checkpoints
-     ┗ best_model_fsdp_20250427_084307.pt
- ┗ configs
- ┗ src
-```
-
-_**Note that the checkpoint mentioned above is an early-stage model, which natively generates float32 embeddings. Therefore, this model is not the one used to generate the int8 embeddings in the geotessera library. If you want to reproduce the in8 embedding in the geotessera library, please use the QAT model weight (see below).**_
-
-### QAT Model Weight (Quantized Output)
-
-For quantized inference, use the QAT checkpoint from [Google Drive](https://drive.google.com/file/d/1HJ92aS5ERXMLfSFYJ4m3OKycJJdC1QvO/view?usp=sharing) and place it in `tessera_infer_QAT/checkpoints`:
-
-```
-tessera_infer_QAT
- ┣ checkpoints
- ┃   ┗ best_model_fsdp_20250608_220648_QAT.pt
- ┣ configs
- ┗ src
-```
-
-The QAT pipeline outputs quantized embeddings as **int8 + scales**:
-- `tile_name.npy`: int8 embedding tensor, shape `(H, W, 128)`
-- `tile_name_scales.npy`: float32 scale map, shape `(H, W)`
-
-### v1.1 QAT Model Weight (latest, recommended)
-
-TESSERA **v1.1** is a new pretrained QAT model that improves on the v1.0 QAT
-checkpoint above. Compared to v1.0, v1.1 brings:
+TESSERA **v1.1** is a pretrained QAT model that improves on the v1.0 QAT
+checkpoint. Its code lives in **[`tessera_infer_QAT/`](tessera_infer_QAT/)**.
+Compared to v1.0, v1.1 brings:
 
 - **Wider encoder** (`latent_dim=192`, transformer `d_model=768`) and an **MLP
   `dim_reducer`** (Linear → LayerNorm → ReLU → Dropout → Linear) that outputs a
@@ -638,6 +629,8 @@ aren't part of the inference graph, so a *full* checkpoint will also work in
 the same command — it's just ~45× larger to download. (A HuggingFace mirror
 will follow once the Drive links stabilise.)
 
+#### Download the weights
+
 **Download** one (or more) of the four checkpoints above and place into
 `tessera_infer_QAT/checkpoints`:
 
@@ -657,10 +650,9 @@ tessera_infer_QAT
  ┗ visualize_embedding_v1_1.py
 ```
 
-**Run inference** on a single preprocessed tile (a folder produced by
-`tessera_preprocessing` containing `bands.npy`, `masks.npy`, `doys.npy`,
-`sar_ascending.npy`, `sar_ascending_doy.npy`, `sar_descending.npy`,
-`sar_descending_doy.npy`):
+#### Run v1.1 inference
+
+**Run inference** on a single preprocessed tile:
 
 ```bash
 cd tessera_infer_QAT
@@ -681,7 +673,7 @@ Adjust `num_obs_checkpoints` to trade off between embedding quality and compute
 For a Slurm cluster, see `tessera_infer_QAT/infer_v1_1.slurm` for a
 ready-to-edit template.
 
-**Output** files (same int8 + scales format as v1.0 QAT, with `_emb128_` naming):
+**Output** files (int8 + scales, with `_emb128_` naming):
 - `<prefix>_emb128_int8.npy`   — shape `(H, W, 128)`, dtype `int8`
 - `<prefix>_emb128_scales.npy` — shape `(H, W)`,      dtype `float32`
 
@@ -690,15 +682,96 @@ Reconstruct fp32 embeddings with
 `visualize_embedding_v1_1.py` dequantises the output and saves a first-3-dim RGB
 plus a PCA-3 RGB for quick visual inspection.
 
-### Configure Bash Script
+When inference finishes, jump to
+[Stitch the tiles into a representation map](#stitch-the-tiles-into-a-representation-map).
 
-To simplify inference configuration, we provide `tessera_infer/infer_all_tiles.sh`. You only need to edit a few parameters:
+---
+
+### TESSERA v1.0 (QAT, int8)
+
+The original quantization-aware model — this is the checkpoint used to generate
+the int8 embeddings in the GeoTessera library. Its code lives in
+**[`tessera_infer_QAT/`](tessera_infer_QAT/)**.
+
+#### Download the weights
+
+Download the QAT checkpoint from
+[Google Drive](https://drive.google.com/file/d/1HJ92aS5ERXMLfSFYJ4m3OKycJJdC1QvO/view?usp=sharing)
+and place it in `tessera_infer_QAT/checkpoints`:
+
+```
+tessera_infer_QAT
+ ┣ checkpoints
+ ┃   ┗ best_model_fsdp_20250608_220648_QAT.pt
+ ┣ configs
+ ┗ src
+```
+
+The QAT pipeline outputs quantized embeddings as **int8 + scales**:
+- `tile_name.npy`: int8 embedding tensor, shape `(H, W, 128)`
+- `tile_name_scales.npy`: float32 scale map, shape `(H, W)`
+
+#### Run v1.0 QAT inference
+
+The QAT pipeline runs through its own batch script, `tessera_infer_QAT/infer_all_tiles.sh`:
+
+```bash
+cd tessera_infer_QAT
+chmod +x infer_all_tiles.sh
+bash infer_all_tiles.sh
+```
+
+Before running, edit these parameters in `tessera_infer_QAT/infer_all_tiles.sh`:
+
+```bash
+BASE_DATA_DIR="/absolute_path_to_your_data_dir"
+export PYTHON_ENV="/absolute_path_to_your_python/bin/python"
+CPU_GPU_SPLIT="1:1"  # CPU:GPU ratio, e.g. 1:0 or 0:1
+CHECKPOINT_PATH="checkpoints/best_model_fsdp_20250608_220648_QAT.pt"
+```
+
+Notes:
+- QAT supports both CPU and GPU inference in one run (ratio-based split, same
+  style as the v1.0 early runner below).
+- On CPU, AMX is automatically detected and enabled when available; if AMX is
+  not available, it automatically falls back to default CPU inference.
+
+When inference finishes, jump to
+[Stitch the tiles into a representation map](#stitch-the-tiles-into-a-representation-map).
+
+---
+
+### TESSERA v1.0 (early, float32)
+
+The earliest public checkpoint. It natively generates **float32** embeddings, so
+it is **not** the model used for the int8 embeddings in the GeoTessera library —
+use [v1.0 QAT](#tessera-v10-qat-int8) or [v1.1](#tessera-v11-qat-int8) for those.
+Its code lives in **[`tessera_infer/`](tessera_infer/)**.
+
+#### Download the weights
+
+Download the model weights from
+[Google Drive](https://drive.google.com/drive/folders/18RPptbUkCIgUfw1aMdMeOrFML_ZVMszn?usp=sharing)
+and place the `.pt` file in the `tessera_infer/checkpoints` directory:
+
+```
+tessera_infer
+ ┗ checkpoints
+     ┗ best_model_fsdp_20250427_084307.pt
+ ┗ configs
+ ┗ src
+```
+
+#### Configure the batch script
+
+Inference runs through `tessera_infer/infer_all_tiles.sh`. You only need to edit
+a few parameters:
 
 a. Base data directory:
 ```bash
 BASE_DATA_DIR="your_data_directory"
 ```
-This is your data storage folder, the same as `BASE_DATA_DIR` in the previous bash, e.g., `/maps/usr/tessera_project/my_data`
+This is your data storage folder, the same as `BASE_DATA_DIR` used in preprocessing, e.g., `/maps/usr/tessera_project/my_data`
 
 b. Python environment:
 ```bash
@@ -738,23 +811,14 @@ Number of samples to process at once during PyTorch inference. If this value con
 f. Other Settings
 There are other parameters available for configuration. Please adjust them as needed.
 
-### Start Inference
+#### Run v1.0 early inference
 
-Once everything is ready, navigate to the `tessera_infer` folder:
+Once everything is ready, navigate to the `tessera_infer` folder, make the script
+executable, and run it:
 
 ```bash
 cd tessera_infer
-```
-
-Then give permission to `infer_all_tiles.sh`:
-
-```bash
 chmod +x infer_all_tiles.sh
-```
-
-Then run it:
-
-```bash
 bash infer_all_tiles.sh
 ```
 
@@ -781,33 +845,11 @@ If successful, you should see logs like:
 
 At the same time, a `logs` folder will be generated in the `tessera_infer` folder with more detailed logging for each CPU and GPU process.
 
-### QAT Inference (CPU + GPU, with AMX auto-fallback)
+---
 
-We also provide a QAT inference pipeline in `tessera_infer_QAT`:
+### Stitch the tiles into a representation map
 
-```bash
-cd tessera_infer_QAT
-chmod +x infer_all_tiles.sh
-bash infer_all_tiles.sh
-```
-
-Before running, edit these parameters in `tessera_infer_QAT/infer_all_tiles.sh`:
-
-```bash
-BASE_DATA_DIR="/absolute_path_to_your_data_dir"
-export PYTHON_ENV="/absolute_path_to_your_python/bin/python"
-CPU_GPU_SPLIT="1:1"  # CPU:GPU ratio, e.g. 1:0 or 0:1
-CHECKPOINT_PATH="checkpoints/best_model_fsdp_20250608_220648_QAT.pt"
-```
-
-Notes:
-- QAT now supports both CPU and GPU inference in one run (ratio-based split, same style as `tessera_infer`).
-- On CPU, AMX is automatically detected and enabled when available.
-- If AMX is not available, it automatically falls back to default CPU inference.
-
-### Stitch Final Representation Map
-
-Inference usually takes a long time, depending on your ROI size and hardware performance. Once completed, you can find many `.npy` files in `my_data/representation_retiled`:
+This step is the same for every version. Inference usually takes a long time, depending on your ROI size and hardware performance. Once completed, you can find many `.npy` files in `my_data/representation_retiled`:
 
 ```
 representation_retiled
@@ -845,7 +887,7 @@ python stitch_tiled_representation.py \
 --out_dir /maps/usr/tessera_project/my_data
 ```
 
-Finally, you'll get a stitched representation map in the `my_data` directory with the shape (H,W,128), where H and W match your initial `roi.tiff`. The representation map is a NumPy array. If you want to convert it to TIFF for viewing in software like QGIS, you can use the `tessera_infer/convert_npy2tiff.py` script. Just modify the main function with:
+Finally, you'll get a stitched representation map in the `my_data` directory with the shape (H,W,C), where H and W match your initial `roi.tiff` and C is the embedding dimension of the version you ran. The representation map is a NumPy array. If you want to convert it to TIFF for viewing in software like QGIS, you can use the `tessera_infer/convert_npy2tiff.py` script. Just modify the main function with:
 
 ```python
 npy_path = "/maps/usr/tessera_project/my_data/stitched_representation.npy"  # Change to the actual npy file path
