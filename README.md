@@ -1,7 +1,11 @@
 <p align="center">
   <a href="https://github.com/FrankFeng-23/tessera-v2-animation">
-    <img src="https://raw.githubusercontent.com/FrankFeng-23/tessera-v2-animation/master/out/tessera-v2-hero-lite.gif"
-         alt="TESSERA v2 — pixel-wise Earth foundation model" width="100%">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/FrankFeng-23/tessera-v2-animation/master/out/tessera-v2-hero-lite.gif">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/FrankFeng-23/tessera-v2-animation/master/out/tessera-v2-hero-lite.gif">
+      <img src="https://raw.githubusercontent.com/FrankFeng-23/tessera-v2-animation/master/out/tessera-v2-hero-lite.gif"
+           alt="TESSERA v2 — pixel-wise Earth foundation model" width="100%">
+    </picture>
   </a>
 </p>
 
