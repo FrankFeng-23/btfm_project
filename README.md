@@ -957,7 +957,7 @@ If you use TESSERA in your research, please cite the relevant paper(s).
 **TESSERA v2** ([arXiv:2607.03949](https://arxiv.org/abs/2607.03949)):
 
 ```bibtex
-@article{feng2026tessera,
+@article{feng2026tesserav2,
   title={TESSERA v2: Scaling Pixel-wise Earth Foundation Models},
   author={Feng, Zhengpeng and Jaffer, Sadiq and Shokar, Ira and Knezevic, Jovana and Elvers, Mark and Atzberger, Clement and Young, Robin and Naik, Aneesh and Robinson, Niall and Blake, Andrew and others},
   journal={arXiv preprint arXiv:2607.03949},
