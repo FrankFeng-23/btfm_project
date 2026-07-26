@@ -5,35 +5,6 @@
   </a>
 </p>
 
-<!-- ┌─────────────────────────────────────────────────────────────────────┐ -->
-<!-- │  TESSERA v2 announcement — remove this block after the v2 release.   │ -->
-<!-- └─────────────────────────────────────────────────────────────────────┘ -->
-<div align="center">
-
-<h1>🌍&nbsp; TESSERA&nbsp;<sub><sup>v2</sup></sub>&nbsp; is&nbsp;coming &nbsp;🚀</h1>
-
-### The next generation of the TESSERA foundation model — *bigger, sharper, and fully open.*
-
-<a href="https://arxiv.org/abs/2607.03949"><img src="https://img.shields.io/badge/📄_Preprint-Now_Live-1f6feb?style=for-the-badge&labelColor=0d1117"></a>
-&nbsp;
-<a href="#"><img src="https://img.shields.io/badge/⚡_v2_Model-Coming_Soon-8250df?style=for-the-badge&labelColor=0d1117"></a>
-&nbsp;
-<a href="https://github.com/ucam-eo/tessera/subscription"><img src="https://img.shields.io/badge/⭐_Watch_this_repo-for_the_drop-238636?style=for-the-badge&labelColor=0d1117"></a>
-
-</div>
-
-> [!IMPORTANT]
-> ### 📢 The TESSERA v2 preprint is now live.
-> **TESSERA v2** is our next-generation Earth representation model. The preprint is out now, and
-> **all v2 code, model weights, and global embeddings will be released right here in this repository.**
->
-> 👉 **Read the preprint:** https://arxiv.org/abs/2607.03949
-> 👉 **Don't miss the release:** hit **⭐ Star** and **👁 Watch → Custom → Releases** on this repo.
->
-> *Everything below documents the current release (v1 / v1.1). v2 lands soon.*
-
----
-
 # Temporal Embeddings of Surface Spectra for Earth Representation and Analysis (TESSERA) [CVPR2026]
 <div align="center">
     <a href="#readme-top">
@@ -478,6 +449,14 @@ Its inference code lives in **[`tessera_infer_v2/`](tessera_infer_v2/)**, separa
 the v1.0 (`tessera_infer/`) and v1.1 (`tessera_infer_QAT/`) pipelines — v2 checkpoints
 cannot be loaded by the older code, and vice versa. The rest of this section documents
 v1.0 and v1.1; skip ahead if you only need v2.
+
+> **Don't want to run inference yourself?** You can ask us to generate v2 embeddings
+> for your region instead. Submit a
+> [**v2 Embedding Pre-Request**](https://github.com/ucam-eo/geotessera/issues/new?template=v2-embedding-prerequest.yml&labels=v2-embedding-prerequest)
+> and we'll **prioritize your area** and add you to the **early testers**. Note that v2
+> coverage is still being rolled out, so if you need embeddings right away, request
+> [v1.1 embeddings](https://github.com/ucam-eo/geotessera#request-missing-embeddings)
+> instead — they're available today.
 
 v2 ships **four compact pixel students** plus the **2B teacher** they were distilled from:
 
