@@ -1,0 +1,5 @@
+# Model weights are fetched from the Hugging Face Hub, never committed.
+student/checkpoints/*
+teacher/checkpoints/*
+!student/checkpoints/.gitkeep
+!teacher/checkpoints/.gitkeep

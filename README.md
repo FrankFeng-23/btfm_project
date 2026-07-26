@@ -1,3 +1,10 @@
+<p align="center">
+  <a href="https://github.com/FrankFeng-23/tessera-v2-animation">
+    <img src="https://raw.githubusercontent.com/FrankFeng-23/tessera-v2-animation/master/out/tessera-v2-hero-lite.gif"
+         alt="TESSERA v2 — pixel-wise Earth foundation model" width="100%">
+  </a>
+</p>
+
 <!-- ┌─────────────────────────────────────────────────────────────────────┐ -->
 <!-- │  TESSERA v2 announcement — remove this block after the v2 release.   │ -->
 <!-- └─────────────────────────────────────────────────────────────────────┘ -->
@@ -57,6 +64,7 @@
       - [Acceptable Use Policy](#AUP)
       - [Accessing Precomputed Embeddings](#global-embeddings-access)
       - [Creating Your Own Embeddings](#creating-your-own-embeddings)
+      - [TESSERA v2 Inference](#tessera-v2-model-weights-latest)
       - [Downstream Tasks](#downstream-tasks)
       - [TESSERA Users Group](#tessera-users-group)
   - Additional information
@@ -461,6 +469,110 @@ Then visit https://pytorch.org/ and select the appropriate version to install ba
 ```bash
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 ```
+
+### TESSERA v2 Model Weights (latest)
+
+**TESSERA v2** is the current generation of the model — see the preprint,
+[*TESSERA v2: Scaling Pixel-wise Earth Foundation Models*](https://arxiv.org/abs/2607.03949).
+Its inference code lives in **[`tessera_infer_v2/`](tessera_infer_v2/)**, separate from
+the v1.0 (`tessera_infer/`) and v1.1 (`tessera_infer_QAT/`) pipelines — v2 checkpoints
+cannot be loaded by the older code, and vice versa. The rest of this section documents
+v1.0 and v1.1; skip ahead if you only need v2.
+
+v2 ships **four compact pixel students** plus the **2B teacher** they were distilled from:
+
+| Model | Parameters | Output | Hugging Face repository |
+| ----- | ---------- | ------ | ----------------------- |
+| Nano | 1.07 M | 128-d Matryoshka | [`geotessera/TESSERA-V-2.0-2B-N`](https://huggingface.co/geotessera/TESSERA-V-2.0-2B-N) |
+| Small | 7.11 M | 128-d Matryoshka | [`geotessera/TESSERA-V-2.0-2B-S`](https://huggingface.co/geotessera/TESSERA-V-2.0-2B-S) |
+| **Medium** (recommended) | 21.03 M | 128-d Matryoshka | [`geotessera/TESSERA-V-2.0-2B-M`](https://huggingface.co/geotessera/TESSERA-V-2.0-2B-M) |
+| Large | 43.83 M | 128-d Matryoshka | [`geotessera/TESSERA-V-2.0-2B-L`](https://huggingface.co/geotessera/TESSERA-V-2.0-2B-L) |
+| 2B teacher | 2,064,266,242 | 1024-d | [`geotessera/TESSERA-V-2.0-2B-Teacher`](https://huggingface.co/geotessera/TESSERA-V-2.0-2B-Teacher) |
+
+The students emit **Matryoshka** embeddings: the first K dimensions are independently
+usable for K ∈ {16, 32, 64, 128}, so 16, 32 or 64 dimensions can be stored instead of
+128 with no retraining and no second checkpoint. The `2B` in each name records the
+teacher the model was distilled from.
+
+> The 2B teacher is **not a deployment model** — it evaluates 2.06 billion parameters
+> per pixel, which makes tile-scale, let alone global-scale, embedding generation
+> impractical on ordinary hardware. It is published so the distillation is reproducible.
+> For real work, use one of the students.
+
+#### Download the weights
+
+v2 checkpoints are **not** stored in this repository; they are hosted on the Hugging
+Face Hub under [`geotessera`](https://huggingface.co/geotessera) and fetched on demand:
+
+```bash
+cd tessera_infer_v2
+pip install -r requirements.txt
+
+python download_weights.py --model medium        # the recommended default (84 MB)
+python download_weights.py --model all-students  # nano + small + medium + large
+python download_weights.py --model teacher       # 8.26 GB
+```
+
+They land in `tessera_infer_v2/student/checkpoints/` and
+`tessera_infer_v2/teacher/checkpoints/`, which is where the inference script looks by
+default. A single file can also be pulled directly:
+
+```python
+from huggingface_hub import hf_hub_download
+ckpt = hf_hub_download("geotessera/TESSERA-V-2.0-2B-M", "ckpt/student_medium.pt")
+```
+
+#### Run v2 inference
+
+`tessera_infer_v2/infer_v2.py` consumes the same preprocessed tile directories as v1
+(`my_data/retiled_d_pixel/<tile>/` with `bands.npy`, `masks.npy`, `doys.npy` and the
+`sar_*.npy` files), so the data preprocessing steps above are unchanged:
+
+```bash
+cd tessera_infer_v2
+
+# default student, fp32 128-d output, one .npy per tile
+python infer_v2.py --model medium \
+    --data-root my_data/retiled_d_pixel \
+    --out-dir   my_data/embeddings_v2
+
+# 16-d Matryoshka prefix stored as int8 + a float32 scale map
+python infer_v2.py --model medium --dim 16 --int8 \
+    --data-root my_data/retiled_d_pixel \
+    --out-dir   my_data/embeddings_v2_d16
+
+# the 2B teacher on a single tile (GPU strongly recommended)
+python infer_v2.py --model teacher --bf16 --batch-pixels 512 \
+    --tile    my_data/retiled_d_pixel/0_3500_500_4000 \
+    --out-dir my_data/embeddings_v2_teacher
+```
+
+Or call the encoders directly:
+
+```python
+import sys, torch
+sys.path.insert(0, "tessera_infer_v2/student")
+
+from model import load_model
+from infer import encode_tile
+
+model = load_model("tessera_infer_v2/student/checkpoints/student_medium.pt",
+                   torch.device("cuda"))
+emb = encode_tile(model, s2_bands, s2_doys, s2_masks=s2_masks,
+                  s1_asc_bands=s1_asc, s1_asc_doys=s1_asc_doys,
+                  s1_desc_bands=s1_desc, s1_desc_doys=s1_desc_doys,
+                  device=torch.device("cuda"))    # -> (H, W, 128)
+emb16 = emb[..., :16]                             # Matryoshka truncation
+```
+
+> **Two conventions that fail silently.** The Sentinel-2 channel order is
+> `B04 B02 B03 B08 B8A B05 B06 B07 B11 B12`, *not* ascending wavelength (data from
+> `tessera_preprocessing` is already correct). And the students normalise Sentinel-1
+> ascending/descending with their own per-source statistics before merging, whereas the
+> teacher merges them raw and applies a single pooled set — do not carry one
+> normalisation across to the other model. Full details in
+> [`tessera_infer_v2/README.md`](tessera_infer_v2/README.md).
+
 
 ### Model Weight
 
