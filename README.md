@@ -9,6 +9,13 @@
   </a>
 </p>
 
+> [!TIP]
+> **Want TESSERA v2 embeddings without running inference yourself?**
+> [**Submit a v2 Embedding Pre-Request**](https://github.com/ucam-eo/geotessera/issues/new?template=v2-embedding-prerequest.yml&labels=v2-embedding-prerequest)
+> to reserve your region and join the **early testers** — we'll prioritize your area.
+> v2 coverage is still rolling out, so if you need embeddings right now, request
+> [v1.1 embeddings](https://github.com/ucam-eo/geotessera#request-missing-embeddings) instead.
+
 # Temporal Embeddings of Surface Spectra for Earth Representation and Analysis (TESSERA) [CVPR2026]
 <div align="center">
     <a href="#readme-top">
@@ -945,7 +952,20 @@ Please direct your technical questions to Frank Feng (zf281@cam.ac.uk) or ask it
 
 ## Citation
 
-If you use TESSERA in your research, please cite the [arXiv paper](https://arxiv.org/abs/2506.20380):
+If you use TESSERA in your research, please cite the relevant paper(s).
+
+**TESSERA v2** ([arXiv:2607.03949](https://arxiv.org/abs/2607.03949)):
+
+```bibtex
+@article{feng2026tessera,
+  title={TESSERA v2: Scaling Pixel-wise Earth Foundation Models},
+  author={Feng, Zhengpeng and Jaffer, Sadiq and Shokar, Ira and Knezevic, Jovana and Elvers, Mark and Atzberger, Clement and Young, Robin and Naik, Aneesh and Robinson, Niall and Blake, Andrew and others},
+  journal={arXiv preprint arXiv:2607.03949},
+  year={2026}
+}
+```
+
+**TESSERA (v1, CVPR 2026)** ([arXiv:2506.20380](https://arxiv.org/abs/2506.20380)):
 
 ```bibtex
 @inproceedings{feng2026tessera,
