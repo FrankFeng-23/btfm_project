@@ -197,19 +197,25 @@ DATA_DIR=/absolute/path/to/your/data_dir              # all outputs are written 
 PYTHON_ENV=/absolute/path/to/your/python_env/bin/python  # absolute path to your interpreter; only the Step 1 downloader needs it
 BASENAME=myregion_2024                                # final result file name (.npy and .tif)
 YEAR=2024                                             # data year, range [2017-2025]
-ROI_TIFF="${DATA_DIR}/0.roi/roi_convex_hull.tiff"     # ROI extent: downloaded over + used as geo-reference
+ROI_TIFF="${DATA_DIR}/0.roi/roi.tiff"     # ROI extent: downloaded over + used as geo-reference
 ```
 
-### Step 0 — Shapefile → ROI GeoTIFF *(skip if you already have a GeoTIFF)* → `0.roi/`
+### Step 0 — Prepare ROI GeoTIFF  → `0.roi/`
 
 ```bash
 mkdir -p "${DATA_DIR}/0.roi"
+# Copy your roi.tiff to ${DATA_DIR}/0.roi manually
+# cp /path/to/your/roi.shp "${DATA_DIR}/0.roi"
+
+# Or generate it from shapefile using script
+# Move your roi.shp to `0.roi` directory
+# mv /path/to/your/roi.shp "${DATA_DIR}/0.roi"
 python tessera_preprocessing/convert_shp_to_tiff.py \
     --shp_path   "${DATA_DIR}/0.roi/roi.shp" \
     --pixel_size 10
 ```
 
-Writes `roi.tiff` and `roi_convex_hull.tiff` beside the shapefile. `ROI_TIFF` above points at the convex-hull file — that is the extent the next step downloads over.
+`tessera_preprocessing/convert_shp_to_tiff.py` writes `roi.tiff` and `roi_convex_hull.tiff` beside the shapefile. `ROI_TIFF` above points at the Geotiff file — that is the extent the next step downloads over.
 
 - `--shp_path` — your input shapefile.
 - `--pixel_size` — metres per pixel (optional, default `10`).
@@ -328,6 +334,11 @@ Prefer two pastes over six? After running the variables block above (same shell 
 
 ```bash
 mkdir -p "${DATA_DIR}/0.roi" "${DATA_DIR}/tmp"
+```
+
+Now place your shapefile in `"${DATA_DIR}/0.roi"` as `roi.shp`
+
+```bash
 python tessera_preprocessing/convert_shp_to_tiff.py \
     --shp_path "${DATA_DIR}/0.roi/roi.shp" --pixel_size 10
 INPUT_TIFF="${ROI_TIFF}" OUT_DIR="${DATA_DIR}" TEMP_DIR="${DATA_DIR}/tmp" \
