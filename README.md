@@ -194,7 +194,7 @@ This fetches the recommended **Medium** student into `tessera_infer_v2/student/c
 
 ```bash
 DATA_DIR=/absolute/path/to/your/data_dir              # all outputs are written under here
-PYTHON_ENV=/absolute/path/to/your/python_env/bin/python
+PYTHON_ENV=/absolute/path/to/your/python_env/bin/python  # absolute path to your interpreter; only the Step 1 downloader needs it
 BASENAME=myregion_2024                                # final result file name (.npy and .tif)
 YEAR=2024                                             # data year, range [2017-2025]
 ROI_TIFF="${DATA_DIR}/0.roi/roi_convex_hull.tiff"     # ROI extent: downloaded over + used as geo-reference
@@ -204,7 +204,7 @@ ROI_TIFF="${DATA_DIR}/0.roi/roi_convex_hull.tiff"     # ROI extent: downloaded o
 
 ```bash
 mkdir -p "${DATA_DIR}/0.roi"
-"${PYTHON_ENV}" tessera_preprocessing/convert_shp_to_tiff.py \
+python tessera_preprocessing/convert_shp_to_tiff.py \
     --shp_path   "${DATA_DIR}/0.roi/roi.shp" \
     --pixel_size 10
 ```
@@ -218,7 +218,7 @@ Writes `roi.tiff` and `roi_convex_hull.tiff` beside the shapefile. `ROI_TIFF` ab
 
 ### Step 1 — Download Sentinel-1 & Sentinel-2 → `1.data_sar_raw/`, `1.data_raw/`
 
-The network-heavy step and **the one most likely to fail partway**. It is safe to re-run: completed partitions are skipped, so just paste the block again to fetch only what is missing.
+The network-heavy step and **the one most likely to fail partway**. It is safe to re-run: with `S1_OVERWRITE=false` / `S2_OVERWRITE=false` (set below), each observation day whose per-date output already exists *and* validates is skipped, so re-pasting the block fetches only the missing days — completed work is never re-downloaded.
 
 ```bash
 INPUT_TIFF="${ROI_TIFF}" \
@@ -229,6 +229,8 @@ YEAR="${YEAR}" \
 DATA_SOURCE=mpc \
 S1_RAW_SUBDIR=1.data_sar_raw \
 S2_RAW_SUBDIR=1.data_raw \
+S1_OVERWRITE=false \
+S2_OVERWRITE=false \
     bash tessera_preprocessing/s1_s2_downloader.sh
 ```
 
@@ -237,6 +239,7 @@ Outputs: S1 → `${DATA_DIR}/1.data_sar_raw`, S2 → `${DATA_DIR}/1.data_raw`.
 - `INPUT_TIFF` / `OUT_DIR` / `TEMP_DIR` / `PYTHON_ENV` / `YEAR` — the ROI to download over, data root, scratch dir, interpreter, and year.
 - `DATA_SOURCE` — `mpc` (Microsoft Planetary Computer) or `aws`. For `aws`, Sentinel-1 needs an Earthdata bearer token at `~/.edl_bearer_token` (see the AWS Credentials section below).
 - `S1_RAW_SUBDIR` / `S2_RAW_SUBDIR` — output folder names (optional, default `data_sar_raw` / `data_raw`).
+- `S1_OVERWRITE` / `S2_OVERWRITE` — kept `false` here so a re-run *resumes*: each day's output is skipped if it already exists **and** passes a shape/CRS/transform check (the guard lives in `process_day_orbit` / `process_day`), so only missing or invalid days are re-fetched. Set `true` to force a full clean re-download (the script default) — rarely needed, since invalid tiles are already re-fetched automatically.
 - Advanced knobs inside `s1_s2_downloader.sh` (edit only if needed): `S1_PARTITIONS` / `S2_PARTITIONS` (time-slice parallelism), `S1_TOTAL_WORKERS` / `S2_TOTAL_WORKERS` (Dask workers), `START_TIME_OVERRIDE` / `END_TIME_OVERRIDE` (download a sub-range for a quick test).
 
 ### Step 2 — Stack into yearly composites → `2.data_processed/`
@@ -259,7 +262,7 @@ Stacks the Step 1 outputs along the time dimension into `.npy` composites under 
 ### Step 3 — Patchify into tiles → `3.retiled_d_pixel/`
 
 ```bash
-"${PYTHON_ENV}" tessera_preprocessing/dpixel_retiler.py \
+python tessera_preprocessing/dpixel_retiler.py \
     --tiff_path   "${ROI_TIFF}" \
     --d_pixel_dir "${DATA_DIR}/2.data_processed" \
     --out_dir     "${DATA_DIR}/3.retiled_d_pixel" \
@@ -278,7 +281,7 @@ Stacks the Step 1 outputs along the time dimension into `.npy` composites under 
 
 ```bash
 mkdir -p "${DATA_DIR}/4.embeddings_v2"
-"${PYTHON_ENV}" tessera_infer_v2/infer_v2.py \
+python tessera_infer_v2/infer_v2.py \
     --model     medium \
     --data-root "${DATA_DIR}/3.retiled_d_pixel" \
     --out-dir   "${DATA_DIR}/4.embeddings_v2"
@@ -297,7 +300,7 @@ Writes one 128-d fp32 `.npy` per tile. Weights are fetched automatically from Hu
 mkdir -p "${DATA_DIR}/5.result"
 
 # 5a. stitch per-tile embeddings into one map
-"${PYTHON_ENV}" tessera_infer/stitch_tiled_representation.py \
+python tessera_infer/stitch_tiled_representation.py \
     --d_pixel_retiled_path        "${DATA_DIR}/3.retiled_d_pixel" \
     --representation_retiled_path "${DATA_DIR}/4.embeddings_v2" \
     --downstream_tiff             "${ROI_TIFF}" \
@@ -305,7 +308,7 @@ mkdir -p "${DATA_DIR}/5.result"
     --out_name                    "${BASENAME}"
 
 # 5b. convert the .npy to a viewable GeoTIFF
-"${PYTHON_ENV}" tessera_infer/convert_npy2tiff.py \
+python tessera_infer/convert_npy2tiff.py \
     --npy_path      "${DATA_DIR}/5.result/${BASENAME}.npy" \
     --ref_tiff_path "${ROI_TIFF}" \
     --out_dir       "${DATA_DIR}/5.result" \
@@ -321,15 +324,15 @@ The `.tif` takes its name from the `.npy`, so both land in `5.result/` as `${BAS
 
 Prefer two pastes over six? After running the variables block above (same shell session), the pipeline can also be driven with two copy-paste blocks.
 
-**Block A — ROI + download (Step 0 + Step 1).** This is the failure-prone part; re-paste it to retry any tiles that timed out.
+**Block A — ROI + download (Step 0 + Step 1).** This is the failure-prone part; because `overwrite=false`, re-pasting it resumes — only the days that failed or timed out are re-fetched.
 
 ```bash
 mkdir -p "${DATA_DIR}/0.roi" "${DATA_DIR}/tmp"
-"${PYTHON_ENV}" tessera_preprocessing/convert_shp_to_tiff.py \
+python tessera_preprocessing/convert_shp_to_tiff.py \
     --shp_path "${DATA_DIR}/0.roi/roi.shp" --pixel_size 10
 INPUT_TIFF="${ROI_TIFF}" OUT_DIR="${DATA_DIR}" TEMP_DIR="${DATA_DIR}/tmp" \
 PYTHON_ENV="${PYTHON_ENV}" YEAR="${YEAR}" DATA_SOURCE=mpc \
-S1_RAW_SUBDIR=1.data_sar_raw S2_RAW_SUBDIR=1.data_raw \
+S1_RAW_SUBDIR=1.data_sar_raw S2_RAW_SUBDIR=1.data_raw S1_OVERWRITE=false S2_OVERWRITE=false \
     bash tessera_preprocessing/s1_s2_downloader.sh
 ```
 
@@ -339,19 +342,19 @@ S1_RAW_SUBDIR=1.data_sar_raw S2_RAW_SUBDIR=1.data_raw \
 BASE_DIR="${DATA_DIR}" DOWNSAMPLE_RATE=1 \
 S1_RAW_SUBDIR=1.data_sar_raw S2_RAW_SUBDIR=1.data_raw PROCESSED_SUBDIR=2.data_processed \
     bash tessera_preprocessing/s1_s2_stacker.sh
-"${PYTHON_ENV}" tessera_preprocessing/dpixel_retiler.py \
+python tessera_preprocessing/dpixel_retiler.py \
     --tiff_path "${ROI_TIFF}" --d_pixel_dir "${DATA_DIR}/2.data_processed" \
     --out_dir "${DATA_DIR}/3.retiled_d_pixel" \
     --patch_size 500 --block_size 2000 --num_workers 16 --overwrite
 mkdir -p "${DATA_DIR}/4.embeddings_v2"
-"${PYTHON_ENV}" tessera_infer_v2/infer_v2.py \
+python tessera_infer_v2/infer_v2.py \
     --model medium --data-root "${DATA_DIR}/3.retiled_d_pixel" --out-dir "${DATA_DIR}/4.embeddings_v2"
 mkdir -p "${DATA_DIR}/5.result"
-"${PYTHON_ENV}" tessera_infer/stitch_tiled_representation.py \
+python tessera_infer/stitch_tiled_representation.py \
     --d_pixel_retiled_path "${DATA_DIR}/3.retiled_d_pixel" \
     --representation_retiled_path "${DATA_DIR}/4.embeddings_v2" \
     --downstream_tiff "${ROI_TIFF}" --out_dir "${DATA_DIR}/5.result" --out_name "${BASENAME}"
-"${PYTHON_ENV}" tessera_infer/convert_npy2tiff.py \
+python tessera_infer/convert_npy2tiff.py \
     --npy_path "${DATA_DIR}/5.result/${BASENAME}.npy" \
     --ref_tiff_path "${ROI_TIFF}" --out_dir "${DATA_DIR}/5.result" --downsample_rate 1
 ```
