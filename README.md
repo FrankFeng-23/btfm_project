@@ -208,7 +208,16 @@ tessera_project
    ┗ roi.tiff (we recommend generating this using convert_shp_to_tiff.py)
 ```
 
-The `roi.tiff` can be generated using `convert_shp_to_tiff.py` located in `tessera_preprocessing/convert_shp_to_tiff.py`. To use it, simply specify the path to your shapefile in the main function, and it will output a TIFF with the same name in the same directory.
+The `roi.tiff` can be generated using `convert_shp_to_tiff.py` located in `tessera_preprocessing/convert_shp_to_tiff.py`:
+
+```bash
+cd tessera_preprocessing
+python convert_shp_to_tiff.py \
+    --shp_path   /absolute/path/to/your/data_dir/roi.shp \
+    --pixel_size 10
+```
+
+By default it writes a TIFF with the same name as the shapefile in the same directory (e.g. `roi.shp` → `roi.tiff`) and a `<name>_convex_hull.tiff` alongside it; override the destination with `--tiff_path`. Set `--pixel_size` in meters (default `10`), and optionally force a target CRS with `--force_crs EPSG:32650` (default: auto-detect the best UTM zone from the shapefile centroid).
 
 ⚠️Notice: _If your ROI is relatively large, for example 100 km × 100 km, we strongly recommend pre-splitting the TIFF into smaller sections no larger than 20 km × 20 km. Then process each small TIFF file sequentially in the pipeline. An excessively large ROI may cause issues with backend tile providers_
 
@@ -898,13 +907,27 @@ python stitch_tiled_representation.py \
 --out_dir /maps/usr/tessera_project/my_data
 ```
 
-Finally, you'll get a stitched representation map in the `my_data` directory with the shape (H,W,C), where H and W match your initial `roi.tiff` and C is the embedding dimension of the version you ran. The representation map is a NumPy array. If you want to convert it to TIFF for viewing in software like QGIS, you can use the `tessera_infer/convert_npy2tiff.py` script. Just modify the main function with:
+Finally, you'll get a stitched representation map in the `my_data` directory with the shape (H,W,C), where H and W match your initial `roi.tiff` and C is the embedding dimension of the version you ran. The representation map is a NumPy array. If you want to convert it to TIFF for viewing in software like QGIS, you can use the `tessera_infer/convert_npy2tiff.py` script:
 
-```python
-npy_path = "/maps/usr/tessera_project/my_data/stitched_representation.npy"  # Change to the actual npy file path
-ref_tiff_path = "/maps/usr/tessera_project/my_data/roi.tiff"  # Change to the actual reference tiff file path
-out_dir = "/maps/usr/tessera_project/my_data/"  # Change to the actual output directory
+```bash
+python convert_npy2tiff.py \
+    --npy_path      /path/to/stitched_representation.npy \
+    --ref_tiff_path /path/to/roi.tiff \
+    --out_dir       /path/to/output_directory \
+    --downsample_rate 1
 ```
+
+For example:
+
+```bash
+python convert_npy2tiff.py \
+    --npy_path      /maps/usr/tessera_project/my_data/stitched_representation.npy \
+    --ref_tiff_path /maps/usr/tessera_project/my_data/roi.tiff \
+    --out_dir       /maps/usr/tessera_project/my_data \
+    --downsample_rate 1
+```
+
+The output GeoTIFF borrows its CRS and geotransform from `--ref_tiff_path`. Set `--downsample_rate` (integer, area-average, default `1`) to coarsen the resolution — e.g. `2` produces a 20m output.
 
 ## Downstream tasks
 
