@@ -46,6 +46,7 @@
       - [Acceptable Use Policy](#AUP)
       - [Accessing Precomputed Embeddings](#global-embeddings-access)
       - [Creating Your Own Embeddings](#creating-your-own-embeddings)
+          - [End-to-end runbook](#end-to-end-runbook)
       - [Inference](#inference)
           - [TESSERA v2 (recommended)](#tessera-v2-recommended)
           - [TESSERA v1.1](#tessera-v11-qat-int8)
@@ -152,6 +153,208 @@ The pipeline has no strict requirements for CPU and GPU, but more CPU cores and 
 For the data preprocessing pipeline, we support almost all Linux systems. For Windows, we recommend using WSL. We do not support MacOS at this point.
 
 For the model inference part, we have only tested it on Linux and Windows WSL, and they are working.
+
+## End-to-end runbook
+
+The fastest path from a region of interest to a TESSERA v2 representation map. Every step runs from the **repository root** — there is no need to `cd` anywhere or edit any script: all paths and tuning knobs are passed as environment variables or CLI flags. Each step writes into a numbered folder under your data directory so the outputs stay ordered (`0.roi/`, `1.data_raw/`, …, `5.result/`).
+
+> The [Data Preprocessing](#data-preprocessing) and [Inference](#inference) sections below remain the detailed reference for each stage and the other model versions. This runbook is the complete, streamlined chain.
+
+### Setup (one-time)
+
+The pipeline needs a Python environment with the base repo dependencies (geoprocessing), PyTorch, and the v2 package + weights. Run this once — it `cd`s into `tessera_infer_v2` and `cd ..` back to the repo root afterwards, so the steps below still run from the root:
+
+```bash
+# (optional) create + activate a virtualenv — a conda env works too
+python3 -m venv venv
+source venv/bin/activate
+
+# base repo dependencies (geoprocessing: rasterio, fiona, …)
+pip install -r requirements.txt
+
+# PyTorch — match your CUDA version (see https://pytorch.org/)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+
+# v2 inference deps + the default Medium checkpoint (~84 MB)
+cd tessera_infer_v2
+pip install -r requirements.txt
+python download_weights.py --model medium
+cd ..
+```
+
+> [!NOTE]
+> If the base `pip install -r requirements.txt` fails while building **fiona** with a `gdal-config not found` (or similar GDAL) error, install the system GDAL libraries and re-run that line:
+> ```bash
+> sudo apt install gdal-bin libgdal-dev
+> ```
+
+This fetches the recommended **Medium** student into `tessera_infer_v2/student/checkpoints/`. For the other students (Nano/Small/Large), the 2B teacher, or direct Hugging Face access, see [TESSERA v2 (recommended)](#tessera-v2-recommended).
+
+**Run this once in your terminal** — the variables are reused by every step. Keep the same shell session so they persist (which also makes retrying a step a single re-paste):
+
+```bash
+DATA_DIR=/absolute/path/to/your/data_dir              # all outputs are written under here
+PYTHON_ENV=/absolute/path/to/your/python_env/bin/python
+BASENAME=myregion_2024                                # final result file name (.npy and .tif)
+YEAR=2024                                             # data year, range [2017-2025]
+ROI_TIFF="${DATA_DIR}/0.roi/roi_convex_hull.tiff"     # ROI extent: downloaded over + used as geo-reference
+```
+
+### Step 0 — Shapefile → ROI GeoTIFF *(skip if you already have a GeoTIFF)* → `0.roi/`
+
+```bash
+mkdir -p "${DATA_DIR}/0.roi"
+"${PYTHON_ENV}" tessera_preprocessing/convert_shp_to_tiff.py \
+    --shp_path   "${DATA_DIR}/0.roi/roi.shp" \
+    --pixel_size 10
+```
+
+Writes `roi.tiff` and `roi_convex_hull.tiff` beside the shapefile. `ROI_TIFF` above points at the convex-hull file — that is the extent the next step downloads over.
+
+- `--shp_path` — your input shapefile.
+- `--pixel_size` — metres per pixel (optional, default `10`).
+- `--tiff_path` — custom output name (optional).
+- `--force_crs EPSG:32650` — force a target CRS instead of the auto-detected best UTM zone (optional).
+
+### Step 1 — Download Sentinel-1 & Sentinel-2 → `1.data_sar_raw/`, `1.data_raw/`
+
+The network-heavy step and **the one most likely to fail partway**. It is safe to re-run: completed partitions are skipped, so just paste the block again to fetch only what is missing.
+
+```bash
+INPUT_TIFF="${ROI_TIFF}" \
+OUT_DIR="${DATA_DIR}" \
+TEMP_DIR="${DATA_DIR}/tmp" \
+PYTHON_ENV="${PYTHON_ENV}" \
+YEAR="${YEAR}" \
+DATA_SOURCE=mpc \
+S1_RAW_SUBDIR=1.data_sar_raw \
+S2_RAW_SUBDIR=1.data_raw \
+    bash tessera_preprocessing/s1_s2_downloader.sh
+```
+
+Outputs: S1 → `${DATA_DIR}/1.data_sar_raw`, S2 → `${DATA_DIR}/1.data_raw`.
+
+- `INPUT_TIFF` / `OUT_DIR` / `TEMP_DIR` / `PYTHON_ENV` / `YEAR` — the ROI to download over, data root, scratch dir, interpreter, and year.
+- `DATA_SOURCE` — `mpc` (Microsoft Planetary Computer) or `aws`. For `aws`, Sentinel-1 needs an Earthdata bearer token at `~/.edl_bearer_token` (see the AWS Credentials section below).
+- `S1_RAW_SUBDIR` / `S2_RAW_SUBDIR` — output folder names (optional, default `data_sar_raw` / `data_raw`).
+- Advanced knobs inside `s1_s2_downloader.sh` (edit only if needed): `S1_PARTITIONS` / `S2_PARTITIONS` (time-slice parallelism), `S1_TOTAL_WORKERS` / `S2_TOTAL_WORKERS` (Dask workers), `START_TIME_OVERRIDE` / `END_TIME_OVERRIDE` (download a sub-range for a quick test).
+
+### Step 2 — Stack into yearly composites → `2.data_processed/`
+
+```bash
+BASE_DIR="${DATA_DIR}" \
+DOWNSAMPLE_RATE=1 \
+S1_RAW_SUBDIR=1.data_sar_raw \
+S2_RAW_SUBDIR=1.data_raw \
+PROCESSED_SUBDIR=2.data_processed \
+    bash tessera_preprocessing/s1_s2_stacker.sh
+```
+
+Stacks the Step 1 outputs along the time dimension into `.npy` composites under `${DATA_DIR}/2.data_processed`. Fast (Rust binaries).
+
+- `BASE_DIR` — data root (same as Step 1's `OUT_DIR`).
+- `DOWNSAMPLE_RATE` — `1` keeps full 10 m resolution (optional, default `1`).
+- `S1_RAW_SUBDIR` / `S2_RAW_SUBDIR` / `PROCESSED_SUBDIR` — the three folder names; must match Step 1 (optional, default `data_sar_raw` / `data_raw` / `data_processed`).
+
+### Step 3 — Patchify into tiles → `3.retiled_d_pixel/`
+
+```bash
+"${PYTHON_ENV}" tessera_preprocessing/dpixel_retiler.py \
+    --tiff_path   "${ROI_TIFF}" \
+    --d_pixel_dir "${DATA_DIR}/2.data_processed" \
+    --out_dir     "${DATA_DIR}/3.retiled_d_pixel" \
+    --patch_size  500 \
+    --block_size  2000 \
+    --num_workers 16 \
+    --overwrite
+```
+
+- `--tiff_path` — reference TIFF defining the grid; `--d_pixel_dir` — Step 2 output; `--out_dir` — where tiles are written.
+- `--patch_size` / `--block_size` — tile and super-block size in px (optional, default `500` / `2000`; good starting point for a ~5000×5000 px ROI at 10 m).
+- `--num_workers` — parallel workers (optional, default `16`).
+- `--overwrite` — wipe `out_dir` first; drop it to resume without re-doing finished patches (or use `--skip_existing`).
+
+### Step 4 — TESSERA v2 inference → `4.embeddings_v2/`
+
+```bash
+mkdir -p "${DATA_DIR}/4.embeddings_v2"
+"${PYTHON_ENV}" tessera_infer_v2/infer_v2.py \
+    --model     medium \
+    --data-root "${DATA_DIR}/3.retiled_d_pixel" \
+    --out-dir   "${DATA_DIR}/4.embeddings_v2"
+```
+
+Writes one 128-d fp32 `.npy` per tile. Weights are fetched automatically from Hugging Face on first use (or run `python tessera_infer_v2/download_weights.py --model medium` beforehand).
+
+- `--model` — `nano` / `small` / `medium` (default) / `large` / `teacher`; `--data-root` — Step 3 output; `--out-dir` — embeddings directory.
+- `--device` — `cuda` (default if available) or `cpu`.
+- `--batch-pixels` — pixels per forward pass; lower it if you run out of memory (optional, default `4096`).
+- `--dim 16 --int8` — store a Matryoshka prefix as int8 + a scale map (much smaller). Other versions (v1.1 / v1.0) are documented under [Inference](#inference).
+
+### Step 5 — Stitch & convert → `5.result/<BASENAME>.npy`, `5.result/<BASENAME>.tif`
+
+```bash
+mkdir -p "${DATA_DIR}/5.result"
+
+# 5a. stitch per-tile embeddings into one map
+"${PYTHON_ENV}" tessera_infer/stitch_tiled_representation.py \
+    --d_pixel_retiled_path        "${DATA_DIR}/3.retiled_d_pixel" \
+    --representation_retiled_path "${DATA_DIR}/4.embeddings_v2" \
+    --downstream_tiff             "${ROI_TIFF}" \
+    --out_dir                     "${DATA_DIR}/5.result" \
+    --out_name                    "${BASENAME}"
+
+# 5b. convert the .npy to a viewable GeoTIFF
+"${PYTHON_ENV}" tessera_infer/convert_npy2tiff.py \
+    --npy_path      "${DATA_DIR}/5.result/${BASENAME}.npy" \
+    --ref_tiff_path "${ROI_TIFF}" \
+    --out_dir       "${DATA_DIR}/5.result" \
+    --downsample_rate 1
+```
+
+The `.tif` takes its name from the `.npy`, so both land in `5.result/` as `${BASENAME}.npy` and `${BASENAME}.tif`. Open the `.tif` in QGIS to inspect.
+
+- Stitch — `--d_pixel_retiled_path` (Step 3) + `--representation_retiled_path` (Step 4) + `--downstream_tiff` (output extent) + `--out_dir`; `--out_name` sets the basename (optional, default `stitched_representation`).
+- Convert — `--npy_path` (Step 5a output), `--ref_tiff_path` (supplies CRS + geotransform), `--out_dir`; `--downsample_rate` coarsens the output — `2` → 20 m (optional, default `1`).
+
+### One-click blocks
+
+Prefer two pastes over six? After running the variables block above (same shell session), the pipeline can also be driven with two copy-paste blocks.
+
+**Block A — ROI + download (Step 0 + Step 1).** This is the failure-prone part; re-paste it to retry any tiles that timed out.
+
+```bash
+mkdir -p "${DATA_DIR}/0.roi" "${DATA_DIR}/tmp"
+"${PYTHON_ENV}" tessera_preprocessing/convert_shp_to_tiff.py \
+    --shp_path "${DATA_DIR}/0.roi/roi.shp" --pixel_size 10
+INPUT_TIFF="${ROI_TIFF}" OUT_DIR="${DATA_DIR}" TEMP_DIR="${DATA_DIR}/tmp" \
+PYTHON_ENV="${PYTHON_ENV}" YEAR="${YEAR}" DATA_SOURCE=mpc \
+S1_RAW_SUBDIR=1.data_sar_raw S2_RAW_SUBDIR=1.data_raw \
+    bash tessera_preprocessing/s1_s2_downloader.sh
+```
+
+**Block B — stack → result (Step 2 → Step 5).** Paste this once Step 1 has downloaded cleanly.
+
+```bash
+BASE_DIR="${DATA_DIR}" DOWNSAMPLE_RATE=1 \
+S1_RAW_SUBDIR=1.data_sar_raw S2_RAW_SUBDIR=1.data_raw PROCESSED_SUBDIR=2.data_processed \
+    bash tessera_preprocessing/s1_s2_stacker.sh
+"${PYTHON_ENV}" tessera_preprocessing/dpixel_retiler.py \
+    --tiff_path "${ROI_TIFF}" --d_pixel_dir "${DATA_DIR}/2.data_processed" \
+    --out_dir "${DATA_DIR}/3.retiled_d_pixel" \
+    --patch_size 500 --block_size 2000 --num_workers 16 --overwrite
+mkdir -p "${DATA_DIR}/4.embeddings_v2"
+"${PYTHON_ENV}" tessera_infer_v2/infer_v2.py \
+    --model medium --data-root "${DATA_DIR}/3.retiled_d_pixel" --out-dir "${DATA_DIR}/4.embeddings_v2"
+mkdir -p "${DATA_DIR}/5.result"
+"${PYTHON_ENV}" tessera_infer/stitch_tiled_representation.py \
+    --d_pixel_retiled_path "${DATA_DIR}/3.retiled_d_pixel" \
+    --representation_retiled_path "${DATA_DIR}/4.embeddings_v2" \
+    --downstream_tiff "${ROI_TIFF}" --out_dir "${DATA_DIR}/5.result" --out_name "${BASENAME}"
+"${PYTHON_ENV}" tessera_infer/convert_npy2tiff.py \
+    --npy_path "${DATA_DIR}/5.result/${BASENAME}.npy" \
+    --ref_tiff_path "${ROI_TIFF}" --out_dir "${DATA_DIR}/5.result" --downsample_rate 1
+```
 
 ## Data Preprocessing
 
