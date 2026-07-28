@@ -52,7 +52,8 @@ S1_CHUNKSIZE=1024                  # S1 stackstac chunk size
 S1_ORBIT_STATE="both"              # Orbit state: ascending/descending/both
 S1_MIN_COVERAGE=0.01               # Minimum valid pixel coverage for S1 (%) set this to 0.01 to mitigate the tiling artefact!
 S1_RESOLUTION=$RESOLUTION          # S1 output resolution (meters)
-S1_OVERWRITE=true                  # Overwrite existing S1 files
+: "${S1_OVERWRITE:=true}"          # Overwrite existing S1 files
+
 
 # === Sentinel-2 Configuration ===
 S2_ENABLED=true                    # Enable S2 processing
@@ -63,7 +64,8 @@ S2_CHUNKSIZE=1024                  # S2 stackstac chunk size
 S2_MAX_CLOUD=100                   # Maximum cloud coverage for S2 (%) set this to 100 to mitigate the tiling artefact!
 S2_RESOLUTION=$RESOLUTION          # S2 output resolution (meters)
 S2_MIN_COVERAGE=0.01               # Minimum valid pixel coverage for S2 (%) set this to 0.01 to mitigate the tiling artefact!
-S2_OVERWRITE=true                  # Overwrite existing S2 files
+: "${S2_OVERWRITE:=true}"          # Overwrite existing S2 files
+
 
 # === System Configuration ===
 DEBUG=false                        # Enable debug mode

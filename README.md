@@ -160,12 +160,12 @@ The fastest path from a region of interest to a TESSERA v2 representation map. E
 
 > The [Data Preprocessing](#data-preprocessing) and [Inference](#inference) sections below remain the detailed reference for each stage and the other model versions. This runbook is the complete, streamlined chain.
 
-### Setup (one-time)
+### Setup environment
 
 The pipeline needs a Python environment with the base repo dependencies (geoprocessing), PyTorch, and the v2 package + weights. Run this once — it `cd`s into `tessera_infer_v2` and `cd ..` back to the repo root afterwards, so the steps below still run from the root:
 
 ```bash
-# (optional) create + activate a virtualenv — a conda env works too
+#  create + activate a virtualenv — a conda env works too
 python3 -m venv venv
 source venv/bin/activate
 
@@ -194,28 +194,24 @@ This fetches the recommended **Medium** student into `tessera_infer_v2/student/c
 
 ```bash
 DATA_DIR=/absolute/path/to/your/data_dir              # all outputs are written under here
-PYTHON_ENV=/absolute/path/to/your/python_env/bin/python  # absolute path to your interpreter; only the Step 1 downloader needs it
-BASENAME=myregion_2024                                # final result file name (.npy and .tif)
-YEAR=2024                                             # data year, range [2017-2025]
-ROI_TIFF="${DATA_DIR}/0.roi/roi.tiff"     # ROI extent: downloaded over + used as geo-reference
+ROI_SHP=/absolute/path/to/your/roi.shp
+PYTHON_ENV=/absolute/path/to/python_env/bin/python    # run `which python` when you have activated venv
+BASENAME=myregion                                     # final result file name (.npy and .tif)
+YEAR=2025                                             # data year, range [2017-2025]
 ```
 
 ### Step 0 — Prepare ROI GeoTIFF  → `0.roi/`
 
 ```bash
+ROI_TIFF="${DATA_DIR}/0.roi/roi.tiff"     # ROI extent: downloaded over + used as geo-reference
 mkdir -p "${DATA_DIR}/0.roi"
-# Copy your roi.tiff to ${DATA_DIR}/0.roi manually
-# cp /path/to/your/roi.shp "${DATA_DIR}/0.roi"
-
-# Or generate it from shapefile using script
-# Move your roi.shp to `0.roi` directory
-# mv /path/to/your/roi.shp "${DATA_DIR}/0.roi"
 python tessera_preprocessing/convert_shp_to_tiff.py \
-    --shp_path   "${DATA_DIR}/0.roi/roi.shp" \
+    --shp_path   "${ROI_SHP}" \
+    --tiff_path  "${ROI_TIFF}" \
     --pixel_size 10
 ```
 
-`tessera_preprocessing/convert_shp_to_tiff.py` writes `roi.tiff` and `roi_convex_hull.tiff` beside the shapefile. `ROI_TIFF` above points at the Geotiff file — that is the extent the next step downloads over.
+Commands above writes `roi.tiff` and `roi_convex_hull.tiff` to `0.roi/`. `ROI_TIFF` above points at the Geotiff file — that is the extent the next step downloads over.
 
 - `--shp_path` — your input shapefile.
 - `--pixel_size` — metres per pixel (optional, default `10`).
@@ -328,26 +324,32 @@ The `.tif` takes its name from the `.npy`, so both land in `5.result/` as `${BAS
 
 ### One-click blocks
 
-Prefer two pastes over six? After running the variables block above (same shell session), the pipeline can also be driven with two copy-paste blocks.
-
-**Block A — ROI + download (Step 0 + Step 1).** This is the failure-prone part; because `overwrite=false`, re-pasting it resumes — only the days that failed or timed out are re-fetched.
+Too much copy & paste? The pipeline can also be ran with fewer copy-paste blocks.(*you can run all blocks at once if the area of ROI is relatively small, e.g. $<400km^2$*)  
+**Block Config  —** Copy this and edit following configs, paste edited configs and run in shell
 
 ```bash
-mkdir -p "${DATA_DIR}/0.roi" "${DATA_DIR}/tmp"
+DATA_DIR=/absolute/path/to/your/data_dir              # all outputs are written under here
+ROI_SHP=/absolute/path/to/your/roi.shp
+PYTHON_ENV=/absolute/path/to/python_env/bin/python    # absolute path to your interpreter; only the Step 1 downloader needs it
+BASENAME=myregion                                     # final result file name (.npy and .tif)
+YEAR=2025                                             # data year, range [2017-2025]
 ```
 
-Now place your shapefile in `"${DATA_DIR}/0.roi"` as `roi.shp`
+**Block A — ROI + download (Step 0 + Step 1).** This is the failure-prone part; because `overwrite=false`, re-run `bash tessera_preprocessing/s1_s2_downloader.sh` resumes — only the days that failed or timed out are re-fetched.
 
 ```bash
+ROI_TIFF="${DATA_DIR}/0.roi/roi.tiff"     # ROI extent: downloaded over + used as geo-reference
+mkdir -p "${DATA_DIR}/0.roi" "${DATA_DIR}/tmp"
 python tessera_preprocessing/convert_shp_to_tiff.py \
-    --shp_path "${DATA_DIR}/0.roi/roi.shp" --pixel_size 10
+    --shp_path "${DATA_DIR}/0.roi/roi.shp" --tiff_path  "${ROI_TIFF}" --pixel_size 10
+
 INPUT_TIFF="${ROI_TIFF}" OUT_DIR="${DATA_DIR}" TEMP_DIR="${DATA_DIR}/tmp" \
 PYTHON_ENV="${PYTHON_ENV}" YEAR="${YEAR}" DATA_SOURCE=mpc \
 S1_RAW_SUBDIR=1.data_sar_raw S2_RAW_SUBDIR=1.data_raw S1_OVERWRITE=false S2_OVERWRITE=false \
     bash tessera_preprocessing/s1_s2_downloader.sh
 ```
 
-**Block B — stack → result (Step 2 → Step 5).** Paste this once Step 1 has downloaded cleanly.
+**Block B — stack → result (Step 2 → Step 5).** Paste and run this once Step 1 has downloaded cleanly.
 
 ```bash
 BASE_DIR="${DATA_DIR}" DOWNSAMPLE_RATE=1 \
