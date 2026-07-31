@@ -341,7 +341,7 @@ YEAR=2025                                             # data year, range [2017-2
 ROI_TIFF="${DATA_DIR}/0.roi/roi.tiff"     # ROI extent: downloaded over + used as geo-reference
 mkdir -p "${DATA_DIR}/0.roi" "${DATA_DIR}/tmp"
 python tessera_preprocessing/convert_shp_to_tiff.py \
-    --shp_path "${DATA_DIR}/0.roi/roi.shp" --tiff_path  "${ROI_TIFF}" --pixel_size 10
+    --shp_path "${ROI_SHP}" --tiff_path  "${ROI_TIFF}" --pixel_size 10
 
 INPUT_TIFF="${ROI_TIFF}" OUT_DIR="${DATA_DIR}" TEMP_DIR="${DATA_DIR}/tmp" \
 PYTHON_ENV="${PYTHON_ENV}" YEAR="${YEAR}" DATA_SOURCE=mpc \
