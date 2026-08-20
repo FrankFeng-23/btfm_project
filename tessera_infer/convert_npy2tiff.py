@@ -40,6 +40,8 @@ def convert_npy_to_tiff(npy_path, ref_tiff_path, out_dir, downsample_rate=1):
         # Keep the coordinate system and affine transform information from the reference tiff
         transform = ref.transform
         crs = ref.crs
+        # Get ref tiff file resolution
+        resolution = ref.res[0]
 
         # If downsampling is needed, modify the pixel size in the affine transform
         if downsample_rate > 1:
@@ -57,6 +59,7 @@ def convert_npy_to_tiff(npy_path, ref_tiff_path, out_dir, downsample_rate=1):
         'width': W,
         'count': C,
         'dtype': data.dtype,
+        'nodata': 0,            # Set 0 as nodata
         'transform': transform  # Update affine transform information
     })
 
@@ -72,11 +75,20 @@ def convert_npy_to_tiff(npy_path, ref_tiff_path, out_dir, downsample_rate=1):
             print(f"Band {i + 1} writing complete")
 
     print(f"Output file saved as: {out_path}")
-    print(f"Resolution: Original 10m, after downsampling {10 * downsample_rate}m")
+    print(f"Resolution: Original {resolution}m, after downsampling {resolution * downsample_rate}m")
+
+def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Convert a TESSERA representation .npy file (H,W,C) to a GeoTIFF, borrowing CRS/transform from a reference TIFF')
+    parser.add_argument('--npy_path', required=True, help='Path to the input .npy file (shape H,W,C)')
+    parser.add_argument('--ref_tiff_path', required=True, help='Path to the reference TIFF file providing CRS/transform')
+    parser.add_argument('--out_dir', required=True, help='Output directory for the generated GeoTIFF')
+    parser.add_argument('--downsample_rate', type=int, default=1, help='Downsampling rate (area averaging). 1 = no downsampling (default: 1)')
+
+    args = parser.parse_args()
+
+    convert_npy_to_tiff(args.npy_path, args.ref_tiff_path, args.out_dir, args.downsample_rate)
 
 if __name__ == "__main__":
-    npy_path = "/scratch/zf281/tessera/data/cambridge/output/2024/stitched_representation.npy"  # Change to the actual npy file path
-    ref_tiff_path = "/scratch/zf281/tessera/data/cambridge/geoinfo/CB.tiff"  # Change to the actual reference tiff file path
-    out_dir = "/scratch/zf281/tessera/data/cambridge/output/2024"  # Change to the actual output directory
-    downsample_rate = 1  # Default is no downsampling, modify as needed
-    convert_npy_to_tiff(npy_path, ref_tiff_path, out_dir, downsample_rate)
+    main()
