@@ -40,6 +40,8 @@ def convert_npy_to_tiff(npy_path, ref_tiff_path, out_dir, downsample_rate=1):
         # Keep the coordinate system and affine transform information from the reference tiff
         transform = ref.transform
         crs = ref.crs
+        # Get ref tiff file resolution
+        resolution = ref.res[0]
 
         # If downsampling is needed, modify the pixel size in the affine transform
         if downsample_rate > 1:
@@ -72,7 +74,7 @@ def convert_npy_to_tiff(npy_path, ref_tiff_path, out_dir, downsample_rate=1):
             print(f"Band {i + 1} writing complete")
 
     print(f"Output file saved as: {out_path}")
-    print(f"Resolution: Original 10m, after downsampling {10 * downsample_rate}m")
+    print(f"Resolution: Original {resolution}m, after downsampling {resolution * downsample_rate}m")
 
 def main():
     import argparse
