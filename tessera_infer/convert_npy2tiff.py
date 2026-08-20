@@ -59,6 +59,7 @@ def convert_npy_to_tiff(npy_path, ref_tiff_path, out_dir, downsample_rate=1):
         'width': W,
         'count': C,
         'dtype': data.dtype,
+        'nodata': 0,            # Set 0 as nodata
         'transform': transform  # Update affine transform information
     })
 
